@@ -49,7 +49,7 @@ $string = ascii_to_entities($string);
 $string = convert_accented_characters($string);
 \end{code}
 
-Questa funzione utilizza un file di configurazione \fil{/application/config/foreign_chars.php} per definire un array di provenienza e di destinazione per la traslitterazione.
+Questa funzione utilizza un file di configurazione \verb|/application/config/foreign_chars.php| per definire un array di provenienza e di destinazione per la traslitterazione.
 
 \item \verb|word_censor()| consente di censurare le parole all'interno di una stringa di testo. Il primo parametro conterrà la stringa originale. Il secondo conterrà una serie di parole che si vogliono disabilitare. Il terzo parametro (opzionale) può contenere un valore per sostituire le parole. Se non specificato, le parole censurate vengono sostituite con il simbolo di cancelletto: \verb|####|. Esempio:
 
@@ -94,7 +94,7 @@ function
 
 Il primo parametro è la stringa, il secondo è il numero di caratteri nella stringa finale. Il terzo parametro è dove nella stringa i puntini di sospensione dovrebbe apparire (il valore va da 0 a 1, dove 0 è a sinistra, 1 a destra, .5 è al centro).
 
-Un quarto parametro facoltativo è il tipo di puntini di sospensione. Per impostazione predefinita vengono inseriti i caratteri \var{&hellip} (...)
+Un quarto parametro facoltativo è il tipo di puntini di sospensione. Per impostazione predefinita vengono inseriti i caratteri \dots
 
 \begin{code}
 $str = 'this_string_is_entirely_too_long_and_might_break_my_design.jpg';

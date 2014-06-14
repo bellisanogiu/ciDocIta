@@ -9,13 +9,14 @@ L'Helper viene caricato con l'istruzione:
 $this->load->helper('xml');
 \end{code}
 
-\verb|xml_convert('string')| prende come input una stringa e converte i caratteri \ac{XML} elencati qui di seguito in entità:
+\begin{itemize}
+\item \verb|xml_convert('string')| prende come input una stringa e converte i caratteri \ac{XML} elencati qui di seguito in entità:
 
 \begin{itemize}
-\item e commerciale: &
-\item i caratteri maggiore e minore: < >
-\item apici singoli e doppi: '  "
-\item lineetta: -
+\item e commerciale: \verb|&|
+\item i caratteri maggiore e minore: \verb|< >|
+\item apici singoli e doppi: \verb|'|  \verb|"|
+\item lineetta: \verb|-|
 \end{itemize}
 
 Questa funzione ignora la e commerciale se essa è parte di una entità carattere esistente. Per esempio:
@@ -23,3 +24,5 @@ Questa funzione ignora la e commerciale se essa è parte di una entità caratter
 \begin{code}
 $string = xml_convert($string);
 \end{code}
+
+\end{itemize}
