@@ -1,0 +1,169 @@
+%************************************************
+\section{Classe Calendar}
+\label{class:calendario}
+%************************************************
+
+La classe Calendar permette di creare dinamicamente un calendario, formattato secondo un template di cui si potrà modificare ogni più piccolo aspetto. Ovviamente potremo passargli anche dei dati.
+
+\section*{Inizializzare la classe}
+Come molte altre classi di CodeIgniter, quella di cui si sta parlando, può essere inizializzata nel proprio controller utilizzando la funzione \verb|$this->load->library|:
+
+\begin{code}
+$this->load->library('calendar');
+\end{code}
+
+\section*{Visualizzare un calendario}
+Una volta caricato, l'oggetto Calendario sarà disponibile con \verb|$this->calendar|. Si può effettuare una prova inserendo nel proprio controller il codice:
+
+\begin{code}
+$this->load->library('calendar');
+
+echo $this->calendar->generate();
+\end{code}
+
+In questo modo verrà generato un calendario con il mese/anno corrente del proprio server. Per visualizzare invece un calendario con una data personalizzata si dovranno utilizzare degli specifici argomenti, come nel seguente esempio che visualizza il mese di giugno del 2014:\vref{fig:002}
+
+\begin{img}{Calendario}{3}{002}
+\end{img}
+
+\begin{code}
+$this->load->library('calendar');
+
+echo $this->calendar->generate(2014, 6);
+\end{code}
+
+\section*{Passare i dati alle celle}
+Per aggiungere o meglio personalizzare i dati delle celle del calendario si definisce un array associativo i cui indici si riferiscono ai giorni che si vogliono ``popolare'', e i valori ai dati personalizzati:
+
+\begin{code}
+$this->load->library('calendar');
+
+$data = array(
+	3  => 'http://example.com/news/article/2006/03/',
+  7  => 'http://example.com/news/article/2006/07/',
+	13 => 'http://example.com/news/article/2006/13/',
+	26 => 'http://example.com/news/article/2006/26/'
+	);
+
+echo $this->calendar->generate(2006, 6, $data);
+\end{code}
+
+In questo esempio gli indici dell'array (3, 7, 13, e 26) definiscono i giorni a cui vogliamo collegare i valori dell'array, che in questo caso corrispondono a degli \ac{URI}. Il risultato sarà quello di visualizzare un calendario in cui alcuni giorni saranno collegati con dei link a determinate pagine web.
+
+Nota: solitamente i dati dell'array corrispondono a dei link. Questo esempio e i prossimi saranno basati su questa prassi, ma nulla vieta di passare altri tipi di informazioni all'array.
+
+\section*{Configurazione}
+Avevamo accennato al fatto che la classe Calendario potesse essere configurata in ogni suo aspetto. Le preferenze si basano su un particolare array \verb|$pref| i cui parametri permettono di rendere il calendario molto flessibile in ogni particolare: è possibile decidere il primo giorno della settimana, il formato di visualizzazione del mese o del giorno. La sintassi utilizzata può essere meglio compresa nel codice seguente, in cui viene definito il primo giorno della settimana (sabato) e il formato del mese (completo) e del giorno (ridotto). In questo caso, quando verrà caricata la classe Calendario verrà passato anche il secondo parametro, l'array \verb|$pref| opportunamente configurato.
+
+\begin{code}
+$prefs = array (
+	'start_day'    => 'saturday',
+	'month_type'   => 'long',
+	'day_type'     => 'short'
+             );
+
+$this->load->library('calendar', $prefs);
+
+echo $this->calendar->generate();
+\end{code}
+
+\footnotesize
+\begin{center}
+\begin{tabularx}{\columnwidth}{lXXX}
+\toprule
+Preferenze & Default & Opzioni & Descrizione \\ 
+\midrule
+\verb|template| & nessuno  & nessuno & Una stringa contenente il template del calendario* \\
+\verb|local_time| & time() & nessuno  & Il timestamp Unix che corrisponde all'ora corrente \\
+\verb|start_day| & sunday & giorni settimana & Imposta il primo giorno della settimana \\
+\verb|month_type| & long & long, short & Imposta il formato del mese. long = January, short = Jan \\
+\verb|day_type| & abr & long, short, abr & Imposta il formato dei giorni. long = Sunday, short = Sun, abr = Su \\
+\verb|show_next_prev| & FALSE & TRUE/FALSE & Imposta la visualizzazione dei link per scorrere i mesi* \\
+\verb|next_prev_url| & nessuno & URL & Imposta il basepath per i link del calendario \\
+\bottomrule
+\end{tabularx}
+\end{center}
+\normalsize
+
+*Si veda la sezione template per maggiori informazioni
+
+\section*{Scorrere i mesi}
+Il calendario può essere ``visitato'' dinamicamente attraverso dei link che permettono di incrementare/decrementare i mesi.
+
+\begin{code}
+$prefs = array (
+               'show_next_prev'  => TRUE,
+               'next_prev_url'   => 'http://example.com/index.php/calendar/show/'
+             );
+
+$this->load->library('calendar', $prefs);
+
+echo $this->calendar->generate($this->uri->segment(3), $this->uri->segment(4));
+\end{code}
+
+Si noteranno alcune cose circa l'esempio precedente:
+
+\begin{itemize}
+\item è necessario impostare la \verb|show_next_prev"| su TRUE
+\item è necessario fornire al controller l'URL contenente il calendario al parametro \verb|next_prev_url|
+\item è necessario fornire l'anno e il mese alla funzione che genera il calendario tramite i singoli segmenti di \ac{URI} in cui appaiono (nota: la classe del calendario aggiunge automaticamente l'anno/mese all'\ac{URL} base fornito)
+\end{itemize}
+
+L'esempio seguente genererà il calendario attuale attraverso il metodo \var{view()} definito nel controller \var{Pages}. Si notino i link per la navigazione tra i mesi precedente e successivo.
+
+\begin{code}
+public function view($page='home')
+{
+	$prefs = array (
+		'show_next_prev'  => TRUE,
+    'next_prev_url'   => 'http://127.0.0.1/index.php/pages/view/'
+    );
+	this->load->library('calendar', $prefs);
+	echo $this->calendar->generate($this->uri->segment(3), $this->uri->segment(4));
+}
+\end{code}
+
+\begin{img}{Calendario navigabile}{3}{001}
+\end{img}
+
+\section*{Personalizzare il template}
+\'E possibile modificare l'aspetto grafico del calendario, modificando alcuni parametri delle seguenti pseudo variabili:
+
+\begin{code}
+$prefs['template'] = '
+
+   {table_open}<table border="0" cellpadding="0" cellspacing="0">{/table_open}
+
+   {heading_row_start}<tr>{/heading_row_start}
+
+   {heading_previous_cell}<th><a href="{previous_url}">&lt;&lt;</a></th>{/heading_previous_cell}
+   {heading_title_cell}<th colspan="{colspan}">{heading}</th>{/heading_title_cell}
+   {heading_next_cell}<th><a href="{next_url}">&gt;&gt;</a></th>{/heading_next_cell}
+
+   {heading_row_end}</tr>{/heading_row_end}
+
+   {week_row_start}<tr>{/week_row_start}
+   {week_day_cell}<td>{week_day}</td>{/week_day_cell}
+   {week_row_end}</tr>{/week_row_end}
+
+   {cal_row_start}<tr>{/cal_row_start}
+   {cal_cell_start}<td>{/cal_cell_start}
+
+   {cal_cell_content}<a href="{content}">{day}</a>{/cal_cell_content}
+   {cal_cell_content_today}<div class="highlight"><a href="{content}">{day}</a></div>{/cal_cell_content_today}
+
+   {cal_cell_no_content}{day}{/cal_cell_no_content}
+   {cal_cell_no_content_today}<div class="highlight">{day}</div>{/cal_cell_no_content_today}
+
+   {cal_cell_blank}&nbsp;{/cal_cell_blank}
+
+   {cal_cell_end}</td>{/cal_cell_end}
+   {cal_row_end}</tr>{/cal_row_end}
+
+   {table_close}</table>{/table_close}
+';
+
+$this->load->library('calendar', $prefs);
+
+echo $this->calendar->generate();
+\end{code}

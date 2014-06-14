@@ -1,0 +1,177 @@
+%************************************************
+\section{Classe Trackback}
+\label{class:trackback}
+%************************************************
+
+La classe Trackback fornisce numerose funzionalità per l'invio e la ricezione dei dati Trackback.
+
+%begin wiki
+Il Trackback è un meccanismo per la comunicazione e la notifica tra due risorse: la risorsa A manda un Trackback ping (spesso chiamato Pingback) alla risorsa B, la quale risponde con un messaggio di avvenuta notifica o con un eventuale errore. La risorsa A invia poi un ping alla risorsa B, nel caso in cui sia presente, nella risorsa A, un approfondimento o una citazione della risorsa B.
+
+Il Trackback si è molto diffuso nei blog. In questo caso, un blog riceve una serie di ping da altri blog e, solitamente mostra sotto ad ogni post, l'elenco dei ping ricevuti e riferiti a quello specifico post.
+
+Il Trackback ping può contenere informazioni relative al titolo della risorsa notificata, un estratto della stessa e il titolo del sito web che ha inviato il ping. L'unica informazione obbligatoria che un ping deve contenere è il permalink della risorsa notificata.
+
+Oggi, il Trackback è disponibile nei principali programmi di blogging, ma il termine Trackback è nato nel 2002, così battezzato da Six Apart, che introdusse questo sistema nella sua piattaforma di blogging Movable Type, sebbene il Trackback utilizzi funzionalità presenti nelle specifiche HTTP 1.0, e quindi già dal 1992.
+
+Un spiacevole fenomeno diffuso è l'utilizzo dei Trackback a scopo di spam, cioè l'invio indiscriminato di Trackback ping allo scopo di far apparire i propri link nell'elenco dei ping di qualche blog. Esistono, però, filtri per individuare i Trackback di spam, implementati in molte delle piattaforme di blogging che supportano il Trackback, riducendo, almeno parzialmente, il fastidio causato dallo spam.
+%end wiki
+
+%guida http://www.andreascarpetta.com/guide/come-inviare-i-trackbacks-con-wordpress-miniguida/
+
+La classe viene inizializzata nel controller con la funzione \var{\$this->load->library}:
+
+\begin{code}
+$this->load->library('trackback');
+\end{code}
+
+Una volta caricata, l'oggetto della libreria Trackback sarà disponibile utilizzando \var{\$this->trackback}.
+
+\section*{Inviare Trackback}
+
+Un Trackback può essere inviato da ogni metodo del controller utilizzando un codice simile al seguente esempo:
+
+\begin{code}
+$this->load->library('trackback');
+
+$tb_data = array(
+                'ping_url'  => 'http://example.com/trackback/456',
+                'url'       => 'http://www.my-example.com/blog/entry/123',
+                'title'     => 'The Title of My Entry',
+                'excerpt'   => 'The entry content.',
+                'blog_name' => 'My Blog Name',
+                'charset'   => 'utf-8'
+                );
+
+if ( ! $this->trackback->send($tb_data))
+{
+     echo $this->trackback->display_errors();
+}
+else
+{
+     echo 'Trackback was sent!';
+}
+\end{code}
+
+Un elenco dei parametri dell'array viene qui elencato prendendo come esempio un blog:
+
+\begin{itemize}
+\item \verb|ping_url|: specifica l'URL del sito a cui si sta inviando il Trackback. \'E possibile inviare Trackback a più URL separando ognuno di questi ultimi con una virgola
+\item url: indica l'URL del proprio sito dove la voce del blog può essere inviata
+\item title: il titolo del proprio blog
+\item excerpt: è un estratto del weblog. La classe invierà automaticamente solo i primi 500 caratteri della sua voce che saranno anche privati di qualsiasi tag HTML
+\item \verb|blog_name| il nome del blog
+\item charset: l'encoding utilizzato per la rappresentazione dei caratteri utilizzati nel blog. Se omesso, sarà utilizzata la codifica UTF-8
+\end{itemize}
+
+La funzione di ``Invio Trackback'' restituisce il valore booleando TRUE/FALSE a seconda del successo o meno dell'operazione. Se essa fallisce si può recuperare il messaggio di errore utilizzando:
+
+\begin{code}
+$this->trackback->display_errors();
+\end{code}
+
+\section*{Ricevere Trackback}
+
+Prima che si possa ricevere i Trackback è necessario creare un blog, ovviamente. Se non se ne ha uno, e non si ha intenzione di utilizzare un servizio di blog in futuro, probabilmente non ha senso continuare nella lettura delle prossime funzionalità della classe.
+
+Ricevere i Trackback è un po' più complesso di quanto non sia inviarli, per il solo motivo che sarà necessaria una tabella di database in cui memorizzarli. Inoltre sarà necessario per convalidare i dati trackback in ingresso. \'E importante implementare un processo di validazione approfondito per evitare spam e duplicazione dei dati. Si consiglia inoltre di limitare il numero di Trackback in ingresso da un particolare IP in un intervallo di tempo specifico, sempre con il fine di ridurre ulteriormente lo spam. Il processo di ricezione di un Trackback è abbastanza semplice mentre la loro validazione richiede un maggiore sforzo.
+
+\section*{Ping URL}
+
+Per accettare i Trackback è necessario visualizzare un \ac{URL} di Trackback accanto ad ognuno delle voci del blog. Questo \ac{URL} sarà l'indirizzo che la gente utilizzerà per inviare Trackback (si farà riferimento a questi ultimi come Ping URL). 
+
+Il proprio Ping URL deve puntare al metodo del Controller dove si trova il codice del Trackback di ricezione, e l'URL deve contenere il numero ID per ogni particolare voce, in modo che quando viene ricevuto il Trackback si sarà in grado di associarlo ad una particolare voce. 
+
+Ad esempio, se la classe controller si chiama \var{Trackback}, e il metodo di ricezione viene chiamato \var{receive}, il proprio URL Ping sarà simile a questo:
+
+\begin{code}
+http://example.com/index.php/trackback/receive/entry_id
+\end{code}
+
+Dove \verb|entry_id| rappresenta il numero ID specifico per ogni voce.
+
+\section*{Tabella Trackback}
+
+Prima che si possano ricevere i Trackback è necessario creare una tabella in cui poterli memorizzare. Qui di seguito si mostra il prototipo di una tabella adatta allo scopo:
+
+\begin{code}
+CREATE TABLE trackbacks (
+ tb_id int(10) unsigned NOT NULL auto_increment,
+ entry_id int(10) unsigned NOT NULL default 0,
+ url varchar(200) NOT NULL,
+ title varchar(100) NOT NULL,
+ excerpt text NOT NULL,
+ blog_name varchar(100) NOT NULL,
+ tb_date int(10) NOT NULL,
+ ip_address varchar(16) NOT NULL,
+ PRIMARY KEY `tb_id` (`tb_id`),
+ KEY `entry_id` (`entry_id`)
+);
+\end{code}
+
+Nelle specifiche del prototipo sono richieste solo quattro porzioni di informazioni da inviare al Trackback  (\verb|url|, \verb|title|, \verb|excerpt|, \verb|blog_name|),  ma per rendere i dati più utili sono stati aggiunti un paio di ulteriori campi (\verb|date|, \verb|IP address|, etc.).
+
+\section*{Elaborare un Trackback}
+
+Ora si mosterà un esempio per ricevere e processare i Trackback; il seguente codice si abbina ad un metodo del controller adibito alla ricezione dei dati Trackback.
+
+\begin{code}
+$this->load->library('trackback');
+$this->load->database();
+
+if ($this->uri->segment(3) == FALSE)
+{
+    $this->trackback->send_error("Unable to determine the entry ID");
+}
+
+if ( ! $this->trackback->receive())
+{
+    $this->trackback->send_error("The Trackback did not contain valid data");
+}
+
+$data = array(
+                'tb_id'      => '',
+                'entry_id'   => $this->uri->segment(3),
+                'url'        => $this->trackback->data('url'),
+                'title'      => $this->trackback->data('title'),
+                'excerpt'    => $this->trackback->data('excerpt'),
+                'blog_name'  => $this->trackback->data('blog_name'),
+                'tb_date'    => time(),
+                'ip_address' => $this->input->ip_address()
+                );
+
+$sql = $this->db->insert_string('trackbacks', $data);
+$this->db->query($sql);
+
+$this->trackback->send_success();
+\end{code}
+
+Nota: il numero entry ID è nella terza parte del proprio URL che in questo specifico caso è basato sull'URI seguente:
+
+\begin{code}
+http://example.com/index.php/trackback/receive/entry_id
+\end{code}
+
+Si osservi come \verb|entry_id| sia per l'appunto nella terza parte dell'URI, che si può recuperare usando:
+
+\begin{code}
+$this->uri->segment(3);
+\end{code}
+
+In questo modo, Trackback riceverà il codice di qui sopra, mentre se la terza parte è assente, sarà visualizzato un errore: senza un ID entry valido non si ha alcun motivo per continuare.
+
+La funzione \var{\$this->trackback->receive()} ha la scopo di validare i dati in ingresso, assicurandosi che siano presenti le quattro parti di informazione richiesti: \verb|url|, \verb|title|, \verb|excerpt|, \verb|blog_name|. La funzione restituisce il valore booleano TRUE/FALSE in caso di successo o meno; in caso di insuccesso verrà prodotto un messaggio di errore.
+
+I Trackback in ingresso sono recuperati con la funzione seguente:
+
+\begin{code}
+$this->trackback->data('item')
+\end{code}
+
+Dove \var{item} rappresenta uno delle quattro parti delle informazioni: \verb|url|, \verb|title|, \verb|excerpt|, \verb|blog_name|. Se i dati Trackback sono correttamente ricevuti, il messaggio di successo sarà disponibile con la funzione:
+
+\begin{code}
+$this->trackback->send_success();
+\end{code}
+
+Il codice sopra descritto non contiene alcuna validazione dei dati: si consiglia di definire sempre questa funzionalità nel proprio progetto.

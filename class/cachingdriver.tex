@@ -1,0 +1,112 @@
+%************************************************
+\section{Classe/Driver Caching}
+\label{class:caching}
+%************************************************
+
+CodeIgniter offre i wrapper per alcune delle più popolari forme di caching. Tutte le modalità di caching, tranne quello basato su file, hanno bisogno che il server soddisfi determinati requisiti: se questi non vengono rispettati viene sollevato un ``Fatal Exception''.
+
+
+\begin{deftab}{Wrapper}{Un wrapper (dal verbo inglese to wrap, ``avvolgere'') è un modulo software che ne ``riveste'' un altro, o detto con un altro terminologia che lo ``incapsula''. La sua funzione generalizzata è quella di fare da tramite tra l'utilizzatore ultimo (colui che usa l'interfaccia del wrapper) e il modulo rivestito (che svolge i servizi richiesti, su delega dell'oggetto wrapper). Il wrapper può essere una classe, un oggetto che ne riveste e nasconde un altro (o più di uno) celando alcuni metodi/campi oppure mostrandone di nuovi o ridefiniti. L'oggetto wrapper avrà le medesime funzionalità di quello incluso, ma modellato ad uso e consumo degli utilizzatori finali.}
+\end{deftab}
+
+Il seguente esempio mostra il caricamento del driver cache \ac{APC}. Si noti l'uso dell'istruzione condizionale, sempre consigliata nella buona programmazione: se il sistema di caching APC non è disponibile nell'ambiente host di riferimento la condizione if/else permette di ``ripiegare'' su un caching basato su file. Per chi volesse approfondire il discorso legato all'ottimizzazione degli script PHP basati su \ac{APC} può consultare la sezione apposita\vref{def:apc}.
+
+\begin{code}
+$this->load->driver('cache', array('adapter' => 'apc', 'backup' => 'file'));
+
+if ( ! $foo = $this->cache->get('foo'))
+{
+     echo 'Salvataggio nella cache!<br />';
+     $foo = 'foobarbaz!';
+
+     // Salvataggio nella cache per 5 minuti
+     $this->cache->save('foo', $foo, 300);
+}
+
+echo $foo;
+\end{code}
+
+\section*{Reference}
+\begin{itemize}
+\item \verb|is_supported(driver['string']| questa funzione è chiamata automaticamente quando si accede ai driver mediante la funzione \var{\$this->cache->get()}. Tuttavia, se vengono utilizzati i singoli driver, ci si deve assicurare di chiamare questa funzione per verificare che il driver sia supportato nell'ambiente hosting.
+
+\begin{code}
+if ($this->cache->apc->is_supported())
+{
+     if ($data = $this->cache->apc->get('my_cache'))
+     {
+          // fai qualcosa...
+     }
+}
+\end{code}
+
+\item \verb|get(id['string'])| questa funzione tenta di recuperare un oggetto dalla cache. Se l'oggetto non esiste, la funzione restituisce FALSE.
+
+\begin{code}
+$foo = $this->cache->get('my_cached_item');
+\end{code}
+
+\item \verb|save(id['string'], data['mixed'], ttl['int'])| memorizza un oggetto nella cache. Se l'operazione non va a buon fine, la funzione restituisce FALSE. Il terzo parametro opzionale (Time To Live) ha un valore di default di 60 secondi.
+
+\begin{code}
+$this->cache->save('cache_item_id', 'data_to_cache');
+\end{code}
+
+\item \verb|delete(id['string'])| permette di cancellare uno specifico oggetto memorizzato nella cache. Se la cancellazione fallisce, la funzione restituisce FALSE.
+
+\begin{code}
+$this->cache->delete('cache_item_id');
+\end{code}
+
+\item \verb|clean()| questa funzione ripulisce l'intera cache. Anche in questo caso, se l'operazione fallisce, restituisce FALSE.
+
+\begin{code}
+$this->cache->clean();
+\end{code}
+
+\item \verb|cache_info()| questa funzione restituisce informazioni sulla cache.
+
+\begin{code}
+var_dump($this->cache->cache_info());
+\end{code}
+
+\item \verb|get_metadata(id['string'])| vengono restituite informazioni dettagliate su un oggetto specifico nella cache.
+
+\begin{code}
+var_dump($this->cache->get_metadata('my_cached_item'));
+\end{code}
+\end{itemize}
+
+\section*{Driver}
+\begin{itemize}
+\item Caching Alternative PHP (APC): è possibile accedere a tutte le funzioni elencate precedentemente senza passare uno specifico adapter al driver loader, come qui di seguito:
+
+\begin{code}
+$this->load->driver('cache');
+$this->cache->apc->save('foo', 'bar', 10);
+\end{code}
+
+Per maggiori informazioni su \ac{APC} si faccia riferimento alla documentazione ufficiale: \url{http://php.net/apc}.
+
+\item Caching basato su file: a differenza del caching tramite la Classe Output, quello basato su driver permette che porzioni di file Vista possano essere memorizzati nella cache. \'E consigliato utilizzare questa modalità di caching con molta attenzione ed effettuando ulteriori test di benchmark (si veda \vref{class:benchmark}) per la propria applicazione. Purtroppo, i troppi accessi al disco per operazioni di input/output legati alla cache, invece di aumentare le prestazioni del proprio progetto, possono avere un effetto deleterio.
+
+Tutte le funzioni sopra elencate sono accessibili senza passare uno specifico adapter al driver loader come segue:
+
+\begin{code}
+$this->load->driver('cache');
+$this->cache->file->save('foo', 'bar', 10);
+\end{code}
+
+\item Caching Memcached: più server Memcached possono essere specificati nel file di configurazione \fil{memcached.php}, che si trova nella directory \sys{/application/config/}.
+
+Tutte le funzioni sopra elencate sono accessibili senza passare uno specifico adapter al driver loader come segue:
+
+\begin{code}
+$this->load->driver('cache');
+$this->cache->memcached->save('foo', 'bar', 10);
+\end{code}
+
+Per maggiori informazioni su APC si faccia riferimento alla documentazione: \url{http://php.net/memcached}.
+
+\item Dummy Cache: non memorizza dati, ma consente di mantenere il proprio codice di caching in ambienti che non supportano la cache scelta.
+\end{itemize}

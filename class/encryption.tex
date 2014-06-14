@@ -1,0 +1,133 @@
+%************************************************
+\section{Classe Encryption}
+\label{class:encryption}
+%************************************************
+
+La classe Encryption fornisce una crittografia dei dati a due vie: viene utilizzato uno schema di encoding random basato su ``hashed bitwise XOR'', oppure la libreria Mcrypt per la criptazione. Se Mcrypt non è disponibile sul proprio server il messaggio codificato continuerà a fornire un ragionevole grado di sicurezza per le sessioni crittografate o altri scopi ``leggeri''. Se invece Mcrypt è disponibile, verrà fornito un alto grado di sicurezza adeguato per la memorizzazione persistente delle informazioni per esempio di un database.
+
+\begin{deftab}{Crittografia}{\'E la branca della crittologia che tratta delle ``scritture nascoste'', ovvero dei metodi per rendere un messaggio ``offuscato'' in modo da non essere comprensibile/intelligibile a persone non autorizzate a leggerlo.}
+\end{deftab}
+
+\section*{Impostare la propria chiave}
+Una chiave (key) è un pezzo di informazione che controlla il processo di crittografia e permette ad una stringa criptata di essere decodificata. La chiave scelta costituisce l'unico mezzo per decodificare i dati precedentemente cifrati con la stessa chiave: non solo la si deve scegliere con cura, ma non deve mai essere cambiare se si intende utilizzarla per memorizzare dati persistenti.
+
+Appare quindi ovvio che si deve custodire con estrema attenzione la propria chiave: se qualcuno vi accedesse, tutti i dati del progetto potranno essere facilmente decodificati. Per trarre il massimo vantaggio dell'algoritmo di crittografia, la chiave dovrebbe essere lunga 32 caratteri (128 bit). La chiave deve essere una stringa totalmente casuale, con numeri e lettere maiuscole e minuscole. La chiave non deve mai essere una stringa di testo semplice.
+
+La suddetta chiave può essere sia memorizzata nel file \fil{/application/config/config.php}, oppure si può progettare un proprio meccanismo di memorizzazione e passare la chiave dinamicamente quando sono necessarie le operazioni di codifica/decodifica.
+
+Per salvare la chiave nel file \fil{/application/config/config.php}, si imposti il seguente parametro:
+
+\begin{code}
+$config['encryption_key'] = "LA PROPRIA CHIAVE";
+\end{code}
+
+\section*{Lunghezza del messaggio}
+\'E importante sapere che i messaggi codificati con la funzione di crittografia saranno di circa 2,6 volte più lunghi del messaggio originale. Ad esempio, se si effettua la crittografa della stringa ``my super secret data'', che è di 21 caratteri di lunghezza, vi ritroverete con una stringa codificata di circa 55 caratteri. Non bisogna sottovalutare questo aspetto, perchè anche se lo spazio di memorizzazione non è più un problema insormontabile, esistono delle limitazioni difficilmente aggirabili: per esempio, per la memorizzazione dei cookie, sono disponibili solo 4KB di informazioni.
+
+\section*{Inizializzare la classe}
+La classe di crittografia viene inizializzata nel controller utilizzando la funzione \var{\$this->load->library}:
+
+\begin{code}
+$this->load->library('encrypt');
+\end{code}
+
+Una volta caricato, l'oggetto della libreria Encrypt sarà disponibile con \var{\$this->encrypt}.
+
+\section*{Reference}
+
+\begin{itemize}
+\item \verb|$this->encrypt->encode()| esegue la crittografia dei dati e li restituisce come una stringa. Per esempio:
+
+\begin{code}
+$msg = 'My secret message';
+
+$encrypted_string = $this->encrypt->encode($msg);
+\end{code}
+
+Opzionalmente si può passare la chiave di cifratura tramite il secondo parametro, se non si vuole utilizzare quello presente nel file di configurazione:
+
+\begin{code}
+$msg = 'My secret message';
+$key = 'super-secret-key';
+
+$encrypted_string = $this->encrypt->encode($msg, $key);
+\end{code}
+
+\item \verb|$this->encrypt->decode()| decrittografa una stringa codificata. Esempio:
+
+\begin{code}
+$encrypted_string = 'APANtByIGI1BpVXZTJgcsAG8GZl8pdwwa84';
+
+$plaintext_string = $this->encrypt->decode($encrypted_string);
+\end{code}
+
+Opzionalmente si può passare la chiave di cifratura tramite il secondo parametro, se non si vuole utilizzare quella presente nel file di configurazione:
+
+\begin{code}
+$msg = 'My secret message';
+$key = 'super-secret-key';
+
+$encrypted_string = $this->encrypt->decode($msg, $key);
+\end{code}
+
+\item \verb|$this->encrypt->set_cipher()| permette di impostare un cifrario Mcrypt. Di default viene utilizzato \verb|MCRYPT_RIJNDAEL_256|. Per esempio:
+
+\begin{code}
+$this->encrypt->set_cipher(MCRYPT_BLOWFISH);
+\end{code}
+
+Si prega di visitare php.net (\url{http://php.net/mcrypt}) per un elenco di cifrari disponibili.
+
+Per i più curiosi, o meglio per quelli più saggi, è consigliato verificare manualmente se il server supporta Mcrypt attraverso la seguente istruzione:
+
+\begin{code}
+echo ( ! function_exists('mcrypt_encrypt')) ? 'No!' : 'Si!';
+\end{code}
+
+\verb|$this->encrypt->set_mode()| permette di impostare una modalità Mcrypt. Di default viene utilizzata \verb|MCRYPT_MODE_CBC|. Ecco un semplice esempio:
+
+\begin{code}
+$this->encrypt->set_mode(MCRYPT_MODE_CFB);
+\end{code}
+
+Si consiglia di visitare php.net (\url{http://php.net/mcrypt}) per un elenco delle modalità disponibili.
+
+\item \verb|$this->encrypt->sha1()| si tratta della funzione di codifica SHA1 a cui si fornisce una stringa che restituisce un hash 160 bit. Nota: SHA1, come MD5 non è decodificabile. Per esempio:
+
+\begin{code}
+$hash = $this->encrypt->sha1('Una stringa');
+\end{code}
+
+Molte installazioni di \ac{PHP} hanno di default il supporto a SHA1, quindi se tutto ciò che serve è questa codifica hash è decisamente più semplice e veloce utilizzare la funzione nativa:
+
+\begin{code}
+$hash = sha1('Una stringa');
+\end{code}
+
+Se invece il server non supporta SHA1, ci si può rivolgere alla funzione:
+
+\item \verb|$this->encrypt->encode_from_legacy($orig_data, $legacy_mode = | 
+
+\verb|MCRYPT_MODE_ECB, $key = '')|
+
+Consente di ricodificare i dati originariamente crittografati con CodeIgniter 1.x per essere compatibili con la libreria di crittografia di CodeIgniter 2.x. \'E necessario utilizzare questo metodo solo se i dati crittografati sono memorizzati in modo persistente, come in un file o in un database e su di un server che supporta Mcrypt. ``Light'' utilizza la crittografia come i dati di sessione o le transazioni crittografate e non richiede alcun intervento da parte dello sviluppatore. Tuttavia, le sessioni crittografate esistenti verranno distrutte in quanto i dati crittografati prima della versione 2.x non possono essere decodificati.
+
+Perché utilizzare solo un metodo per ricodificare i dati invece di mantenere i metodi legacy sia per la codifica che per la decodifica? Gli algoritmi nella libreria Encryption sono stati migliorati in CodeIgniter 2.x, sia sotto il profilo delle prestazioni che sotto quello della sicurezza e si sconsiglia di utilizzare i vecchi metodi. Ovviamente si può estendere la libreria di crittografia, se lo si desidera e sostituire i nuovi metodi con quelli precedenti e mantenere la compatibilità con i dati crittografati da CodeIgniter 1.x, ma questa è una decisione che uno sviluppatore dovrebbe fare con cautela.
+
+\begin{code}
+$new_data = $this->encrypt->encode_from_legacy($old_encrypted_string);
+\end{code}
+\end{itemize}
+
+\small
+%\footnotesize
+\begin{tabx}{XXX}
+\toprule
+Parametro & Val.Default & Descrizione \\ 
+\midrule
+\verb|$orig_data| & n/a & i dati originali crittografati da CodeIgniter 1.x \\ 
+\verb|$legacy_mode| & \verb|MCRYPT_MODE_ECB| & la modalità Mcrypt è stata utilizzata precedentemente per generare i dati originali crittografati. In CodeIgniter 1.x la modalità predefinita era \verb|MCRYPT_MODE_ECB| \\ 
+\verb|$key| & n/a & la chiave crittografica: essa è specificata solitamente nel file config specificato poco sopra \\ 
+\bottomrule
+\end{tabx}
+\normalsize

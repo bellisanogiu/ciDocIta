@@ -1,0 +1,73 @@
+%inizio Query Helper Functions
+\section*{Funzioni Helper Query}
+
+\begin{itemize}
+\item \verb|$this->db->insert_id()| il numero ID di inserimento quando si esegue un record viene aggiunto nel database-
+
+\item \verb|$this->db->affected_rows()| visualizza il numero di righe interessate, quando vengono processate le query di tipo  write (INSERT, UPDATE, ecc.).
+
+Nota: in MySQL "DELETE FROM TABLE" restituisce 0 righe. La classe di database ha un piccolo hack che permette di restituire il giusto numero di righe interessate. Per impostazione predefinita, questo hack è abilitato, ma può essere disattivata nel file driver di database.
+
+\item \verb|$this->db->count_all()| permette di determinare il numero di righe in un specifica tabella. Si deve specificare il nome della tabella come primo parametro:
+
+\begin{code}
+echo $this->db->count_all('my_table');
+
+// Produce un intero come 25
+\end{code}
+
+\item \verb|$this->db->platform()| visualizza il tipo di database utilizzato (MySQL, MS SQL, Postgres, etc).
+
+\begin{code}
+echo $this->db->platform();
+\end{code}
+
+\item \verb|$this->db->version()| visualizza la versione del database utilizzato:
+
+\begin{code}
+$this->db->version()
+\end{code}
+
+\item \verb|$this->db->last_query()| restituisce l'ultima query eseguita (la stringa query, non il risultato):
+
+\begin{code}
+$str = $this->db->last_query();
+
+// Produce: SELECT * FROM qualche tabella...
+\end{code}
+
+\item \verb|$this->db->insert_string()| questa funzione semplifica il processo di scrittura degli inserimenti nel database. Essa restituisce una stringa di inserimento nel formato SQL.
+
+\begin{code}
+$data = array('name' => $name, 'email' => $email, 'url' => $url);
+
+$str = $this->db->insert_string('table_name', $data);
+\end{code}
+
+Il primo parametro è il nome della tabella, il secondo è un array associativo che contiene i dati da inserire. L'esempio di qui sopra produce:
+
+\begin{code}
+INSERT INTO table_name (name, email, url) VALUES ('Rick', 'rick@example.com', 'example.com')
+\end{code}
+
+Nota: i valori subiscono automaticamente l'escape, aspetto che rende le query sicure.
+
+\item \verb|$this->db->update_string()| questa funzione semplifica l'aggiornamento del database. Viene restituita un stringa di aggiornamento formattata SQL. Per esempio:
+
+\begin{code}
+$data = array('name' => $name, 'email' => $email, 'url' => $url);
+
+$where = "author_id = 1 AND status = 'active'"; 
+
+$str = $this->db->update_string('table_name', $data, $where);
+\end{code}
+
+Il primo parametro è il nome della tabella, mentre il secondo è un array associativo con i dati da aggiornare. Il terzo parametro è la clausola WHERE. L'esempio di qui sopra produce:
+
+\begin{code}
+UPDATE table_name SET name = 'Rick', email = 'rick@example.com', url = 'example.com' WHERE author_id = 1 AND status = 'active'
+\end{code}
+
+Nota: i valori subiscono automaticamente l'escape, aspetto che rende le query sicure.
+\end{itemize}
+%fine Query Helper Functions

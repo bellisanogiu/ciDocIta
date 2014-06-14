@@ -1,0 +1,89 @@
+%************************************************
+\section{Classe Output}
+\label{class:output}
+%************************************************
+
+La classe Output ha un unico scopo: inviare le pagine web finali al browser web che le richiede. \'E anche responsabile per la memorizzazione nella cache delle pagine web, se si utilizza questa funzionalità. La classe viene inizializzata automaticamente dal sistema, quindi non deve essere caricata manualmente.
+
+In circostanze normali, non ci si accorge neppure delle azioni svolte dalla classe Output dato che funziona in modo trasparente senza alcun intervento da parte dello sviluppatore. Ad esempio, quando si utilizza la classe Loader per caricare una Vista, questa viene passata automaticamente alla classe Output, che sarà richiamata da CodeIgniter alla fine dell'esecuzione del sistema. \'E possibile, tuttavia, intervenire manualmente, utilizzando una delle seguenti funzioni:
+
+\begin{itemize}
+\item \verb|$this->output->set_output()| permette di definire manualmente le stringhe di output. Per esempio:
+
+\begin{code}
+$this->output->set_output($data);
+\end{code}
+
+Se si configura manualmente l'output, questo deve essere l'ultimo elemento ad essere richiamato. Per esempio se si costruisce una pagina utilizzando uno dei metodi del controller, non si può richiamare il suo output se non come ultima istruzione.
+
+\item \verb|$this->output->set_content_type()| permette di definire il tipo di mime della pagina in maniera tale da poter servire  facilmente i dati JSON, JPEG, di XML, ecc.
+
+\begin{code}
+$this->output
+    ->set_content_type('application/json')
+    ->set_output(json_encode(array('foo' => 'bar')));
+
+$this->output
+    ->set_content_type('jpeg') // Si puo' anche utilizzare ".jpeg" which will have the full stop removed before looking in config/mimes.php
+    ->set_output(file_get_contents('files/qualcosa.jpg'));
+\end{code}
+
+\'E importante che ogni stringa passata al metodo che non è del tipo mime, esista all'interno del file \fil{/config/mimes.php} oppure la funzione non sarà eseguita correttamente.
+
+\item \verb|$this->output->get_output()| permette di recuperare manualmente ogni dato in uscita inviato per la memorizzazione nella classe Output. Per esempio:
+
+\begin{code}
+$string = $this->output->get_output();
+\end{code}
+
+I dati non saranno recuperabili tramite questa funzione se questi sono stati inviati precedentemente alla classe Output tramite una funzione di CodeIgniter come \var{\$this->load->view()}.
+
+\item \verb|$this->output->append_output()| è utilizzata per aggiungere dati nella stringa di output. Per esempio:
+
+\begin{code}
+$this->output->append_output($data);
+\end{code}
+
+\item \verb|$this->output->set_header()| consente di impostare manualmente gli header server che la classe Output invierà per noi quando sarà completata la pagina da visualizzare. Per esempio:
+
+\begin{code}
+$this->output->set_header("HTTP/1.0 200 OK");
+$this->output->set_header("HTTP/1.1 200 OK");
+$this->output->set_header('Last-Modified: '.gmdate('D, d M Y H:i:s', $last_update).' GMT');
+$this->output->set_header("Cache-Control: no-store, no-cache, must-revalidate");
+$this->output->set_header("Cache-Control: post-check=0, pre-check=0");
+$this->output->set_header("Pragma: no-cache");
+\end{code}
+
+\item \verb|$this->output->set_status_header(code, 'text')| permette di definire manualmente gli header server status (le intestazioni con lo stato del server). Per esempio:
+
+\begin{code}
+$this->output->set_status_header('401');
+// Imposta l'header come: non autorizzato
+\end{code}
+
+Tutti i codici Status sono diponibili sul sito: \url{http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html}.
+
+\item \verb|$this->output->enable_profiler()| consente di abilitare/disabilitare il Profiler per visualizzare il benchmark (analisi delle prestazioni) e altre informazioni in fondo alle proprie pagine per scopi di debug e di ottimizzazione. Per abilitare il Profiler si inserisca la seguente istruzione in ogni funzione del Controller desiderato:
+
+\begin{code}
+$this->output->enable_profiler(TRUE);
+\end{code}
+
+Quando il report sarà abilitato, questo verrà generato e inserito in fondo alle proprie pagine. Per disabilitare il Profiler si utilizzerà l'istruzione:
+
+\begin{code}
+$this->output->enable_profiler(FALSE);
+\end{code}
+
+\item \verb|$this->output->set_profiler_sections()| questa funzione abilita/disabilita specifiche sezioni del Profiler quando questo è attivo. Per maggiori informazioni si rimanda alla documentazione del Profiler\vpageref{cap:profilazione}.
+
+\item \verb|$this->output->cache()| la libreria Output di CodeIgniter controlla anche l'operazione di memorizzazione (caching). Per maggiori informazioni si veda la sezione Web Page Caching\vpageref{cap:cache}.
+\end{itemize}
+
+\section*{Parsing delle variabili}
+CodeIgniter analizza, per impostazione predefinita, tutte le pseudo variabili di tipo \verb|elapsed_time| e \verb|memory_usage| nel proprio output. Per disabilitare questa analisi, si imposti nel proprio controller la proprietà della classe \verb|$parse_exec_vars| su FALSE:
+
+\begin{code}
+$this->output->parse_exec_vars = FALSE;
+\end{code}

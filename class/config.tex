@@ -1,0 +1,99 @@
+%************************************************
+\section{Classe Config}
+\label{class:config}
+%************************************************
+
+La classe Config (abbreviazione di Configuration) fornisce un mezzo per recuperare le preferenze del sistema, che possono provenire dal file predefinito \sys{/application/config/config.php} o dai file di configurazione personalizzati. Questa classe viene inizializzata automaticamente dal sistema e non è necessario farlo manualmente.
+
+Per impostazione predefinita CodeIgniter ha un solo file di configurazione principale, situato in \sys{/application/config/config.php} in cui i singoli parametri sono memorizzati in un array chiamato \var{\$config}. \'E possibile personalizzare ogni singolo aspetto, semplicemente aggiungendo o modificando i parametri di default; oppure se lo si preferisce (e in genere è una scelta sensata) si può creare un proprio file di configurazione che andrà salvato sempre nella cartella \sys{/application/config/}.
+
+Se si opta per quest'ultima scelta, si utilizzerà la stessa sintassi presente nel file di default: l'array si chiamerà \var{\$config} e i parametri rispetteranno la sintassi di base. CodeIgniter, se si rispettano queste semplici regole, capirà automaticamente come comportarsi in ogni occasione. Per esempio, in caso di parametri di default e ``personalizzati'' con lo stesso identico nome, CodeIgniter imposterà sempre quello corretto, evitando spiacevoli conflitti.
+
+Come precedentemente detto, il file principale di configurazione viene caricato automaticamente, quindi lo sviluppatore dovrà preoccuparsi solo della configurazione personalizzata, se è stato creato un nuovo file apposito: in questo caso, esso andrà caricato manualmente o attraverso l'impostazione l'auto-load.
+
+\section*{Caricamento manuale}
+Analizziamo il caricamento manuale come prima scelta. La seguente istruzione, opportunamente inserita nel Controller caricherà il file ``filename'' (che nel sistema avrà estensione \emph{.php}).
+
+\begin{code}
+$this->config->load('filename');
+\end{code}
+
+Inoltre se si ha bisogno di suddividere i parametri di configurazione in più file, questo è possibile definendo un array per ogni singolo file di configurazione: normalmente questi file verranno uniti per definire un unico array di configurazione. Un problema che potrebbe verificarsi utilizzando questo approccio, è il verificarsi di collisioni, che si hanno quando si nominano gli indici degli array nei diversi file, nello stesso identico modo. Per evitare questo inconveniente si fornisce un secondo parametro booleano TRUE che farà sì che ciascun file di configurazione venga memorizzato in un indice dell'array corrispondente al proprio nome. Per esempio:
+
+\begin{code}
+// Memorizzato in un array con questo prototipo: $this->config['blog_settings'] = $config
+
+$this->config->load('blog_settings', TRUE);
+\end{code}
+
+Per maggiori informazioni è consigliato leggere la sezione ``Fetching Config Items'' su come recuperare gli elementi che definiscono la configurazione.
+
+Esiste anche un terzo parametro, sempre booleano, che evita di visualizzare gli errori che possono scaturire quando si vuole caricare un file di configurazione che in realtà non esiste.
+
+\begin{code}
+$this->config->load('blog_settings', FALSE, TRUE);
+\end{code}
+
+\subsection*{Auto-load}
+Per caricare automaticamente il proprio file di configurazione si agisce sul file \fil{autoload.php} in \sys{/application/config/} in cui si aggiunge il riferimento al proprio file.
+
+\section*{Recuperare parti di configurazioni}
+Per recuperare un singolo elemento dal file di configurazione, si utilizza la seguente funzione, in cui l'argomento di \var{item} è il nome dello specifico indice (item name) dell'array \var{\$config}.
+
+\begin{code}
+$this->config->item('item name');
+\end{code}
+
+Nell'esempio seguente si recupera il parametro relativo al linguaggio (language) scelto:
+
+\begin{code}
+$lang = $this->config->item('language');
+\end{code}
+
+La funzione restituisce FALSE se l'elemento che si vuole recuperare non esiste. Se si sta utilizzando il secondo parametro booleano nella funzione \var{\$this->config->load} per assegnare i parametri di configurazione ad uno specifico indice, allora è possibile utilizzare un metodo alternativo per recuperare i singoli elementi: basterà riportare il nome dell'indice desiderato nel secondo argomento della funzione \var{\$this->config->item()}, come nell'esempio:
+
+\begin{code}
+// Carica un file di configurazione di nome blog_settings.php e lo assegna ad un indice denominato "blog_settings"
+$this->config->load('blog_settings', TRUE);
+
+// Recupera un item di configurazione chiamato site_name contenuto all'interno dell'array blog_settings
+$site_name = $this->config->item('site_name', 'blog_settings');
+
+// Un modo alternativo per specificare lo stesso item:
+$blog_config = $this->config->item('blog_settings');
+$site_name = $blog_config['site_name'];
+\end{code}
+
+Per chi avesse bisogno invece di impostare o cambiare dinamicamente un parametro di configurazione, può utilizzare l'istruzione:
+
+\begin{code}
+$this->config->set_item('item_name', 'item_value');
+\end{code}
+
+Dove \verb|item_name| è l'indice dell'array che si vuole modificare, mentre \verb|item_value| definisce il relativo valore.
+
+\section*{Ambienti}
+A seconda dell'ambiente (Environment) è possibile caricare differenti file di configurazione. La costante \var{ENVIRONMENT} è definita nel file \fil{index.php} ed è descritto in dettaglio nella sezione Handling Environments\vref{cap:handling}.
+
+Per creare un file di configurazione per uno specifico ambiente, si dovrà creare o copiare un file di configurazione in \fil{/application/config/{ENVIRONMENT}/{FILENAME}.php}. Per esempio per creare una configurazione \fil{config.php} rivolta all'ambiente di produzione si dovrà:
+
+\begin{enumerate}
+\item creare la directory \sys{/application/config/production/}
+\item copiare l'esistente file \fil{config.php} nel percorso precedentemente menzionato
+\item modificare il file \fil{/config/production/config.php} con i parametri desiderati
+\end{enumerate}
+
+A questo punto, per caricare la nuova configurazione si dovrà impostare la costante \var{ENVIRONMENT} su ``production''. I file di configurazione così definiti potranno essere posti all'interno di directory specifiche per l'ambiente desiderato. Riassumendo, sia i file di configurazione predefiniti di CodeIgniter che quelli da noi stessi ``personalizzati'', possono essere raccolti in opportune directory in modo da creare più ambienti per la produzione o per lo sviluppo.
+
+Nota: CodeIgniter, prima di tutto, prova a caricare il file di configurazione per l'ambiente corrente. Se questo non esiste, viene caricato il file di configurazione globale (in \sys{/application/config/}). Questo significa che non si è obbligati ad inserire tutti i file di configurazione in una sola cartella, ma solo quelli che presentano delle differenze tra i vari ambienti.
+
+\section*{Reference}
+La classe Config può contare sui seguenti Helper che aiutano lo sviluppatore in numerosi compiti:
+
+\begin{itemize}
+\item \verb|$this->config->site_url()| recupera l'\ac{URL} e lo fornisce al proprio sito, insieme con il valore ``index'' che si è specificato nel file di configurazione. Questa funzione è accessibile attraverso la corrispondente funzione nell'Helper URL (sezione vref{helper:url}.
+
+\item \verb|$this->config->base_url()| recupera l'\ac{URL} e lo fornisce al proprio sito, più un percorso opzionale come un foglio di stile o un'immagine. Questa funzione è accessibile attraverso la corrispondente funzione nell'Helper URL (sezione vref{helper:url}.
+
+\item \verb|$this->config->system_url()| recupera l'\ac{URL} e lo fornisce alla directory di sistema.
+\end{itemize}

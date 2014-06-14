@@ -1,0 +1,205 @@
+%************************************************
+\subsection{Helper URL}
+\label{helper:url}
+%************************************************
+
+L'Helper in questione fornisce molte funzionalità che assistono nel lavoro con gli URL. Esso viene caricato con il codice:
+
+\begin{code}
+$this->load->helper('url');
+\end{code}
+
+\verb|site_url()| restituisce l'URL del sito, come specificato nel file di configurazione. Il file \fil{index.php} (o qualsiasi altro elemento sia stato impostato come \verb|index_page| nel file di configurazione) verrà aggiunto all'URL, così come qualsiasi altro segmento URI e \verb|url_suffix| impostati nel file di configurazione. \'E consigliato utilizzare questa funzione ogni volta che è necessario generare un URL locale in modo da migliorare la portabilità delle pagine in caso si modifichino gli URL in futuro. 
+
+I segmenti possono essere eventualmente passati alla funzione come una stringa o un array. Ecco un esempio che utilizza una stringa:
+
+\begin{code}
+echo site_url("news/local/123");
+\end{code}
+
+L'esempio precedente restituirà: http://example.com/index.php/news/local/123
+
+Invece se si passa alla stringa un array:
+
+\begin{code}
+$segments = array('news', 'local', '123');
+
+echo site_url($segments);
+\end{code}
+
+\verb|base_url()| restituisce l'URL di base del proprio sito. Questa funzione fornisce lo stesso dato della funzione \verb|site_url,| evitando che siano aggiunti \verb|index_page| o \verb|url_suffix|. \'E anche possibile fornire un segmento come una stringa o un array. Ecco un esempio con una stringa:
+
+\begin{code}
+echo base_url("blog/post/123");
+\end{code}
+
+Il codice precedente restituirà: http://example.com/blog/post/123
+
+Questa funzione si rivela molto utile perché a differenza di \verb|site_url()|, è possibile fornire una stringa ad un file, come ad esempio un'immagine o un foglio di stile. Per esempio:
+
+\begin{code}
+echo base_url("/_user_guide_src_ci/images/icons/edit.png");
+\end{code}
+
+Il codice restituirà: http://example.com/images/icons/edit.png
+
+\verb|current_url()| restituisce un URL completo (compresi i segmenti) della pagina che si sta attualmente visualizzando.
+
+\verb|uri_string()| restituisce i segmenti URI di ogni pagina che contiene questa funzione. Per esempio, se il proprio URL è il seguente:
+
+\begin{code}
+http://some-site.com/blog/comments/123
+\end{code}
+
+\begin{code}
+/blog/comments/123
+\end{code}
+
+\verb|index_page()| restituisce la pagina index, come specificato nel file di configurazione del proprio sito:
+
+\begin{code}
+echo index_page();
+\end{code}
+
+\verb|anchor()| crea un link anchor in formato HTML basato sull'URL locale del sito:
+
+\begin{code}
+<a href="http://example.com">Clicca qui</a>
+\end{code}
+
+Il tag ha tre parametri opzionali:
+
+\begin{code}
+anchor(uri segments, text, attributes)
+\end{code}
+
+Il primo parametro può contenere ogni segmento (stringa o array) che si vuole aggiungere all'URL.
+
+Nota: se si sta definendo un link interno alla propria applicazione, non si deve includere l'URL di base (http://\omissis) poiché questo sarà aggiunto automaticamente in base alle informazioni specificate nel file di configurazione. Si includano pertanto i soli segmenti URI che si desidera aggiungere all'URL.
+
+Il secondo segmento è il testo che si desidera linkare: se si lascia vuoto, verrà utilizzato l'URL. Il terzo parametro, infine, può contenere un elenco di attributi (di tipo stringa o un array associativo) da aggiungere al link. Ecco alcuni esempi:
+
+\begin{code}
+echo anchor('news/local/123', 'My News', 'title="News title"');
+\end{code}
+
+Il codice produrrà: <a href="http://example.com/index.php/news/local/123" title="News title">My News</a>
+
+\begin{code}
+echo anchor('news/local/123', 'My News', array('title' => 'The best news!'));
+\end{code}
+
+Il codice produrrà: <a href="http://example.com/index.php/news/local/123" title="The best news!">My News</a>
+
+\verb|anchor_popup()| è molto simile alla funzione \verb|anchor()|, ma si differenzia da questa per il fatto che l'URL viene aperto in una nuova finestra. \'E possibile specificare gli attributi JavaScript nel terzo parametro per controllare come la finestra dovrà essere aperta. Se questo parametro non è impostato, verrà aperta una nuova finestra semplicemente in base alle impostazione del browser. Qui di seguito viene presentato un esempio con i seguenti attributi:
+
+\begin{code}
+$atts = array(
+              'width'      => '800',
+              'height'     => '600',
+              'scrollbars' => 'yes',
+              'status'     => 'yes',
+              'resizable'  => 'yes',
+              'screenx'    => '0',
+              'screeny'    => '0'
+            );
+
+echo anchor_popup('news/local/123', 'Click Me!', $atts);
+\end{code}
+
+Nota: gli attributi di cui sopra sono sempre definiti nelle impostazioni predefinite: è necessario definirli con un valore solo se si vuole che assumano un valore differente. Se si desidera che la funzione utilizzi tutti i suoi parametri di default, semplicemente le si passi un array vuoto nel terzo parametro:
+
+\begin{code}
+echo anchor_popup('news/local/123', 'Click Me!', array());
+\end{code}
+
+\verb|mailto()| crea un link email in formato standard HTML. Per esempio:
+
+\begin{code}
+echo mailto('me@my-site.com', 'Clicca qui per contattarmi');
+\end{code}
+
+Come con la funzione \verb|anchor()| è possibile impostare gli attributi con il terzo parametro.
+
+\verb|safe_mailto()| è identica alla funzione precedente tranne per il fatto che scrive una versione offuscata del tag \verb|mailto| usando numeri ordinali scritti con JavaScript per nascondere gli indirizzi in chiaro agli spam bot.
+
+\verb|auto_link()| trasforma automaticamente gli URL e gli indirizzi email contenuti in una stringa in link. Per esempio:
+
+\begin{code}
+$string = auto_link($string);
+\end{code}
+
+Il secondo parametro determina se vengono convertiti sia gli URL che le email o solo uno di essi: il comportamento predefinito, se non si imposta alcun parametro, prevede la conversione di ambedue. I collegamenti di posta elettronica sono codificati come \verb|safe_mailto()|, come mostrato sopra. 
+
+Conversione dei soli URL:
+
+\begin{code}
+$string = auto_link($string, 'url');
+\end{code}
+
+Conversione dei soli indirizzi email:
+
+\begin{code}
+$string = auto_link($string, 'email');
+\end{code}
+
+Il terzo parametro determina se i link saranno visualizzati nella nuova finestra. I valori possono essere TRUE/FALSE.
+
+\begin{code}
+$string = auto_link($string, 'both', TRUE);
+\end{code}
+
+\verb|url_title()| prende una stringa in ingresso e crea una stringa URL human-friendly (comprensibile). Questo è utile se, ad esempio, si ha un blog in cui si vuole usare il titolo delle voci nell'URL. Per esempio:
+
+\begin{code}
+$title = "Cosa c'è di sbagliato con i CSS";
+
+$url_title = url_title($title);
+
+// Produce: Cosa-c'è-di-sbagliato-con-i-CSS
+\end{code}
+
+Il secondo parametro determina la parola da delimitare. Per impostazione predefinita sono usati i caratteri dash.
+
+\begin{code}
+$title = "Cosa c'è di sbagliato con i CSS?";
+
+$url_title = url_title($title, '_');
+
+// Produces: Cosa_c'è_di_sbagliato_con_i_CSS
+\end{code}
+
+Il terzo parametro (che può assumere i valori TRUE/FLASE ) determina se forzare o meno la trasformazione dei caratteri in minuscolo: per impostazione predefinita non viene effettuata alcuna trasformazione.
+
+\begin{code}
+$title = "Cosa c'è di sbagliato con i CSS?";
+
+$url_title = url_title($title, '_', TRUE);
+
+// Produce: cosa_c'è_di_sbagliato_con_i_css
+\end{code}
+
+\verb|prep_url()| questa funzione aggiunge \var{ http://} alla stringa passata. Per esempio:
+
+\begin{code}
+$url = "example.com";
+
+$url = prep_url($url);
+\end{code}
+
+\verb|redirect()| effettua un "header redirect" per l'URI specificato. Se si fornisce l'URL completo del sito, verrà creato il relativo link. Diverso è il discorso per i link locali al proprio progetto: in questo caso si devono semplicemente fornire i segmenti URI al controller che si vuole dirigere verso il collegamento creato. La funzione costruirà l'URL in base ai vostri valori impostati nel file di configurazione. 
+
+Il secondo parametro opzionale consente di scegliere tra il metodo "location" (predefinito) o il metodo "refresh". Location è più veloce, ma sui server Windows a volte può causare qualche problema. Il terzo parametro opzionale consente di inviare uno specifico codice di risposta HTTP (HTTP Response Code) questo potrebbe essere utilizzato per esempio per creare un redirect 301 per i motori di ricerca. Il Response Code predefinito è 302. Il terzo parametro è disponibile solo con i redirect 'location' , e non per quelli 'refresh'. Per esempio:
+
+\begin{code}
+if ($logged_in == FALSE)
+{
+     redirect('/login/form/', 'refresh');
+}
+
+// con redirect 301
+redirect('/article/13', 'location', 301);
+\end{code}
+
+Nota: questa funzione deve essere utilizzata prima che qualsiasi output sia inviato al browser poiché utilizza i server header (intestazioni di server). 
+Nota: Per un maggior controllo sugli header, è necessario utilizzare la funzione \verb|set_header()| della libreria Output.

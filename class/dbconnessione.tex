@@ -1,0 +1,104 @@
+%inizio Connecting to your Database
+\section*{Iniziamo}
+Incominceremo con una introduzione sulla classe Database: spiegheremo come utilizzarla grazie a degli esempi speriamo molto chiari.
+
+Per caricare e inizializzare il database, esistono due strade: connessione automatica oppure manuale. La prima feature permette di caricare e istanziare la classe database per ogni pagina caricata. \'E sufficiente aggiungere la parola database all'array library nel file \fil{/application/config/autoload.php}.
+
+Se solo alcune pagine richiedono la connessione alla base dei dati, si può optare per una connessione manuale. Sulla base dei parametri forniti (si veda\vref{cap:dbconfig}) si utilizzerà l'istruzione:
+
+\begin{code}
+$this->load->database();
+\end{code}
+
+Nota: Se la funzione di cui sopra non contiene alcuna informazione nel primo parametro, essa si collegherà al gruppo specificato nel file di configurazione del database. Per molte persone, questo è il metodo preferito di utilizzo.
+
+\section*{Parametri disponibili}
+\begin{enumerate}
+\item i valori di connessione del database passate tramite un array o una stringa \ac{DNS}
+\item TRUE/FALSE. Per restituire l'ID di collegamento (vedere Collegamento a più database qui sotto).
+\item TRUE/FALSE. Per abilitare la classe Active Record. Per default questo valore è TRUE.
+\end{enumerate}
+
+\section*{Connessione manuale}
+Il primo parametro di questa funzione può opzionalmente essere utilizzato per specificare un particolare gruppo database dal file di configurazione, oppure si possono anche inviare i valori di connessione per un database che non è specificato nel file di configurazione. Esempi:
+
+Per scegliere uno specifico gruppo dal file di configurazione si può utilizzare la seguente istruzione, dove \verb|group_name| è il nome del gruppo di connessione specificato nel file config.
+
+\begin{code}
+$this->load->database('group_name');
+\end{code}
+
+Per connettersi manualmente al database si può passare un array con i valori:
+
+\begin{code}
+$config['hostname'] = "localhost";
+$config['username'] = "myusername";
+$config['password'] = "mypassword";
+$config['database'] = "mydatabase";
+$config['dbdriver'] = "mysql";
+$config['dbprefix'] = "";
+$config['pconnect'] = FALSE;
+$config['db_debug'] = TRUE;
+$config['cache_on'] = FALSE;
+$config['cachedir'] = "";
+$config['char_set'] = "utf8";
+$config['dbcollat'] = "utf8_general_ci";
+
+$this->load->database($config);
+\end{code}
+
+Oppure si possono inviare i valori del proprio database come un \ac{DNS} caratterizzato da questo prototipo:
+
+\begin{code}
+$dsn = 'dbdriver://username:password@hostname/database';
+
+$this->load->database($dsn);
+\end{code}
+
+Per sovrascrivere i valori di config di default quando ci si connette con una stringa DNS, è necessario aggiungere le variabili config come una stringa query:
+
+\begin{code}
+$dsn = 'dbdriver://username:password@hostname/database?char_set=utf8&dbcollat=utf8_general_ci&cache_on=true&cachedir=/path/to/cache';
+
+$this->load->database($dsn);
+\end{code}
+
+\section*{Connessione a pi\'u database}
+
+La connessione con database multipli è possibile grazie ad una serie di istruzioni come:
+
+\begin{code}
+$DB1 = $this->load->database('group_one', TRUE);
+$DB2 = $this->load->database('group_two', TRUE);
+\end{code}
+
+Dove \verb|group_one| e \verb|group_two| indicano gli specifici gruppi a cui ci si desidera connettere. Il secondo parametro, nell'esempio impostato su TRUE, fa sì che la funzione restituisca un database object.
+
+Quando ci si collega in questo modo, potrete utilizzare il nome dell'oggetto piuttosto che la sintassi utilizzata in questa guida. In altre parole, invece di impartire comandi con:
+
+\begin{code}
+$this->db->query();
+$this->db->result();
+\end{code}
+
+si potrà utilizzare:
+
+\begin{code}
+$DB1->query();
+$DB1->result();
+\end{code}
+
+\section*{Mantenere la connessione}
+Per mantenere la connessione ``viva'' prima che si verifichi un timeout (per esempio a causa di istruzioni PHP che richiedono molto tempo) è possibile utilizzare la funzione \var{connect()} che effettua un ping del server, prima di inviare ulteriori query al server:
+
+\begin{code}
+$this->db->reconnect();
+\end{code}
+
+\section*{Chiudere una connessione}
+Una connessione può invece essere chiusa, esplicitamente attraverso il seguente comando. Solitamente CodeIgniter si occupa dell'operazione autonomamente.
+
+\begin{code}
+$this->db->close();
+\end{code}
+%fine Connecting to your Database

@@ -1,0 +1,372 @@
+%************************************************
+\section{Helper Form}
+\label{helper:form}
+%************************************************
+
+Per caricare gli Helper che aiutano nella gestione dei form, si utilizza l'istruzione:
+
+\begin{code}
+$this->load->helper('form');
+\end{code}
+
+Le funzioni disponibili sono:
+
+\verb|form_open()| crea un tag di apertura form con un \ac{URL} di base definito sulla base dalle preferenze di configurazione. Questo eventualmente permetterà di aggiungere gli attributi del form e i campi di input hidden (nascosti), mentre aggiungerà sempre l'attributo accept-charset basato sul valore charset definito nel file di configurazione.
+
+Il principale vantaggio nell'utilizzo di questo tag, piuttosto che codificare il proprio codice in \ac{HTML} è che fornisce al proprio sito una maggiore portabilità nel caso in cui gli \ac{URL} dovessero cambiare.
+
+Ecco un semplice esempio:
+
+\begin{code}
+echo form_open('email/send');
+\end{code}
+
+L'esempio precedente potrebbe creare un form che punta al vostro URL di base più il segmento URI ``email/send'', come questo:
+
+\begin{code}
+<form method="post" accept-charset="utf-8" action="http:/example.com/index.php/email/send" />
+\end{code}
+
+\subsection*{Aggiungere attributi}
+
+Gli attributi possono essere aggiunti passando un array associativo al secondo parametro:
+
+\begin{code}
+$attributes = array('class' => 'email', 'id' => 'myform');
+
+echo form_open('email/send', $attributes);
+\end{code}
+
+L'esempio precedente creerà un form simile a:
+
+\begin{code}
+<form method="post" accept-charset="utf-8" action="http:/example.com/index.php/email/send"  class="email"  id="myform" />
+\end{code}
+
+\subsection*{Aggiungere Campi di input nascosti}
+
+I campi hidden possono essere aggiunti passando un array associativo al terzo parametro:
+
+\begin{code}
+$hidden = array('username' => 'Joe', 'member_id' => '234');
+
+echo form_open('email/send', '', $hidden);
+\end{code}
+
+Il form risultante sarà:
+
+\begin{code}
+<form method="post" accept-charset="utf-8" action="http:/example.com/index.php/email/send">
+<input type="hidden" name="username" value="Joe" />
+<input type="hidden" name="member_id" value="234" />
+\end{code}
+
+\verb|form_open_multipart()| consente di generare campi di input nascosti. È possibile inviare una stringa name/value (nome/valore) per creare un campo:
+
+\begin{code}
+form_hidden('username', 'johndoe');
+
+// Produce:
+
+<input type="hidden" name="username" value="johndoe" />
+\end{code}
+
+Oppure per creare campi multipli si può fornire un array associativo:
+
+\begin{code}
+$data = array(
+              'name'  => 'John Doe',
+              'email' => 'john@example.com',
+              'url'   => 'http://example.com'
+            );
+
+echo form_hidden($data);
+
+// Produce:
+
+<input type="hidden" name="name" value="John Doe" />
+<input type="hidden" name="email" value="john@example.com" />
+<input type="hidden" name="url" value="http://example.com" />
+\end{code}
+
+\verb|form_input()| consente di generare un campo di inserimento testo. \'E necessario passare il nome e il valore del campo nel primo e nel secondo parametro della funzione:
+
+\begin{code}
+$data = array(
+              'name'        => 'username',
+              'id'          => 'username',
+              'value'       => 'johndoe',
+              'maxlength'   => '100',
+              'size'        => '50',
+              'style'       => 'width:50%',
+            );
+
+echo form_input($data);
+
+// Produce:
+
+<input type="text" name="username" id="username" value="johndoe" maxlength="100" size="50" style="width:50%" />
+\end{code}
+
+Se si vuole che il form possa contenere altri dati aggiuntivi, come Javascript, è possibile passare questi ultimi come una stringa nel terzo parametro:
+
+\begin{code}
+$js = 'onClick="some_function()"';
+
+echo form_input('username', 'johndoe', $js);
+\end{code}
+
+\verb|form_password()| questa funzione è identica in tutto e per tutto alla \verb|form_input| di qui sopra, salvo che questa è utilizzata per i dati di tipo ``password''.
+
+\verb|form_upload()| questa funzione è identica in tutto e per tutto la funzione \verb|form_input| di qui sopra, salvo che questa è utilizzata per l'upload dei file.
+
+\verb|form_textarea()| questa funzione è identica in tutto e per tutto la funzione \verb|form_input| di qui sopra, salvo che questa genera un tipo ``textarea''.
+ Nota: al posto degli attributi "maxlength" e "size" visti nell'esempio precedente, si utilizzano "file" e "cols".
+
+\verb|form_dropdown()| consente di creare un campo dropdown (menu a selezione multipla). Il primo parametro conterrà il nome del campo, il secondo parametro conterrà un array associativo di opzioni, mentre il terzo parametro conterrà il valore che si desidera selezionare. È anche possibile passare un array di oggetti multipli attraverso il terzo parametro: in questo caso CodeIgniter creerà una selezione multipla. Per esempio:
+
+\begin{code}
+$options = array(
+                  'small'  => 'Small Shirt',
+                  'med'    => 'Medium Shirt',
+                  'large'   => 'Large Shirt',
+                  'xlarge' => 'Extra Large Shirt',
+                );
+
+$shirts_on_sale = array('small', 'large');
+
+echo form_dropdown('shirts', $options, 'large');
+
+// Produce:
+
+<select name="shirts">
+<option value="small">Small Shirt</option>
+<option value="med">Medium Shirt</option>
+<option value="large" selected="selected">Large Shirt</option>
+<option value="xlarge">Extra Large Shirt</option>
+</select>
+
+echo form_dropdown('shirts', $options, $shirts_on_sale);
+
+// Produce:
+
+<select name="shirts" multiple="multiple">
+<option value="small" selected="selected">Small Shirt</option>
+<option value="med">Medium Shirt</option>
+<option value="large" selected="selected">Large Shirt</option>
+<option value="xlarge">Extra Large Shirt</option>
+</select>
+\end{code}
+
+Se si vuole aprire <select> per inserire dati aggiuntivi, come un attributo id o JavaScript, è possibile passare questi  dati come una stringa nel quarto parametro:
+
+\begin{code}
+$js = 'id="shirts" onChange="some_function();"';
+
+echo form_dropdown('shirts', $options, 'large', $js);
+\end{code}
+
+Se l'array passato come \var{\$options} è un array multidimensionale, allora \verb|form_dropdown()| produrrà un <optgroup> con la chiave dell'array come label (etichetta).
+
+\verb|form_multiselect()| consente di creare un campo di selezione multipla. Il primo parametro conterrà il nome del campo, il secondo parametro conterrà un array associativo di opzioni, e il terzo parametro conterrà il valore oppure i valori che si desidera selezionare. L'utilizzo del parametro è identico a quello visto in \verb|form_dropdown()| di cui sopra, tranne ovviamente il fatto che per il nome del campo sarà necessario utilizzare sintassi dell'array POST, ad esempio, \var{foo[]}.
+
+\verb|form_fieldset()| permette di generare i campi fieldset/legend:
+
+\begin{code}
+echo form_fieldset('Address Information');
+echo "<p>fieldset content here</p>\n";
+echo form_fieldset_close(); 
+
+// Produce:
+<fieldset> 
+<legend>Address Information</legend> 
+<p>form content here</p> 
+</fieldset>
+\end{code}
+
+Simile ad altre funzioni, è possibile inviare un array associativo nel secondo parametro, se si vogliono impostare attributi aggiuntivi.
+
+\begin{code}
+$attributes = array('id' => 'address_info', 'class' => 'address_info');
+echo form_fieldset('Address Information', $attributes);
+echo "<p>fieldset content here</p>\n";
+echo form_fieldset_close(); 
+
+// Produce:
+<fieldset id="address_info" class="address_info"> 
+<legend>Address Information</legend> 
+<p>form content here</p> 
+</fieldset>
+\end{code}
+
+\verb|form_fieldset_close()| produe un tag di chiusura </fieldset>. L'unico vantaggio di questa funzione è che permette di passargli dei dati che saranno aggiunti dopo il tag. Per esempio:
+
+\begin{code}
+$string = "</div></div>";
+
+echo form_fieldset_close($string);
+
+// Produce:
+</fieldset>
+</div></div>
+\end{code}
+
+\verb|form_checkbox()| consente di generare un campo checkbox. Ecco un semplice esempio:
+
+\begin{code}
+echo form_checkbox('newsletter', 'accept', TRUE);
+
+// Produce:
+
+<input type="checkbox" name="newsletter" value="accept" checked="checked" />
+\end{code}
+
+Il terzo parametro contiene un valore booleano TRUE/FALSE per determinare se la caselladeve avere il parametro check. \'E possibile anche passare a questa funzione un array.
+
+\begin{code}
+$data = array(
+    'name'        => 'newsletter',
+    'id'          => 'newsletter',
+    'value'       => 'accept',
+    'checked'     => TRUE,
+    'style'       => 'margin:10px',
+    );
+
+echo form_checkbox($data);
+
+// Produce:
+
+<input type="checkbox" name="newsletter" id="newsletter" value="accept" checked="checked" style="margin:10px" />
+\end{code}
+
+Come con altre funzioni, se si vuole che il tag contenga dati aggiuntivi, come JavaScript, è possibile passarli come una stringa nel quarto parametro:
+
+\begin{code}
+$js = 'onClick="some_function()"';
+
+echo form_checkbox('newsletter', 'accept', TRUE, $js)
+\end{code}
+
+\verb|form_radio()| 1uesta funzione è identica in tutto e per tutto alla funzione \verb|form_checkbox()| di qui sopra, salvo che è utilizzata per impostare un tipo "radio".
+
+\verb|form_submit()| genera un pulsante Submit (Invio) per il form. Per esempio:
+
+\begin{code}
+echo form_submit('mysubmit', 'Submit Post!');
+
+// Produce:
+
+<input type="submit" name="mysubmit" value="Submit Post!" />
+\end{code}
+
+Simile ad altre funzioni, è possibile usare un array associativo nel primo parametro se si preferisce impostare i propri attributi. Il terzo parametro consente di aggiungere dati aggiuntivi al form, come per esempio JavaScript.
+
+\verb|form_label()| permette di generare un <label>. Ecco un esempio:
+
+\begin{code}
+echo form_label('What is your Name', 'username');
+
+// Produce: 
+<label for="username">What is your Name</label>
+\end{code}
+
+Simile ad altre funzioni, è possibile usare un array associativo nel terzo parametro se si preferisce impostare gli attributi.
+
+\begin{code}
+$attributes = array(
+    'class' => 'mycustomclass',
+    'style' => 'color: #000;',
+);
+echo form_label('What is your Name', 'username', $attributes);
+
+// Produce: 
+<label for="username" class="mycustomclass" style="color: #000;">What is your Name</label>
+\end{code}
+
+\verb|form_reset()| genera un pulsante standard reset. Il suo utilizzo è simile a quello della funzione \verb|form_submit()|.
+
+\verb|form_button()| genera un pulsante standard. \'E possibile passare il nome del pulsante e il contenuto al primo e secondo parametro.
+
+\begin{code}
+$data = array(
+    'name' => 'button',
+    'id' => 'button',
+    'value' => 'true',
+    'type' => 'reset',
+    'content' => 'Reset'
+);
+
+echo form_button($data);
+
+// Produce:
+<button name="button" id="button" value="true" type="reset">Reset</button>
+\end{code}
+
+Se si vuole che il form contenere alcuni dati aggiuntivi, come JavaScript, è possibile passare questi come una stringa nel terzo parametro:
+
+\begin{code}
+$js = 'onClick="some_function()"';
+
+echo form_button('mybutton', 'Click Me', $js);
+\end{code}
+
+\verb|form_close()| produce un tag di chiusura </form>. L'unico vantaggio nell'usare questa funzione è che permette di passarle dei dati che saranno aggiunti dopo il tag. Per esempio:
+
+\begin{code}
+$string = "</div></div>";
+
+echo form_close($string);
+
+// Produce:
+
+</form>
+</div></div>
+\end{code}
+
+\verb|form_prep()| consente di utilizzare in modo sicuro l'HTML e qualsiasi carattere come le doppie virgolette all'interno degli elementi del form evitando che siano generati degli errori. Si consideri questo esempio:
+
+\begin{code}
+$string = 'Here is a string containing "quoted" text.';
+
+<input type="text" name="myform" value="$string" />
+\end{code}
+
+Dal momento che la stringa di cui sopra contiene una serie di doppie virgolette, questo causerà l'interruzione del form. La funzione \verb|form_prep| converte l'HTML in modo che questo possa essere utilizzato in modo sicuro:
+
+\begin{code}
+<input type="text" name="myform" value="<?php echo form_prep($string); ?>" />
+\end{code}
+
+Nota: se si utilizza uno degli Helper dedicati ai form elencati in questa sezione, tutti i valori del form saranno processari automaticamente, quindi non c'è bisogno di utilizzare questa funzione che verrà invocata solo nel caso si stiano creando i propri elementi del form.
+
+\verb|set_value()| permette di impostare il valore di un attributo input o textarea del form. È necessario specificare il nome del campo tramite il primo parametro della funzione. Il secondo parametro (opzionale) consente di impostare un valore predefinito per il form. Per esempio:
+
+\begin{code}
+<input type="text" name="quantity" value="<?php echo set_value('quantity', '0'); ?>" size="50" />
+\end{code}
+
+Il form di cui sopra mostrerà 0 quando verrà caricato per la prima volta.
+
+\verb|set_select()| se si utilizza un menu <select>, questa funzione consente di visualizzare gli elementi selezionati del menu. Il primo parametro deve contenere il nome del menu di selezione, il secondo parametro deve contenere il valore di ogni elemento, e il terzo parametro (opzionale) consente di impostare come predefinito uno degli elementi (si usa il valore booleano TRUE/FALSE). Per esempio:
+
+\begin{code}
+<select name="myselect">
+<option value="one" <?php echo set_select('myselect', 'one', TRUE); ?> >One</option>
+<option value="two" <?php echo set_select('myselect', 'two'); ?> >Two</option>
+<option value="three" <?php echo set_select('myselect', 'three'); ?> >Three</option>
+</select>
+\end{code}
+
+\verb|set_checkbox()| permette di visualizzare un checkbox (casella di controllo) nello stato in cui è stato inviato. Il primo parametro deve contenere il nome della casella di controllo, il secondo parametro invece il suo valore, e il terzo parametro (opzionale) consente di impostare una voce come predefinita (si usa il valore booleano TRUE/FALSE). Per esempio:
+
+\begin{code}
+<input type="checkbox" name="mycheck" value="1" <?php echo set_checkbox('mycheck', '1'); ?> />
+<input type="checkbox" name="mycheck" value="2" <?php echo set_checkbox('mycheck', '2'); ?> />
+\end{code}
+
+\verb|set_radio()| permette di visualizzare i pulsanti radio nello stato in cui sono state inviate. Questa funzione è identica alla funzione \verb|set_checkbox()| di qui sopra.
+
+\begin{code}
+<input type="radio" name="myradio" value="1" <?php echo set_radio('myradio', '1', TRUE); ?> />
+<input type="radio" name="myradio" value="2" <?php echo set_radio('myradio', '2'); ?> />
+\end{code}

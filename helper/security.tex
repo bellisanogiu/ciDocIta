@@ -1,0 +1,37 @@
+%************************************************
+\section{Helper Security}
+\label{helper:security}
+%************************************************
+L'Helper viene caricato con l'istruzione:
+
+\begin{code}
+$this->load->helper('security');
+\end{code}
+
+Qui di seguito le funzioni disponibili:
+
+\verb|xss_clean()| fornisce un filtro Cross Site Script Hack. Questa funzione è un alias della funzione definita nella classe Input (si veda la sezione\vref{class:input}.
+
+\verb|sanitize_filename()| fornisce una protezione contro il directory traversal. Questa funzione è un alias della funzione definita nella classe Security (si veda la sezione\vref{class:security}. 
+
+\verb|do_hash()| permette di creare un hash SHA1 oppure MD5 sfruttabile per il criptaggio delle password. Per impostazione predefinita viene utilizzato l'hash SHA1:
+
+\begin{code}
+$str = do_hash($str); // SHA1
+
+$str = do_hash($str, 'md5'); // MD5
+\end{code}
+
+Nota: questa funzione era precedentemente chiamata \verb|dohash()| ed è stata deprecata a favore dell'attuale \verb|do_hash()|.
+
+\verb|strip_image_tags()| questa funzione di sicurezza priverà una stringa dai tag immagine. Im questo modo il risultato sarà un semplice testo con l'URL dell'immagine.
+
+\begin{code}
+$string = strip_image_tags($string);
+\end{code}
+
+\verb|encode_php_tags()| è una funzione di sicurezza che converte i tag PHP in entità. Questa funzione viene utilizzata automaticamente se si usa la funzione che permette il filtro XSS:
+
+\begin{code}
+$string = encode_php_tags($string);
+\end{code}

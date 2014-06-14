@@ -1,0 +1,173 @@
+%************************************************
+\section{Classe Zip Encoding}
+\label{class:zipencoding}
+%************************************************
+
+La classe in oggetto permette di creare degli archivi Zip. Questi archivi possono essere scaricati nel proprio desktop o salvati in una directory.
+
+\section*{Inizializzare la classe}
+
+La classe è inizializzata nel controller con la funzione \var{\$this->load->library}:
+
+\begin{code}
+$this->load->library('zip');
+\end{code}
+
+Una volta caricatq la classe, l'oggetto della libreria Zip sarà disponibile usando \var{\$this->zip}:
+
+\section*{Esempio di utilizzo}
+Questo esempio mostra come comprimere un file, salvarlo in una cartella sul server, e scaricarla sul desktop.
+
+\begin{code}
+$name = 'mydata1.txt';
+$data = 'A Data String!';
+
+$this->zip->add_data($name, $data);
+
+// Write the zip file to a folder on your server. Name it "my_backup.zip"
+$this->zip->archive('/path/to/directory/my_backup.zip'); 
+
+// Download the file to your desktop. Name it "my_backup.zip"
+$this->zip->download('my_backup.zip');
+\end{code}
+
+\section*{Reference}
+
+\begin{itemize}
+
+\item \verb|$this->zip->add_data()| consente di aggiungere i dati all'archivio Zip. Il primo parametro deve contenere il nome che si vuole dare al file, mentre il secondo parametro contiene il file vero e proprio come una stringa:
+
+\begin{code}
+$name = 'my_bio.txt';
+$data = 'Sono nato in un ascensore...';
+
+$this->zip->add_data($name, $data);
+\end{code}
+
+Sono consentite più chiamate a questa funzione per aggiungere più file al proprio archivio. Per esempio:
+
+\begin{code}
+$name = 'mydata1.txt';
+$data = 'A Data String!';
+$this->zip->add_data($name, $data);
+
+$name = 'mydata2.txt';
+$data = 'Another Data String!';
+$this->zip->add_data($name, $data);
+\end{code}
+
+Oppure si possono passare più file utilizzando un array:
+
+\begin{code}
+$data = array(
+                'mydata1.txt' => 'A Data String!',
+                'mydata2.txt' => 'Another Data String!'
+            );
+
+$this->zip->add_data($data);
+
+$this->zip->download('my_backup.zip');
+\end{code}
+
+Se si vuole comprimere i dati organizzati in sottocartelle, è necessario includere il loro percorso come parte del filename:
+
+\begin{code}
+$name = 'personal/my_bio.txt';
+$data = 'Sono nato in un ascensore...';
+
+$this->zip->add_data($name, $data);
+\end{code}
+
+L'esempio precedente inserirà \verb|my_bio.txt| dentro una cartella di nome \sys{personal}.
+
+\item \verb|$this->zip->add_dir()| consente di aggiungere una directory. Solitamente questa funzione non è necessaria poiché è possibile inserire i dati nelle directory quando si utilizza la funzione \verb|$this->zip->add_data()|, a meno ché non si voglia creare una cartella vuota (senza alcun file all'interno). Per esempio:
+
+\begin{code}
+$this->zip->add_dir('myfolder'); // Creates a folder called "myfolder"
+\end{code}
+
+\item \verb|$this->zip->read_file()| permette di comprimere un file già esistente nel proprio server. Si fornisce il percorso del file e la classe Zip per leggere e aggiungere il file all'archivio.
+
+\begin{code}
+$path = '/path/to/photo.jpg';
+
+$this->zip->read_file($path); 
+
+// Download the file to your desktop. Name it "my_backup.zip"
+$this->zip->download('my_backup.zip');
+\end{code}
+
+Se si vuole mantenere la struttura delle directory, è necessario passare un secondo parametro con il valore TRUE. Nel prossimo esempio il file \var{photo.jpeg} sarà inserito all'interno di due sottocartelle \sys{path/to/}:
+
+\begin{code}
+$path = '/path/to/photo.jpg';
+
+$this->zip->read_file($path, TRUE); 
+
+// Download the file to your desktop. Name it "my_backup.zip"
+$this->zip->download('my_backup.zip');
+\end{code}
+
+\item \verb|$this->zip->read_dir()| permette di comprimere una cartella e il suo contenuto già esistente sul server. Si fornisce il percorso della directory e la classe Zip che leggerà ricorsivamente la directory per generare un archivio zip. Tutti i file presenti nel percorso fornito alla funzione saranno codificati, così come tutte le sottodirectory. Per esempio:
+
+\begin{code}
+$path = '/path/to/your/directory/';
+
+$this->zip->read_dir($path); 
+
+// Download the file to your desktop. Name it "my_backup.zip"
+$this->zip->download('my_backup.zip');
+\end{code}
+
+Per impostazione predefinita, l'archivio Zip metterà tutte le directory elencate nel primo parametro all'interno dell'archivio zip. Se si desidera che il percorso che precede la cartella di destinazione sia ignorato è possibile passare il valore booleano FALSE nel secondo parametro. Per esempio:
+
+\begin{code}
+$path = '/path/to/your/directory/';
+
+$this->zip->read_dir($path, FALSE);
+\end{code}
+
+Questo codice crea un archivio zip con la cartella ``directory'' e tutte le relative sottocartelle. Non sarà però incluso il percorso radice, ovvero \sys{/path/to/your}
+
+\item \verb|$this->zip->archive()| scrive i file compressi in una directory specifica sul server. \'E necessario fornire un percorso valido alla fine del filename ed essere sicuri che la directory di destinazione abbia i permessi di scrittura (solitamente 666 o 777). Per esempio:
+
+\begin{code}
+$this->zip->archive('/path/to/folder/myarchive.zip'); // Creates a file named myarchive.zip
+\end{code}
+
+\item \verb|$this->zip->download()| fa sì che il file zip possa essere scaricato dal server. La funzione accetta come argomento il nome con cui il file zip sarà nominato nel momento del download. Per esempio:
+
+\begin{code}
+$this->zip->download('latest_stuff.zip'); // Il file si chiamerà "latest_stuff.zip"
+\end{code}
+
+Nota: nel controller non si visualizzerà alcun dato relativo alla chiamata di questa funzione dato che essa invia vari server header (intestazioni di server) che determinano il download del file zip come file binario.
+
+\item \verb|$this->zip->get_zip()| restituisce i file zip compressi. In genere non si avrà bisogno di questa funzione se non si vuole fare qualcosa di specifico con i dati. Esempio:
+
+\begin{code}
+$name = 'my_bio.txt';
+$data = 'Sono nato in un ascensore...';
+
+$this->zip->add_data($name, $data);
+
+$zip_file = $this->zip->get_zip();
+\end{code}
+
+\item \verb|$this->zip->clear_data()| la classe memorizza nella cache i dati zip in modo che non si abbia bisogno di comprimerli per ogni funzione specificata precedentemente. Se, tuttavia, è necessario creare più Zip, ognuno con dati diversi, è possibile cancellare la cache tra le varie chiamate. Esempio:
+
+\begin{code}
+$name = 'my_bio.txt';
+$data = 'Sono nato in un ascensore...';
+
+$this->zip->add_data($name, $data);
+$zip_file = $this->zip->get_zip();
+
+$this->zip->clear_data(); 
+
+$name = 'photo.jpg';
+$this->zip->read_file("/path/to/photo.jpg"); // Read the file's contents
+
+$this->zip->download('myphotos.zip');
+\end{code}
+\end{itemize}

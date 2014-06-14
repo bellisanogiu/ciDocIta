@@ -1,0 +1,121 @@
+%************************************************
+\section{Classe Template Parser}
+\label{class:templateparser}
+%************************************************
+
+La classe in esame permette di abilitare il Template Parser, per l'analisi delle pseudo variabili contenute nelle proprie Viste. Con il termine di parsing o analisi sintattica si intende il processo atto ad analizzare uno stream continuo in input (letto per esempio da un file o una tastiera) in modo da determinare la sua struttura grammaticale grazie ad una data grammatica formale. Un parser è un programma che esegue questo compito.  \'E possibile sia effettuare l'analisi delle semplici variabili, così come delle coppie dei tag. Se non si è mai utilizzato un Template Parser, le pseudo-variabili saranno simili a queste:
+
+\begin{html}
+<html>
+<head>
+<title>{blog_title}</title>
+</head>
+<body>
+
+<h3>{blog_heading}</h3>
+
+{blog_entries}
+<h5>{title}</h5>
+<p>{body}</p>
+{/blog_entries}
+</body>
+</html>
+\end{html}
+
+Le variabili utilizzate non sono del tipo \ac{PHP}, ma rappresentazioni in semplice testo, che hanno proprio lo scopo di eliminare ogni riferimento al codice di programmazione nei propri template.
+
+Questa classe di CodeIgniter è opzionale. Nonostante sia possibile continuare a utilizzare il codice espresso in \ac{PHP}, che si dimostra, tra l'altro, leggermente più veloce, l'uso di un motore di template è caldamente consigliato in tutti quei progetti in cui si deve condividere il codice di sviluppo con i designer grafici. La classe inoltre non è una vera e propria soluzione al parsing dei template grafici, poiché gli sviluppatori di CodeIgniter hanno realizzato la classe concentrandosi più sulla velocità di esecuzione che sulla sua completezza.
+
+\section*{Inizializzare la classe}
+
+La classe è inizializzata nel proprio controller con la funzione:
+
+\begin{code}
+$this->load->library('parser');
+\end{code}
+
+Una volta caricata, l'oggetto di libreria sarà disponibile con la funzione \var{\$this->parser}. La libreria è completata con la definizione delle seguenti funzioni:
+
+\begin{itemize}
+\item \verb|$this->parser->parse()| questo metodo accetta in ingresso un nome di template e un array di dati e genera una loro versione ``parsed''. Per esempio:
+
+\begin{code}
+$this->load->library('parser');
+
+$data = array(
+            'blog_title' => 'My Blog Title',
+            'blog_heading' => 'My Blog Heading'
+            );
+
+$this->parser->parse('blog_template', $data);
+\end{code}
+
+Il primo parametro, chiamato in questo esempio \verb|blog_template.php|), contiene il nome della Vista mentre il secondo contiene un array associativo di dati che verrà sostituito nel template. Nel codice descritto il template contiene due variabili \verb|blog_title| e \verb|blog_heading|.
+
+Non è necessario utilizzare \var{echo} (per la visualizzazione) o fare altro con i dati restituiti dal metodo \var{\$this->parser->parse()} perché questi saranno automaticamente inviati alla classe output per essere visualizzati nel browser. \'E anche possibile non inviare i dati alla classe output, semplicemente utilizzando il valore booleano TRUE come terzo parametro:
+
+\begin{code}
+$string = $this->parser->parse('blog_template', $data, TRUE);
+\end{code}
+
+\item \verb|$this->parser->parse_string()| questo metodo che funziona come quello precedente, accetta unicamente una stringa come primo parametro al posto di un file Vista.
+\end{itemize}
+
+\section*{Blocchi di variabili}
+
+Gli esempi precedenti hanno permesso la sostituzione di semplici variabili. Ma per sostituire interi blocchi di variabili più volte, è necessario utilizzare delle specifiche ``coppie di variabili''. Per comprendere meglio il loro funzionamento si consideri il template di esempio visualizzato precedentemente:
+
+\begin{html}
+<html>
+<head>
+<title>{blog_title}</title>
+</head>
+<body>
+
+<h3>{blog_heading}</h3>
+
+{blog_entries}
+<h5>{title}</h5>
+<p>{body}</p>
+{/blog_entries}
+</body>
+</html>
+\end{html}
+
+In questo codice sono presenti le coppie di variabili \verb|{blog_entries}| e \verb|{\blog_entries}|: in un caso come questo, l'intero blocco di dati tra queste coppie sarà presumibilmente ripetuto più volte, corrispondente al numero di righe in un risultato. 
+
+Il parsing delle coppie di variabili avviene nello stesso identico modo visto per quello delle singole variabili, ad eccezione del fatto che si dovrà aggiungere un array multi dimensionale corrispondente ai dati delle variabili a coppie. Per esempio:
+
+\begin{code}
+$this->load->library('parser');
+
+$data = array(
+  'blog_title'   => 'My Blog Title',
+  'blog_heading' => 'My Blog Heading',
+  'blog_entries' => array(
+                          array('title' => 'Title 1', 'body' => 'Body 1'),
+                          array('title' => 'Title 2', 'body' => 'Body 2'),
+                          array('title' => 'Title 3', 'body' => 'Body 3'),
+                          array('title' => 'Title 4', 'body' => 'Body 4'),
+                          array('title' => 'Title 5', 'body' => 'Body 5')
+                          )
+  
+
+$this->parser->parse('blog_template', $data);
+\end{code}
+
+Se i propri dati sono prelevati dal risultato di un database, che è già un array multimensionale, si può semplicemente utilizzare la funzione \verb|result_array()|:
+
+\begin{code}
+$query = $this->db->query("SELECT * FROM blog");
+
+$this->load->library('parser');
+
+$data = array(
+              'blog_title'   => 'My Blog Title',
+              'blog_heading' => 'My Blog Heading',
+              'blog_entries' => $query->result_array()
+            );
+
+$this->parser->parse('blog_template', $data);
+\end{code}

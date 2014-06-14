@@ -1,0 +1,412 @@
+%************************************************
+\section{Classe XML-RPC e XML-RPC Server}
+\label{class:xml}
+%************************************************
+
+Le classi XML-RPC di CodeIgniter permettono di inviare richieste ad un altro server, o impostare il proprio server XML-RPC per ricevere le richieste.
+
+\section*{Introduzione a XML-RPC}
+
+Molto semplicemente è un modo per due computer di comunicare su Internet utilizzando \ac{XML}. Un computer, che chiameremo client, invia una richiesta XML-RPC ad un altro computer, che chiameremo server. Una volta che il server riceve ed elabora la richiesta invierà una risposta al client.
+
+Ad esempio, utilizzando l'API MetaWeblog, un client XML-RPC (di solito uno strumento di desktop publishing), invierà una richiesta a un server XML-RPC in esecuzione sul proprio sito. Questa richiesta potrebbe essere una nuova voce blog inviata per relativa pubblicazione, o potrebbe essere la richiesta di una voce esistente per la sua modifica. Quando il server XML-RPC riceve questa richiesta, la esaminerà per determinare quale classe/metodo si deve richiamare per elaborare la richiesta. Una volta elaborata, il server invierà indietro un messaggio di risposta.
+
+Per le specifiche dettagliate, si visiti il sito XML-RPC: \url{http://xmlrpc.scripting.com/}.
+
+Le classi XML-RPC e XML-RPC vengono inizializzate nel proprio controller utilizzando la funzione \var{\$this->load->library}. La classe XML-RPC è caricata con la seguente istruzione:
+
+\begin{code}
+$this->load->library('xmlrpc');
+\end{code}
+
+Una volta caricata, la libreria oggetto sarà disponibile usando: \var{\$this->xmlrpc}.
+
+Per caricare la classe XML-RPC Server si utilizzerà:
+
+\begin{code}
+$this->load->library('xmlrpc');
+$this->load->library('xmlrpcs');
+\end{code}
+
+Anche questa classe, una volta caricata, fornirà una libreria oggetto utilizzabile con \var{\$this->xmlrpcs}. Quando si usa la classe XML-RPC Server è necessario caricare ambedue le classi XML-RPC e XML-RPC Server.
+
+\section*{Request XML-RPC}
+
+Per inviare una richiesta ad un server XML-RPC si devono specificare le seguenti informazioni:
+
+\begin{itemize}
+\item l'URL del server
+\item il metodo sul server che si desidera caricare
+\item i dati request (spiegati più avanti)
+\end{itemize}
+
+Qui di seguito viene descritto un semplice esempio che spedisce un semplice ping Weblogs.com verso Ping-o-matic: \url{http://pingomatic.com/}:
+
+\begin{code}
+$this->load->library('xmlrpc');
+
+$this->xmlrpc->server('http://rpc.pingomatic.com/', 80);
+$this->xmlrpc->method('weblogUpdates.ping');
+
+$request = array('My Photoblog', 'http://www.my-site.com/photoblog/');
+$this->xmlrpc->request($request);
+
+if ( ! $this->xmlrpc->send_request())
+{
+    echo $this->xmlrpc->display_error();
+}
+\end{code}
+
+\subsection*{Spiegazione}
+
+Il codice di qui sopra inizializza la classe XML-RPC, imposta l'URL del server e il metodo da chiamare (weblogUpdates.ping). La richiesta (in questo caso, il titolo e l'URL del sito) viene inserita in un array per il trasporto, e compilata utilizzando la funzione \var{request()}. Infine, la richiesta completa viene inviata. Se il metodo \verb|send_request()| restituisce FALSE si potrà visualizzare il messaggio di errore restituito dal server XML-RPC.
+
+\section*{Anatomia di un Request}
+
+Una richiesta XML-RPC è semplicemente il dato che si sta inviando al server XML-RPC. Ogni pezzo di informazione in una richiesta è riferito ad un parametro request. L'esempio di qui sopra ha due parametri: l'indirizzo e il titolo del sito. Quando il server XML-RPC riceve la richiesta, cercherà i parametri di cui ha bisogno.
+
+I parametri request devono essere collocati in un array per il trasporto, e ogni parametro può essere uno tra i sette tipi di dati consentiti (stringhe, numeri, date, ecc.). Se i parametri sono qualcosa di diverso dalle stringhe, si dovrà includere il tipo di dati nell'array request.
+
+Questo è un esempio di un semplice array con tre parametri:
+
+\begin{code}
+$request = array('John', 'Doe', 'www.some-site.com');
+$this->xmlrpc->request($request);
+\end{code}
+
+Se si utilizzano tipi di dati diversi dalle stringhe, o se si dispone di diversi tipi di dati, si può inserire ogni parametro nel proprio array, con il tipo di dati in seconda posizione:
+
+\begin{code}
+$request = array (
+                   array('John', 'string'),
+                   array('Doe', 'string'),
+                   array(FALSE, 'boolean'),
+                   array(12345, 'int')
+                 ); 
+$this->xmlrpc->request($request);
+\end{code}
+
+La sezione dei Dati Type seguente presenta una lista di tutti i tipi di dati.
+
+\section*{Creare un server XML-RPC}
+
+Un server XML-RPC agisce come un vigile urbano: attende le richieste in arrivo e le redirige verso le funzioni appropriate per l'elaborazione.
+
+Per creare il proprio server XML-RPC è necessario inizializzare la classe XML-RPC Server nel proprio controller in cui si prevede arriveranno le request. Quindi, si deve creare un array con le istruzioni che permettono alle request in ingresso di essere inviate alla classe e al metodo appropriato per l'elaborazione.
+
+Ecco un esempio:
+
+\begin{code}
+$this->load->library('xmlrpc');
+$this->load->library('xmlrpcs');
+
+$config['functions']['new_post'] = array('function' => 'My_blog.new_entry'),
+$config['functions']['update_post'] = array('function' => 'My_blog.update_entry');
+$config['object'] = $this;
+
+$this->xmlrpcs->initialize($config);
+$this->xmlrpcs->serve();
+\end{code}
+
+L'esempio precedente contiene un array che specifica due metodi request consentiti dal Server. I metodi accettati sono sul lato sinistro dell'array (\verb|new_post| e \verb|update_post|): quando uno di questi viene ricevuto, saranno mappati sulla classe e il metodo specificato sulla destra.
+
+La chiave ``object'' è una chiave speciale a cui si passa un oggetto di classe istanziata. Essa è necessaria quando il metodo che si sta mappando non fa parte del super oggetto di CodeIgniter.
+
+In altre parole, se un client XML-RPC invia una richiesta per il metodo \verb|new_post|, il proprio server caricherà la classe \verb|My_blog| e chiamerà la funzione \verb|new_entry|. Se la richiesta è per il metodo \verb|update_post|, allora il server caricherà la classe \verb|My_blog| e invocherà la funzione \verb|update_entry|.
+
+I nomi delle funzioni nell'esempio di cui sopra sono arbitrari: si potrà decidere cosa devono richiamare sul server, oppure i nomi delle funzioni se si utilizzano delle API standard, come  Blogger o API MetaWeblog.
+
+Ci sono due chiavi di configurazione aggiuntive che si possono utilizzare quando si inizializza la classe di server: \var{debug} può essere impostata su TRUE per attivare il debug, e\verb| xss_clean| può essere impostata su FALSE per evitare l'invio di dati attraverso la funzione \verb|xss_clean| della library Security.
+
+\section*{Elaborare le Request Server}
+
+Quando il server XML-RPC riceve un request e carica la classe/metodo per l'elaborazione, esso passerà un oggetto a tale metodo contenente i dati inviati dal client.
+
+Utilizzando l'esempio precedente, se viene richiesto il metodo \verb|new_post|, il server si aspetterà una classe come in questo prototipo:
+
+\begin{code}
+class My_blog extends CI_Controller {
+
+    function new_post($request)
+    {
+
+    }
+}
+\end{code}
+
+La variabile \var{\$request} è un oggetto compilato dal Server, che contiene i dati inviati dal Client XML-RPC. Utilizzando questo oggetto si avrà accesso ai parametri request che permettono di elaborare la richiesta. Alla fine verrà inviato una Response al client.
+
+Qui di seguito è presentato un esempio reale, utilizzando l'API di Blogger. Uno dei metodi della API di Blogger è \var{getUserInfo(}: usando questo metodo, un Client XML-RPC può inviare al server un nome utente e una password per poi ricevere in cambio informazioni su quel particolare utente (nick, ID utente, indirizzo email, ecc.).
+
+\begin{code}
+class My_blog extends CI_Controller {
+
+    function getUserInfo($request)
+    {
+        $username = 'smitty';
+        $password = 'secretsmittypass';
+
+        $this->load->library('xmlrpc');
+    
+        $parameters = $request->output_parameters();
+    
+        if ($parameters['1'] != $username AND $parameters['2'] != $password)
+        {
+            return $this->xmlrpc->send_error_message('100', 'Invalid Access');
+        }
+    
+        $response = array(array('nickname'  => array('Smitty','string'),
+                                'userid'    => array('99','string'),
+                                'url'       => array('http://yoursite.com','string'),
+                                'email'     => array('jsmith@yoursite.com','string'),
+                                'lastname'  => array('Smith','string'),
+                                'firstname' => array('John','string')
+                                ),
+                         'struct');
+
+        return $this->xmlrpc->send_response($response);
+    }
+}
+\end{code}
+
+Nota: la funzione \verb|output_parameters()| recupera un array indicizzato corrispondente ai parametri request inviati dal client. Nell'esempio precedente, i parametri di output saranno il nome utente e la password.
+
+Se il nome utente e la password inviati dal client non sono validi, un messaggio di errore verà restituito utilizzando \verb|send_error_message()|.
+
+Se l'operazione ha avuto successo, il client farà tornare indietro un array di risposta contenente le informazioni dell'utente.
+
+\section*{Formattare un Response}
+
+Come avviene per le Request, anche le Response devono essere formattate come un array. Tuttavia, a differenza delle request, un response è un array che contiene un singolo elemento che può essere un array con ulteriori array al suo interno, anche se può esserci solo un indice di array primario. In altre parole, il prototipo di base è questo:
+
+\begin{code}
+$response = array('Response data', 'array');
+\end{code}
+
+Le Response però, di solito contengono più pezzi di informazione. Per realizzare ciò, si deve inserire la risposta nel proprio array in modo che l'array primario continui a contenere un singolo pezzo di dati. Ecco un esempio che mostra come questo potrebbe essere realizzato:
+
+\begin{code}
+$response = array (
+                   array(
+                         'first_name' => array('John', 'string'),
+                         'last_name' => array('Doe', 'string'),
+                         'member_id' => array(123435, 'int'),
+                         'todo_list' => array(array('clean house', 'call mom', 'water plants'), 'array'),
+                        ),
+                 'struct'
+                 );
+\end{code}
+
+Si noti che l'array di cui sopra viene formattato come una struct (struttura). Questo è il tipo più comune di dati per le response. Come con le Request, una response può essere uno dei sette tipi di dati elencati nella sezione Data Type.
+
+\section*{Inviare un Error Response}
+
+Se è necessario inviare al client un error response si userà la seguente istruzione:
+
+\begin{code}
+return $this->xmlrpc->send_error_message('123', 'Requested data not available');
+\end{code}
+
+Il primo parametro è il numero di errore, mentre il secondo è la stringa contenente il messaggio di errore.
+
+\section*{Creare il proprio Client e Server}
+
+Per aiutare a comprendere tutto quello che abbiamo visto finora, si creino un paio di controller che agiscano come client XML-RPC e server. In questo modo si potrà utilizzare il client per inviare una richiesta al server e ricevere una risposta. 
+
+\section*{Il Client}
+
+Utilizzando un editor di testo, si crei un controller chiamato \verb|xmlrpc_client.php|. In esso si inserisca questo codice e lo si salvi nella cartella \sys{/applications/controllers/}:
+
+\begin{code}
+<?php
+
+class Xmlrpc_client extends CI_Controller {
+
+	function index()
+	{
+		$this->load->helper('url');
+		$server_url = site_url('xmlrpc_server');
+
+		$this->load->library('xmlrpc');
+
+		$this->xmlrpc->server($server_url, 80);
+		$this->xmlrpc->method('Greetings');
+
+		$request = array('How is it going?');
+		$this->xmlrpc->request($request);
+
+		if ( ! $this->xmlrpc->send_request())
+		{
+			echo $this->xmlrpc->display_error();
+		}
+		else
+		{
+			echo '<pre>';
+			print_r($this->xmlrpc->display_response());
+			echo '</pre>';
+		}
+	}
+}
+?>
+\end{code}
+
+Nota: nel codice precedente è stato utilizzato un Helper URL (si veda la sezione \vref{cap:helper}).
+
+\section*{Il Server}
+Utilizzando un editor di testo, si crei un controller chiamato \verb|xmlrpc_server.php|. In esso si inserisca questo codice e lo si salvi nella cartella \sys{/applications/controllers/}:
+
+\begin{code}
+<?php
+
+class Xmlrpc_server extends CI_Controller {
+
+	function index()
+	{
+		$this->load->library('xmlrpc');
+		$this->load->library('xmlrpcs');
+
+		$config['functions']['Greetings'] = array('function' => 'Xmlrpc_server.process');
+
+		$this->xmlrpcs->initialize($config);
+		$this->xmlrpcs->serve();
+	}
+
+
+	function process($request)
+	{
+		$parameters = $request->output_parameters();
+
+		$response = array(
+							array(
+									'you_said'  => $parameters['0'],
+									'i_respond' => 'Not bad at all.'),
+							'struct');
+
+		return $this->xmlrpc->send_response($response);
+	}
+}
+?>
+\end{code}
+
+\section*{Siamo pronti!}
+
+Ora, si inserisca l'URL del proprio sito:
+
+\begin{code}
+example.com/index.php/xmlrpc_client/
+\end{code}
+
+Si visualizzerà il messaggio inviato al server e la risposta restituita. Il client creato, invia un messaggo ("How's is going?") al server, insieme con un request per i "Greetings". Il server riceve la richiesta e la mappa alla funzione "processo", con una risposta.
+
+\section*{Utilizzare gli array associativi}
+
+Se si vuole utilizzare un array associativo nei parametri del proprio metodo, è necessario utilizzare un tipo di dati ``datatype struct'':
+
+\begin{code}
+$request = array(
+                 array(
+                       // Param 0
+                       array(
+                             'name'=>'John'
+                            	),
+                             'struct'
+                       ),
+                       array(
+                             // Param 1
+                             array(
+                                  	'size'=>'large',
+                                   'shape'=>'round'
+                                  	),
+                             'struct'
+                       )
+                 );
+$this->xmlrpc->request($request);
+\end{code}
+
+L'array associativo si può poi recuperare quando il request sarà elaborata nel Server.
+
+\begin{code}
+$parameters = $request->output_parameters();
+$name = $parameters['0']['name'];
+$size = $parameters['1']['size'];
+$size = $parameters['1']['shape'];
+\end{code}
+
+\section*{Reference delle funzioni XML-RPC}
+
+\begin{itemize}
+\item \verb|$this->xmlrpc->server()| imposta l'URL e il numero della posta del server a cui il request deve essere inviato:
+
+\begin{code}
+$this->xmlrpc->server('http://www.sometimes.com/pings.php', 80);
+\end{code}
+
+\verb|$this->xmlrpc->timeout()| imposta il tempo (in secondi) dopo il quale il request verrà cancellato:
+
+\begin{code}
+$this->xmlrpc->timeout(6);
+\end{code}
+
+\item \verb|$this->xmlrpc->method()| definisce il metodo che sarà richiesta dal server XML-RPC:
+
+\begin{code}
+$this->xmlrpc->method('method');
+\end{code}
+
+Dove il \var{method} è il nome del metodo.
+
+\item \verb|$this->xmlrpc->request()| viene preso un array di dati e costruisce un request per essere inviato al server XML-RPC.
+
+\begin{code}
+$request = array(array('My Photoblog', 'string'), 'http://www.yoursite.com/photoblog/');
+$this->xmlrpc->request($request);
+\end{code}
+
+\item \verb|$this->xmlrpc->send_request()| la funzione di invio request, restituisce un valore booleano TRUE/FALSE sulla base del suo successo o fallimento. La si abiliti per essere usata in una struttura condizionale.
+
+\item \verb|$this->xmlrpc->set_debug(TRUE)| viene abilitato il debug, con cui si visualizzano molte informazioni, errori che aiutano nello sviluppo
+
+\item \verb|$this->xmlrpc->display_error()| restituisce un messaggio di errore sotto forma di stringa se il request fallisce
+
+\begin{code}
+echo $this->xmlrpc->display_error();
+\end{code}
+
+\item \verb|$this->xmlrpc->display_response()| restituisce la risposta di un server remoto quando il request viene ricevuto. La risposta sarà generalmente un array associativo
+
+\begin{code}
+$this->xmlrpc->display_response();
+\end{code}
+
+\item \verb|$this->xmlrpc->send_error_message()| questa funzione consente di inviare un messaggio di errore dal server al client. Il primo parametro è il numero di errore mentre il secondo è il messaggio di errore.
+
+\begin{code}
+return $this->xmlrpc->send_error_message('123', 'Requested data not available');
+\end{code}
+
+\item \verb|$this->xmlrpc->send_response()| consente di inviare la risposta dal server al client. Un array di valori di dati validi deve essere inviato con questo metodo.
+
+\begin{code}
+$response = array(
+                 array(
+                        'flerror' => array(FALSE, 'boolean'),
+                        'message' => "Thanks for the ping!"
+                     )
+                 'struct');
+return $this->xmlrpc->send_response($response);
+\end{code}
+\end{itemize}
+
+\section*{Data Type}
+Secondo le specifiche XML-RPC ci sono sette tipi di valori che è possibile inviare tramite XML-RPC:
+
+\begin{itemize}
+\item int oppure i4
+\item boolean
+\item string
+\item double
+\item dateTime.iso8601
+\item base64
+\item struct (contiene un array di valori)
+\item array (contiene un array di valori) 
+\end{itemize}

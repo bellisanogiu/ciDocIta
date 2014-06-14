@@ -1,0 +1,27 @@
+%************************************************
+\section{Helper Download}
+\label{helper:download}
+%************************************************
+L'Helper che fornisce di scaricare i dati sul proprio desktop, viene caricato con l'istruzione:
+
+\begin{code}
+$this->load->helper('download');
+\end{code}
+
+\verb|force_download('filename', 'data')| genera i server header che forza il download dei dati sul proprio desktop. Questa funzione è utilizzata per scaricare i file sul pc locale. Il primo parametro è il nome che si vuole dare al file scaricato, mentre il secondo parametro è il nome del file da scaricare. Per esempio:
+
+\begin{code}
+$data = 'qui inserisci il testo';
+$name = 'mytext.txt';
+
+force_download($name, $data);
+\end{code}
+
+Se si vuole scaricare dal server un file esistente, sarà necessario leggere il file in una stringa:
+
+\begin{code}
+$data = file_get_contents("/path/to/photo.jpg"); // Read the file's contents
+$name = 'myphoto.jpg';
+
+force_download($name, $data);
+\end{code}

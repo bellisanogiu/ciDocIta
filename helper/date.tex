@@ -1,0 +1,190 @@
+%************************************************
+\section{Helper Date}
+\label{helper:date}
+%************************************************
+
+Il caricamento di questo Helper fornisce alcune funzioni di aiuto nella gestione delle date:
+
+\begin{code}
+$this->load->helper('date');
+\end{code}
+
+Di seguito una serie di funzioni che permettono di gestire al meglio i formati e i valori ``temporali''.
+
+\begin{itemize}
+\item \verb|now()| restituisce l'ora attuale come timestamp Unix, facendo riferimento all'ora locale del server oppure GMT, sulla base del "riferimento temporale" definito nel file di configurazione. Se non si ha intenzione di impostare l'orario principale sul formato GMT (generalmente adottato se il sito permette ad ogni utente di impostare il proprio fuso orario) non si ricava alcun beneficio dall'utilizzo di quesra funzione rispetto a quella \verb|time()| del PHP.
+
+\item \verb|mdate()| questa funzione è identica a quella del PHP \verb|date()|, tranne per il fatto che utilizza i codici delle date in stile MySQL: ogni lettera che definisce una parte della data è preceduta dal segno percentuale (\%Y \%m \%d etc.). Il vantaggio di questo approccio è che non ci si deve preoccupare di fare l'escaping dei caratteri che non sono codici riferiti ad una data, come si farebbe normalmente con la funzione PHP \verb|date()|. Per esempio:
+
+\begin{code}
+$datestring = "Year: %Y Month: %m Day: %d - %h:%i %a";
+$time = time();
+
+echo mdate($datestring, $time);
+\end{code}
+
+Se non viene incluso un timestamp nel secondo parametro, verrà utilizzata la data attuale.
+
+\item \verb|standard_date()| permette di generare una stringa con la data in uno dei formati standard. Per esempio:
+
+\begin{code}
+$format = 'DATE_RFC822';
+$time = time();
+
+echo standard_date($format, $time);
+\end{code}
+
+Il primo parametro deve contenere il formato, mentre il secondo, la data nel formato timestamp Unix. Qui di seguito un elenco dei formati supportati:
+
+\small
+\begin{tabx}{llr}
+\toprule
+Costante &	Descrizione & Esempio \\
+\midrule
+\verb|DATE_ATOM| & Atom & 2005-08-15T16:13:03 +0000 \\
+\verb|DATE_COOKIE| & HTTP Cookies & Sun, 14 Aug 2005 16:13:03 UTC \\
+\verb|DATE_ISO8601| & ISO-8601 & 2005-08-14T16:13:03 +00:00 \\
+\verb|DATE_RFC822| & RFC 822 & Sun, 14 Aug 05 16:13:03 UTC \\
+\verb|DATE_RFC850| & RFC 850 & Sunday, 14-Aug-05 16:13:03 UTC \\
+\verb|DATE_RFC1036| & RFC 1036 & Sunday, 14-Aug-05 16:13:03 UTC \\
+\verb|DATE_RFC1123| & RFC 1123 & Sun, 14 Aug 2005 16:13:03 UTC \\
+\verb|DATE_RFC2822| & RFC 2822 & Sun, 14 Aug 2005 16:13:03 +0000 \\
+\verb|DATE_RSS| & RSS & Sun, 14 Aug 2005 16:13:03 UTC \\
+\verb|DATE_W3C| & WWW Consortium & 2005-08-14T16:13:03 +0000 \\
+\bottomrule
+\end{tabx}
+\normalsize
+
+\item \verb|local_to_gmt()| prende un timestamp in formato Unix e lo restituisce nel formato GMT:
+
+\begin{code}
+$now = time();
+
+$gmt = local_to_gmt($now);
+\end{code}
+
+\item \verb|gmt_to_local()| prende un timestamp Unix (riferito al formato GMT) e lo converte in un timestamp locale, basato sul fuso orario e l'ora legale forniti:
+
+\begin{code}
+$timestamp = '1140153693';
+$timezone = 'UM8';
+$daylight_saving = TRUE;
+
+echo gmt_to_local($timestamp, $timezone, $daylight_saving);
+\end{code}
+
+\item \verb|mysql_to_unix()| prende in ingresso un timestamp in formato MySQL e lo restituisce nel formato Unix. Per esempio:
+
+\begin{code}
+$mysql = '20061124092345';
+
+$unix = mysql_to_unix($mysql);
+\end{code}
+
+\item \verb|unix_to_human()| prende un timestamp Unix e restituisce una data in formato comprensibile, detto ``human'':
+
+\begin{code}
+YYYY-MM-DD HH:MM:SS AM/PM
+\end{code}
+
+Si tratta di una funzione utile, se si ha la necessità di visualizzare una data in un formato leggibile all'interno del proprio form. La data può essere personalizzata con o senza i secondi, utilizzando il formato europeo o americano. Se viene fornito solo il timestamp, sarà restituito il tempo senza secondi nel formato americano:
+
+\begin{code}
+$now = time();
+
+echo unix_to_human($now); // data americana senza secondi
+
+echo unix_to_human($now, TRUE, 'us'); // data americana con i secondi
+
+echo unix_to_human($now, TRUE, 'eu'); // data europea con i secondi
+\end{code}
+
+\item \verb|human_to_unix()| questa funzione svolge il compito opposto alla funzione precedente. Prende una data ``human'' e la restituisce nel formato Unix. La funzione è utile per acquisire una data impostata dall'utente in un form, e ottenere un timestamp Unix utilizzabile nelle operazioni di elaborazione. Viene restituito un valore booleano FALSE se la data non è formattata come indicato nella funzione precedente. Per esempio:
+
+\begin{code}
+$now = time();
+
+$human = unix_to_human($now);
+
+$unix = human_to_unix($human);
+\end{code}
+
+\item \verb|timespan()| formatta un timestamp Unix in modo che appaia in modo simile a:
+
+\begin{code}
+1 Year, 10 Months, 2 Weeks, 5 Days, 10 Hours, 16 Minutes
+\end{code}
+
+Il primo parametro è un timestamp Unix, mentre il secondo deve contenere un timestamp più grande di quello inserito nel primo parametro. Se il secondo parametro è vuoto, verrà utilizzato il timestamp corrente. Generalmente lo scopo di questa funzione è quello di visualizzare il tempo trascorso da un certo periodo passato sino ad oggi:
+
+\begin{code}
+$post_date = '1079621429';
+$now = time();
+
+echo timespan($post_date, $now);
+\end{code}
+
+il testo generato da questa funzione si trova nel seguente file della lingua \verb|/language/<laproprialingua>/date_lang.php|.
+
+\item \verb|days_in_month()| restituisce il numero di giorni in un certo mese/anno (tiene in considerazione anche gli anni bisestili):
+
+\begin{code}
+echo days_in_month(06, 2005);
+\end{code}
+
+Se il secondo parametro è vuoto, sarà usato l'anno correte.
+
+\item \verb|timezones()| prende un fuso orario di riferimento e restituisce il ore di differenza rispetto all'UTC:
+
+\begin{code}
+echo timezones('UM5');
+\end{code}
+
+Questa funzione si dimostra utile quando è abbinata a \verb|timezone_menu()|.
+
+\item \verb|timezone_menu()| genera un menu a scorrimento di fusorari come:
+
+\begin{img}{Menu Timezone}{7}{004}
+\end{img}
+
+Questo menu è utile se utilizzato in un sito in cui gli utenti possono impostare il fuso orario locale.
+
+Il primo parametro permette di impostare lo stato select del menu. Ad esempio, per impostare il fuso orario del Pacifico come predefinito si usa:
+
+\begin{code}
+echo timezone_menu('UM8');
+\end{code}
+
+Il secondo parametro imposta un nome di classe \ac{CSS} per il menu.
+
+Nota: il testo nel menu si trova nel file della lingua \verb|/language/<laproprialingua>/date_lang.php|.
+
+\end{itemize}
+
+\begin{tabx}{lXX}
+\toprule
+Fuso orario & UTC & Nazione \\
+\midrule
+UM12 & (UTC - 12:00) & Enitwetok, Kwajalien \\
+UM11 & (UTC - 11:00) & Nome, Midway Island, Samoa \\
+UM10 & UTC - 10:00) & Hawaii \\
+UM9 & (UTC - 9:00) & Alaska \\
+UM8 & (UTC - 8:00) & Pacific Time \\
+UM7 & (UTC - 7:00) & Mountain Time \\
+UM6 & (UTC - 6:00) & Central Time, Mexico City \\
+UM5 & (UTC - 5:00) & Eastern Time, Bogota, Lima, Quito \\
+UM4 & (UTC - 4:00) & Atlantic Time, Caracas, La Paz \\
+UM25 & (UTC - 3:30) & Newfoundland \\
+UM3 & (UTC - 3:00) & Brazil, Buenos Aires, Georgetown, Falkland Is. \\
+UM2 & (UTC - 2:00) & Mid-Atlantic, Ascention Is., St Helena \\
+UM1 & (UTC - 1:00) & Azores, Cape Verde Islands \\
+UTC & (UTC) & Casablanca, Dublin, Edinburgh, London, Lisbon, Monrovia \\
+UP1 & (UTC + 1:00) & Berlin, Brussels, Copenhagen, Madrid, Paris, Rome \\
+UP2 & (UTC + 2:00) & Kaliningrad, South Africa, Warsaw \\
+UP3	 & UTC + 3:00) & Baghdad, Riyadh, Moscow, Nairobi \\
+UP25 & (UTC + 3:30) & Tehran \\
+UP4 & (UTC + 4:00) & Adu Dhabi, Baku, Muscat, Tbilisi \\
+UP35 & (UTC + 4:30) & Kabul \\
+\bottomrule
+\end{tabx}
+\normalsize

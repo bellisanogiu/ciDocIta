@@ -1,0 +1,98 @@
+%************************************************
+\section{Helper File}
+\label{helper:file}
+%************************************************
+
+L'assistente permette di lavorare agevolmente con i file. Il suo caricamento avviene con il codice:
+
+\begin{code}
+$this->load->helper('file');
+\end{code}
+
+Qui di seguito una serie di funzioni disponibili:
+\begin{itemize}
+
+\item \verb|read_file('path')| restituisce i dati contenuti nel file specificato nel percorso. Per esempio:
+
+\begin{code}
+$string = read_file('./path/to/file.php');
+\end{code}
+
+Il percorso del file specificato può essere relativo o assoluto. La funzione restituisce FALSE in caso di insuccesso.
+
+Nota: il percorso è relativo rispetto al file \fil{index.php} nella directory root e non rispetto ai Controller o alle Viste. CodeIgniter usa un front controller, quindi i percorsi sono sempre relativi rispetto all'index principale.
+
+Se il server esegue una restrizione \verb|open_basedir| questa funzione potrebbe non funzionare con i file che si trovano in una directory superiore al /omissis
+
+\item \verb|write_file('path', $data)| i dati vengono scritti nel file specificato nel percorso. Se il file non esiste la funzione lo creerà. Esempio:
+
+\begin{code}
+$data = 'Some file data';
+
+if ( ! write_file('./path/to/file.php', $data))
+{
+     echo 'Unable to write the file';
+}
+else
+{
+     echo 'File written!';
+}
+\end{code}
+
+Facoltativamente, è possibile impostare la modalità di scrittura tramite il terzo parametro:
+
+\begin{code}
+write_file('./path/to/file.php', $data, 'r+');
+\end{code}
+
+La modalità predefinita è \var{wb}. \'E consigliato consultare la guida PHP per le altre opzioni: \url{http://php.net/fopen}
+
+Nota: Per utilizzare questa funzione i permessi dei file devono essere impostati per la scrittura (666, 777, ecc.) Se il file non esiste già, anche la directory che lo contiene deve avere i permessi di scrittura.
+
+Nota: il percorso è relativo rispetto al file \fil{index.php} nella directory root e non rispetto ai Controller o alle Viste. CodeIgniter usa un front controller, quindi i percorsi sono sempre relativi rispetto all'index principale.
+
+\item \verb|delete_files('path')| cancella tutti i file contenuti nel percorso fornito. Per esempio:
+
+\begin{code}
+delete_files('./path/to/directory/');
+\end{code}
+
+Se il secondo parametro è impostato su TRUE, ogni directory nel percorso specificato sarà eliminata. Per esempio:
+
+\begin{code}
+delete_files('./path/to/directory/', TRUE);
+\end{code}
+
+Nota: anche in questo caso i file devono avere i permessi di scrittura oppure devono essere proprietà del sistema per poter essere eliminati.
+
+\item \verb|get_filenames('path/to/directory/')| prende un percorso del server e restituisce un array contenente i nomi di tutti i file definiti al suo interno. Il percorso può essere opzionalmente aggiunto ai nomi dei file impostando il secondo parametro su TRUE.
+
+\item \verb|get_dir_file_info('path/to/directory/', $top_level_only = TRUE)| dato un file e un percorso, restituisce il relativo nome, percorso, dimensione, data di modifica. Il secondo parametro permette di dichiarare esplicitamente quali informazioni si desidera vengano restituite. Le opzioni sono: \verb|name|, \verb|server_path|, \verb|size|, \verb|date|, \verb|readable|, \verb|writable|, \verb|executable|, \verb|fileperms|. Restituisce FALSE se il file non viene trovato.
+
+%Note: The "writable" uses the PHP function is_writable() which is known to have issues on the IIS webserver. Consider using fileperms instead, which returns information from PHP's fileperms() function.
+
+\item \verb|get_mime_by_extension('file')| traduce un'estensione di file in un tipo mime basato sul file \fil{config/mimes.php}. Restituisce FALSE se non è possibile determinare il tipo, o aprire il file di configurazione mime.
+
+\begin{code}
+$file = "somefile.png";
+echo $file . ' is has a mime type of ' . get_mime_by_extension($file);
+\end{code}
+
+Nota: questo non è un modo preciso per determinare i tipi di file mime; deve essere utilizzato per scopi che non riguardano la sicurezza.
+
+\item \verb|symbolic_permissions($perms)| prende i permessi numerici (come quelli restituiti da \var{fileperms()}) e restituisce la notazione simbolica standard dei permessi dei file.
+
+\begin{code}
+echo symbolic_permissions(fileperms('./index.php'));
+
+// -rw-r--r--
+\end{code}
+
+\item \verb|octal_permissions($perms)| prende i permessi numerici (come quelli restituiti da \var{fileperms()}) e restituisce i permessi del file nella notazione ottale.
+
+\begin{code}
+echo octal_permissions(fileperms('./index.php'));
+
+// 644
+\end{code}
+\end{itemize}

@@ -1,0 +1,89 @@
+%************************************************
+\section{Helper Array}
+\label{helper:array}
+%************************************************
+
+Le funzionalità di questo Helper aiutano nella gestione degli array. Il suo caricamento avviene con l'istruzione:
+
+\begin{code}
+$this->load->helper('array');
+\end{code}
+
+Qui di seguito si mettono in evidenza le funzioni disponibili:
+\begin{itemize}
+\item \verb|element()| consente di recuperare un elemento da un array. La funzione verifica se l'indice dell'array esiste e se questo ha un valore. Se esiste un valore, questo viene restituito, se invece il valore non esiste viene restituito FALSE, o qualsiasi altra cosa si sia specificato come valore di default tramite il terzo parametro. Per esempio:
+
+\begin{code}
+$array = array('colore' => 'rosso', 'forma' => 'circolare', 'dimensione' => '');
+
+// restituisce "rosso"
+echo element('colore', $array);
+
+// restituisce NULL
+echo element('dimensione', $array, NULL);
+\end{code}
+
+\item \verb|random_element()| viene preso un array in ingresso e restituito un elemento casuale. Un esempio è il seguente:
+
+\begin{code}
+$quotes = array(
+            "I find that the harder I work, the more luck I seem to have. - Thomas Jefferson",
+            "Don't stay in bed, unless you can make money in bed. - George Burns",
+            "We didn't lose the game; we just ran out of time. - Vince Lombardi",
+            "If everything seems under control, you're not going fast enough. - Mario Andretti",
+            "Reality is merely an illusion, albeit a very persistent one. - Albert Einstein",
+            "Chance favors the prepared mind - Louis Pasteur"
+            );
+
+echo random_element($quotes);
+\end{code}
+
+\item \verb|elements()| consente di ottenere il numero di elementi da un array. La funzionalità verifica se ciascuno degli indici dell'array è impostato: se un indice non esiste, questo assume il valoresu FALSE, o qualsiasi altra cosa si sia specificato come valore di default tramite il terzo parametro. Per esempio:
+
+\begin{code}
+$array = array(
+    'colore' => 'rosso',
+    'forma' => 'circolare',
+    'raggio' => '10',
+    'diametro' => '20'
+);
+
+$my_shape = elements(array('colore', 'forma', 'altezza'), $array);
+\end{code}
+
+Il codice restituisce il seguente array:
+
+\begin{code}
+array(
+    'color' => 'rosso',
+    'shape' => 'circolare',
+    'height' => FALSE // questo indice non esiste
+);
+\end{code}
+
+\'E possibile impostare il terzo parametro con qualsiasi valore di default desiderato:
+
+\begin{code}
+$my_shape = elements(array('colore', 'forma', 'altezza'), $array, NULL);
+\end{code}
+
+L'esempio precedente restituisce il seguente array:
+
+\begin{code}
+array(
+    'color' => 'rosso',
+    'shape' => 'circolare',
+    'altezza' => NULL // nuovo valore impostato
+);
+\end{code}
+
+Questo è utile quando si invia l'array \verb|$_POST| ad uno dei propri Model poiché impedisce agli utenti di inviare ulteriori dati POST per essere inseriti nelle proprie tabelle:
+
+\begin{code}
+$this->load->model('post_model');
+
+$this->post_model->update(elements(array('id', 'title', 'content'), $_POST));
+\end{code}
+
+In questo modo, solo i campi id, title e content saranno aggiornati.
+\end{itemize}

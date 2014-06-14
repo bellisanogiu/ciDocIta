@@ -1,0 +1,47 @@
+%************************************************
+\section{Classe Language}
+\label{class:language}
+%************************************************
+
+La classe Language fornisce delle funzioni per ottenere file e linee di testo in determinate lingue, per rendere internazionale il proprio progetto. Nella cartella di sistema si trova una directory di nome language che contiene insiemi di file per la lingua. \'E possibile creare le proprie definizioni al fine di visualizzare avvisi di errore ed altri messaggi nella lingua desiderata.
+
+I file linguaggio sono generalmente memorizzati nella directory \sys{/system/language}. In alternativa è possibile creare una cartella denominata \var{language} all'interno della cartella \var{application} e memorizzare al suo interno i propri file. CodeIgniter cercherà prima nella directory \sys{/system/language}: se la directory non esiste oppure se la lingua specificata non si trova in quel percorso, allora CI effettuerà una nuova ricerca nella cartella \sys{/system/language}.
+
+Nota: ogni lingua deve essere memorizzata nella propria cartella. Per esempio i file per la lingua inglese sono memorizzati in \sys{/system/language/english}.
+
+Tutti i file linguaggio contengono l'estensione \verb|_lang.php|. Per esempio, un file che contenga i messaggi di errore si chiamerà \verb|error_lang.php|. All'interno del file è possibile assegnare ogni linea di testo ad un array chiamato \var{\$lang} come nel prototipo seguente:
+
+\begin{code}
+$lang['language_key'] = "Il messaggio che si sta visualizzando";
+\end{code}
+
+Nota: è buona pratica utilizzare un prefisso comune per tutti i messaggi di una certa categoria, in modo da prevenire collisioni tra nomi simili. Per esempio, se si creano file riguardandi i messaggi di errore, una buona abitudine sarà quella di utilizzare il prefisso \verb|_error| come nell'esempio seguente:
+
+\begin{code}
+$lang['error_email_missing'] = "Si deve indicare un indirizzo email";
+$lang['error_url_missing'] = "Si deve specificare un URL";
+$lang['error_username_missing'] = "Si deve specificare uno username";
+\end{code}
+
+\section*{Caricare un Linguaggio}
+Il caricamento di un file linguaggio avviene attraverso l'istruzione:
+
+\begin{code}
+$this->lang->load('filename', 'language');
+\end{code}
+
+Dove ``filename'' è il nome del file che si vuole caricare senza l'estensione del file; la parola \var{language} invece definisce la lista di linguaggi che contiene all'interno. Se manca il secondo parametro, sarà utilizzata la lingua predefinita memorizzata nel file \fil{/application/config/config.php}
+
+\section*{Recuperare un testo}
+Una volta caricato il file linguaggio, per accedere a qualsiasi linea di testo, si utilizza la funzione:
+
+\begin{code}
+$this->lang->line('language_key');
+\end{code}
+
+Dove \verb|language_key| è la chiave dell'array che corrisponde alla linea che si desidera visualizzare. La funzione in esame, semplicemente restituisce la linea e non visualizza il suo contenuto.
+
+Nota: l'utilizzo della funzione per definire i label (etichette) di un form è stato deprecato nell'ultima versione di CodeIgniter. Se si ha questa esigenza, è consigliato utilizzare la funzione \var{lang()} definita nell'helper Language.
+
+\section*{Caricamento automatico}
+Per ultimo, si vuole introdurre un sistema per caricare globalmente e automaticamente un particolare linguaggio nella propria applicazione durante la sua inizializzazione. Per ottenere questo risultato si aggiunga la lingua desiderata nell'array autoload che si trova nel file \fil{/application/config/autoload.php}.

@@ -1,0 +1,25 @@
+%************************************************
+\section{Helper Path}
+\label{helper:path}
+%************************************************
+
+\'E l'Helper che permette di lavorare con i percorsi dei file sul server. Il caricamento dell'helper avviene con l'istruzione:
+
+\begin{code}
+$this->load->helper('path');
+\end{code}
+
+La funzione disponibile è \verb|set_realpath()| che controlla se il percorso esiste. Questa funzione restituisce il percorso server senza link simbolici o directory relative. Un secondo argomento opzionale causerà un errore innescato (trigger) se il percorso non può essere risolto,
+
+\begin{code}
+$directory = '/etc/passwd';
+echo set_realpath($directory);
+// restituisce "/etc/passwd"
+
+$non_existent_directory = '/path/to/nowhere';
+echo set_realpath($non_existent_directory, TRUE);
+// restituisce an error, as the path could not be resolved 
+
+echo set_realpath($non_existent_directory, FALSE);
+// restituisce "/path/to/nowhere"
+\end{code}

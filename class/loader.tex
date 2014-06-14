@@ -1,0 +1,169 @@
+%************************************************
+\section{Classe Loader}
+\label{class:loader}
+%************************************************
+
+Questa classe, come il nome suggerisce, è utilizzata per caricare elementi come librerie (classi), Viste, Helper e Modelli nei propri file. Essa viene inizializzata automaticamente dal sistema, quindi non è necessario farlo manualmente.
+
+La seguente funzione ampiamente configurabile è la:
+
+\begin{itemize}
+\item \verb|$this->load->library('class_name', $config, 'object name')| \\ questa funzione è utilizzata per caricare le classi core. Dove \verb|class_name| è il nome della classe che si vuole caricare. Si utilizzeranno i termini classe e libreria senza distinzioni. Per esempio se si vuole inviare una email con CodeIgniter, il primo passo sarà quello di caricare la classe Email con il proprio controller:
+
+\begin{code}
+$this->load->library('email')
+\end{code}
+
+Una volta fatto, la libreria sarà pronta per essere utilizzata, con la funzione \verb|$this->email->some_function()|.
+
+I file della libreria possono essere memorizzati nelle sottodirectory all'interno della cartella principale ``libraries'', o dentro la propria cartella \sys{/application/libraries}. Per caricare un file che si trova in una sottodirectory, è sufficiente includere il percorso, relativo alla cartella `libraries''. Ad esempio, se avete il file si trova in:
+
+\begin{code}
+libraries/flavors/chocolate.php
+\end{code}
+
+Questo sarà caricato utilizzando l'istruzione:
+
+\begin{code}
+$this->load->library('flavors/chocolate');
+\end{code}
+
+\'E possibile inserire i file nella sottodirectory desiderata. Inoltre, più librerie possono essere caricate contemporaneamente passando un array di librerie alla funzione di caricamento.
+
+\begin{code}
+$this->load->library(array('email', 'table'));
+\end{code}
+\end{itemize}
+
+\section*{Opzioni}
+Il secondo parametro (opzionale) consente di passare i parametri di configurazione; questo avviene solitamente tramite un array:
+
+\begin{code}
+$config = array (
+                  'mailtype' => 'html',
+                  'charset'  => 'utf-8,
+                  'priority' => '1'
+               );
+
+$this->load->library('email', $config);
+\end{code}
+
+Le opzioni di configurazione di solito possono essere anche impostate tramite un apposito file. Ogni libreria è spiegata in dettaglio nella propria pagina, quindi per maggiori informazioni si rimanda alla lettura della documentazione specifica.
+
+Si prega di prendere nota: quando più librerie vengono fornite in un array come primo parametro, ognuna di esse riceverà le stesse informazioni di parametro.
+
+\section*{Assegnare la Library}
+Se il terzo parametro (opzionale) è vuoto, la libreria sarà assegnata generalmente ad un oggetto con il medesimo nome. Per esempio, se la libreria si chiama Session, essa sarà assegnata ad una variabile di nome \var{\$this->session}. Se si preferisce configurare il nome della propria classe, si può indicare il suo valore come terzo parametro:
+
+\begin{code}
+$this->load->library('session', '', 'my_session');
+
+// la classe Session è ora disponibile utilizzando:
+
+$this->my_session
+\end{code}
+
+Se più librerie sono specificate in un array e fornite come primo parametro della funzione, questo parametro sarà scartato.
+\begin{itemize}
+
+\item \verb|$this->load->view('file_name', $data, true/false)| questa funzione viene utilizzata per caricare la propria Vista. Il primo parametro è obbligatorio poiché rappresenta il nome della Vista das caricare. Nota: l'estensione del file php non deve essere specificata se non si utilizza un file differente da \fil{.php}.
+
+Il secondo parametro opzionale può essere un array associativo o un oggetto, che può essere eseguito attraverso la funzione \var{extract} di PHP (\url{http://www.php.net/extract}) per convertire le variabili che possono essere utilizzate nelle Viste. 
+
+Il terzo parametro opzionale consente di modificare il comportamento della funzione in modo che i dati siano restituiti come una stringa piuttosto che inviati al browser. Questo può essere utile se si desidera elaborare i dati in qualche modo: se si imposta il parametro su TRUE saranno restituiti i dati. Il comportamento predefinito è comunque FALSE, e questo fa sì che i dati vengano inviati al browser. \'E necessario assegnare la funzione ad una variabile per recuperare i dati restituiti:
+
+\begin{code}
+$string = $this->load->view('myfile', '', true);
+\end{code}
+
+\item \verb|$this->load->model('nome_Modello')|
+
+\begin{code}
+$this->load->model('nome_Modello');
+\end{code}
+
+Se il proprio Modello si trova in una sottodirectory, si include anche il percorso relativo rispetto alla directory dei propri ``modelli''. Per esempio se il proprio Modello si trova nel percorso \sys{/application/models/blog/queries.php} si utilizzerà il seguente codice:
+
+\begin{code}
+$this->load->model('blog/queries');
+\end{code}
+
+Se si vuole che il proprio Modello sia assegnato ad un oggetto dal nome differente, si può specificare quest'ultimo tramite il secondo parametro della funzione adibita al caricamento:
+
+\begin{code}
+$this->load->model('Model_name', 'fubar');
+
+$this->fubar->function();
+\end{code}
+
+\item \verb|$this->load->database('options', true/false)| questa funzione permette di caricare la classe Database. I due parametri sono opzionali.
+
+\item \verb|$this->load->vars($array)| questa funzione prende in ingresso un array associativo per generare variabili utilizzando la funzione extract del PHP: il risultato è il medesimo che si otterrebbe utilizzando il secondo parametro della funzione \var{\$this->load->view()}. La ragione per cui si potrebbe desiderare di utilizzare questa funzione è che con quest'ultima si possono impostare alcune variabili globali nel costruttore del proprio controller, i quali saranno resi disponibili in qualsiasi Vista caricata. \'E possibile avere più chiamate a questa funzione. I dati vengono memorizzati nella cache e fusi in un unico array per essere convertiti in variabili.
+
+\item \verb|$this->load->get_var($key)| questa funzione controlla l'array associativo delle variabili disponibili nelle proprie Viste. Risulta utile, se per qualsiasi ragione una variabile è impostata in una libreria oppure se un altro metodo del controller utilizza \var{\$this->load->vars()}.
+
+\item \verb|$this->load->helper('nome_file')| essa carica i file helper dove \verb|nome_file| è per l'appunto il nome del file, senza l'estensione \verb|_helper.php|.
+
+\item \verb|$this->load->file('filepath/filename', true/false)| si tratta di una funzione generica per il caricamento di un file. Si fornisce alla funzione il percorso del file e il nome come primo parametro, e questa aprirà e leggerà il contenuto del file. Per impostazione predefinita i dati sono inviati direttamente al browser come per esempio una Vista, ma è possibile impostare il secondo parametro su TRUE se si vuole che i dati siano restituiti come una stringa.
+
+\item \verb|$this->load->language('file_name')| questa funzione restituisce un alias alla funzione language (caricamento della lingua):
+
+\begin{code}
+$this->lang->load()
+\end{code}
+
+\item \verb|$this->load->config('file_name')| questa funzione fornisce un alias alla funzione config (caricamento dei file):
+
+\begin{code}
+$this->config->load()
+\end{code}
+\end{itemize}
+
+\section*{Package}
+Un pacchetto applicativo (definito spesso come application package) consente la facile distribuzione di gruppi di risorse in una singola directory, insieme con le proprie librerie, modelli, helper, config e file di linguaggio. Si raccomanda di inserire il proprio package nella cartella \verb|application/third_party|. Qui di seguito si fornisce come esempio una mappa di una directory di package:
+
+\begin{code}
+/application/third_party/foo_bar
+
+config/
+helpers/
+language/
+libraries/
+models/
+\end{code}
+
+Qualunque sia lo scopo dell'application package ``Foo bar'', questo ha i suoi file di configurazione, helper, file di lingua, librerie e modelli. Per utilizzare queste risorse nel proprio controller, è necessario prima informare la classe Loader che queste verranno caricate da un package, aggiungendo il percorso di quest'ultimo.
+
+\begin{itemize}
+\item \verb|$this->load->add_package_path()| Aggiungendo il percorso del package si indica alla classe Loader di anteporre questo percorso alle successive richieste delle risorse. Come esempio prendiamo in considerazione il package Foo Bar di cui sopra che ha una libreria denominata \verb|Foo_bar.php|. Il nostro controller sarà pertanto:
+
+\begin{code}
+$this->load->add_package_path(APPPATH.'third_party/foo_bar/');
+$this->load->library('foo_bar');
+\end{code}
+
+\item \verb|$this->load->remove_package_path()| quando il proprio controller ha terminato di utilizzare le risorse di un application package e, in particolare si ha bisogno di lavorare con un altro application package, si potrebbe desiderare di rimuovere il suo percorso, in modo che il Loader non appaia più nella cartella delle risorse. Per rimuovere l'ultimo percorso aggiunto, basta semplicemente chiamare il metodo senza alcun parametro.
+
+Altrimenti, se si vuole rimuovere il percorso di uno specifico package, si deve specificare lo stesso percorso precedentemente fornito alla funzione \verb|add_package_path()|.
+
+\begin{code}
+$this->load->remove_package_path(APPPATH.'third_party/foo_bar/');
+\end{code}
+\end{itemize}
+
+\section*{Package view}
+Per impostazione predefinita i percorsi delle Viste vengono impostati tramite \verb|add_package_path()|. Si scorrono i percorsi delle Viste e non appena si trova una corrispondenza, la Vista viene caricata. \'E possibile che si verifichino delle collisioni con i nomi delle Viste, aspetto che preclude il loro caricamento. Per evitare questo inconveniente si imposta un secondo parametro (opzionale) su FALSE, quando si richiama la funzione \verb|add_package_path()|.
+
+\begin{code}
+$this->load->add_package_path(APPPATH.'my_app', TRUE);
+$this->load->view('my_app_index'); // Load
+$this->load->view('welcome_message'); // Non carica il messaggio predefinito welcome_message b/c il secondo parametro di add_package_path è TRUE
+
+// Reset
+$this->load->remove_package_path(APPPATH.'my_app');
+
+// Nuovamente senza il secondo parametro
+$this->load->add_package_path(APPPATH.'my_app', TRUE);
+$this->load->view('my_app_index'); // Load
+$this->load->view('welcome_message'); // Load
+\end{code}

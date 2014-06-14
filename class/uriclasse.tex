@@ -1,0 +1,137 @@
+%************************************************
+\subsection{Classe URI}
+\label{class:uriclasse}
+%************************************************
+
+Questa classe fornisce un'insieme di funzioni per recuperare preziosi dati dalle proprie stringhe URI. Se si utilizza l'instradamento URI, è possibile anche ottenere informazioni sui segmenti re-instradati. Questa classe, come altre presenti in CodeIgniter è inizializzata automaticamente dal sistema: nessun intervento manuale è necessario.
+
+\begin{itemize}
+\item \verb|$this->uri->segment(n)| permette di recuperare uno specifico segmento, individuato dal valore \var{n}. La numerazione dei segmenti avviene da sinistra a destra. Per esempio, se l'\ac{URL} completo è il seguente:
+
+\begin{code}
+http://example.com/index.php/news/local/metro/crime_is_up
+\end{code}
+
+I numeri di segmento saranno così indicati:
+
+\begin{enumerate}
+\item news
+\item local
+\item metro
+\item \verb|crime_is_up|
+\end{enumerate}
+
+Per impostazione predefinita la funzione restituisce FALSE se il segmento indicato non esiste. Esiste anche un parametro secondario opzionale che permette di impostare autonomamente il valore predefinito se il segmento non esiste. Per esempio la funzione successiva restituisce zero se il segmento non esiste.
+
+\begin{code}
+$product_id = $this->uri->segment(3, 0);
+\end{code}
+
+Questa funzione consente di evitare di dover scrivere un codice come questo:
+
+\begin{code}
+if ($this->uri->segment(3) === FALSE)
+{
+    $product_id = 0;
+}
+else
+{
+    $product_id = $this->uri->segment(3);
+}
+\end{code}
+
+\item \verb|$this->uri->rsegment(n)| questa funzione è identica a quella precedente, tranne che consente di recuperare un segmento specifico dal proprio URI re-indirizzato. Questo, nel caso in cui si stia usando la funzione URI Routing di CodeIgniter (si veda la sezione\vref{sec:uri}).
+
+\item \verb|$this->uri->slash_segment(n)| si differenzia  da \verb|$this->uri->segment()| solo per il fatto che aggiunge uno slash al segmento, la cui posizione è determinata dal secondo parametro. Se il parametro non viene utilizzato, viene aggiunto uno slash alla fine. Ecco alcuni esempi:
+
+\begin{code}
+$this->uri->slash_segment(3); // slash finale
+$this->uri->slash_segment(3, 'leading'); // slash iniziale
+$this->uri->slash_segment(3, 'both'); // slash all'inizio e alla fine
+\end{code}
+
+Restitiscono rispettivamente:
+
+\begin{itemize}
+\item segment/
+\item /segment
+\item /segment/
+\end{itemize}
+
+\item \verb|$this->uri->slash_rsegment(n)| questa funzione identica alla precedente aggiunge uno slash all'URI reinstradato (si deve utilizzare la funzionalità URI Rounting).
+
+\item \verb|$this->uri->uri_to_assoc(n)| trasforma un segmento URI in un array associativo di chiavi/coppie di valori. Si consideri il seguente URI:
+
+\begin{code}
+index.php/user/search/name/joe/location/UK/gender/male
+\end{code}
+
+L'URI verrà così trasformato in un array associativo come nel prototipo seguente:
+
+\begin{code}
+[array]
+(
+    'name' => 'joe'
+    'location'	=> 'UK'
+    'gender'	=> 'male'
+)
+\end{code}
+
+Il primo parametro della funzione definisce un offset che per valore predefinito è uguale a 3.
+
+Il secondo parametro permette di impostare i nomi delle key predefinite, in modo che l'array restituito dalla funzione conterrà sempre gli indici attesi, anche se manca l'URI. Per esempio:
+
+\begin{code}
+$default = array('name', 'gender', 'location', 'type', 'sort');
+
+$array = $this->uri->uri_to_assoc(3, $default);
+\end{code}
+
+Se l'URI non contiene un valore predefinito, verrà impostato su quel nome un indice di array con un valore FALSE.
+
+Infine, se un valore corrispondente non è disponibile per una determinata chiave (se vi è un numero dispari di segmenti URI) il valore verrà impostato su FALSE.
+
+\item \verb|$this->uri->ruri_to_assoc(n)| si differenzia dalla precedente funzione per il fatto che viene creato un array associativo utilizzando l'URI reindirizzato.
+
+\item \verb|$this->uri->assoc_to_uri()| prende un array associativo e genera da esso una stringa URI. Le chiavi dell'array saranno incluse nella stringa. Esempio:
+
+\begin{code}
+$array = array('product' => 'shoes', 'size' => 'large', 'color' => 'red');
+
+$str = $this->uri->assoc_to_uri($array);
+
+// Produce: product/shoes/size/large/color/red
+\end{code}
+
+\item \verb|$this->uri->uri_string()| restituisce una stringa con un URI completo. Per esempio se il proprio URL completo è il seguente:
+
+\begin{code}
+http://example.com/index.php/news/local/345
+\end{code}
+
+La funzione restituisce:
+
+\begin{code}
+news/local/345
+\end{code}
+
+\item \verb|$this->uri->ruri_string()| si differenzia dalla funzione precedente per il fatto che restituisce l'URI reindirizzato.
+
+\item \verb|$this->uri->total_segments()| restituisce il numero totale di segmenti.
+
+\item \verb|$this->uri->total_rsegments()| restituisce il numero totale di segmenti nell'URI reindirizzato.
+
+\item \verb|$this->uri->segment_array()| restituisce un array che contiene i segmenti dell'URI. Per esempio:
+
+\begin{code}
+$segs = $this->uri->segment_array();
+
+foreach ($segs as $segment)
+{
+    echo $segment;
+    echo '<br />';
+}
+\end{code}
+
+\item \verb|$this->uri->rsegment_array()| questa funzione è identica a quella precedente, tranne che restituisce l'array di segmenti dell'URI re-indirizzato nel caso in cui si stia usando la funzione URI Routing di CodeIgniter.
+\end{itemize}

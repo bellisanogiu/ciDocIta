@@ -1,0 +1,29 @@
+%************************************************
+\section{Helper Email}
+\label{helper:email}
+%************************************************
+
+L'Helper fornisce assistenza quando si lavora con le Email. Per funzionalità più potenti comunque si rimanda alla classe Email\vpageref{class:email}.
+
+L'Helper si carica con l'istruzione:
+
+\begin{code}
+$this->load->helper('email');
+\end{code}
+
+\verb|valid_email('email')| controlla se una email è correttamente formattata, ma non fornisce alcuna garanzia o prova che l'email sarà ricevuta dal destinatario. Il valore restituito può essere TRUE/FALSE.
+
+\begin{code}
+$this->load->helper('email');
+
+if (valid_email('email@somesite.com'))
+{
+    echo 'email valida';
+}
+else
+{
+    echo 'email non valida';
+}
+\end{code}
+
+\verb|send_email('recipient', 'subject', 'message')| invia una email utilizzando la funzione nativa PHP \var{mail()}. Per funzionalità più potenti comunque si rimanda alla classe Email\vpageref{class:email}.

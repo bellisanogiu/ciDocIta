@@ -1,0 +1,30 @@
+%************************************************
+\section{Helper Cookie}
+\label{helper:cookie}
+%************************************************
+
+L'Helper viene caricato con il seguente codice:
+
+\begin{code}
+$this->load->helper('cookie');
+\end{code}
+
+Sono tre le funzioni messe a disposizione dall'Helper che assistono lo sviluppatore nel lavoro con i cookie:
+
+\begin{itemize}
+\item \verb|set_cookie()| questa funzione fornisce alla propria Vista una sintassi intuitiva per l'impostazione dei cookie del browser. Per maggiori informazioni, si faccia riferimento alla classe Input\vpageref{class:input}.
+
+\item \verb|get_cookie()| fornisce alla propria Vista una sintassi intuitiva per recuperare i cookie del browser. Per maggiori informazioni, si faccia riferimento alla classe Input\vpageref{class:input}.
+
+\item \verb|delete_cookie()| cancella un cookie specificando il solo nome:
+
+\begin{code}
+delete_cookie("name");
+\end{code}
+
+Questa funzione è identica a \verb|set_cookie()|, tranne che non è caratterizzata da un valore e da parametri di scadenza. \'E possibile inviare un array di valori nel primo parametro oppure si possono impostare i singoli parametri.
+
+\begin{code}
+delete_cookie($name, $domain, $path, $prefix)
+\end{code}
+\end{itemize}

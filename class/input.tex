@@ -1,0 +1,216 @@
+%************************************************
+\section{Classe Input}
+\label{class:input}
+%************************************************
+
+La classe Input svolge due importanti compiti:
+
+\begin{itemize}
+\item effettua una elaborazione preventiva (pre-processing) dei dati per la sicurezza
+\item fornisce alcune funzioni helper per recuperare i dati di input ed elaborarli preventivamente
+\end{itemize}
+
+Nota: Questa classe viene inizializzata automaticamente dal sistema in modo che non sia necessario farlo manualmente.
+
+\section*{Security Filtering}
+La funzione di filtro di sicurezza viene chiamata automaticamente quando un nuovo controller viene invocato. 
+
+\begin{itemize}
+\item se \verb|$config['allow_get_array']| assume il valore FALSE (quello di default è TRUE), distrugge l'array globale GET
+\item elimina tutte le variabili globali nel \verb|register_globals| se abilitato
+\item filtra le chiavi dell'array GET/POST/COOKIE permettendo unicamente caratteri alfanumerici (e pochi altri)
+\item fornisce il filtro \ac{XSS} che può essere abilitato globalmente o sotto richiesta
+\item standardizza i caratteri di ritorno a capo in \verb|\n| (in Windows \verb|\r\n|)
+\end{itemize}
+
+\section*{Filtro XSS}
+La classe Input permette di filtrare i dati di input automaticamente prevenendo così gli attacchi basati su cross-site scripting. Se si desidera abilitare il filtro per essere eseguito automaticamente ogni volta che si incontra un dato POST oppure COOKIE, è necessario modificare il file \fil{/application/config/config.php}:
+
+\begin{code}
+$config['global_xss_filtering'] = TRUE;
+\end{code}
+
+Si consiglia di leggere la documentazione della classe Security per maggiori informazioni \vref{class:sicurezza}.
+
+\section*{Dati POST, COOKIE o SERVER}
+CodeIgniter è dotato di tre funzioni helper che consentono di ottenere elementi POST, COOKIE e SERVER. Il vantaggio principale nell'utilizzare le funzioni previste, piuttosto che utilizzare le funzioni native \ac{PHP} come (\verb|$_POST['qualcosa']|) è che le funzioni di CodeIgniter verificano se l'elemento esiste: in caso contrario restituiscono FALSE. Ciò consente di utilizzare comodamente i dati senza dover verificare se un elemento esiste in primo luogo. In altre parole, normalmente si dovrebbe fare qualcosa di simile a questo:
+
+\begin{code}
+if ( ! isset($_POST['qualcosa']))
+{
+    $something = FALSE;
+}
+else
+{
+    $something = $_POST['qualcosa'];
+}
+\end{code}
+
+Con le funzioni di CodeIgniter invece il processo è molto più semplice:
+
+\begin{code}
+$something = $this->input->post('qualcosa');
+\end{code}
+
+Le tre funzioni che verranno esaminate nel dettaglio sono:
+
+\begin{itemize}
+\item \$this->input->post()
+\item \$this->input->cookie()
+\item \$this->input->server()
+\end{itemize}
+
+\verb|$this->input->post()| il primo parametro della funzione contiene il nome dell'elemento POST che si sta cercando:
+
+\begin{code}
+$this->input->post('qualche_dato');
+\end{code}
+
+La funzione restituisce FALSe se l'elemento che si vuole recuperare non esiste. 
+
+Il secondo parametro (opzionale) permette di eseguire i dati attraverso il filtro \ac{XSS}. Per abilitare quest'ultimo si imposti il secondo parametro su TRUE.
+
+\begin{code}
+$this->input->post('qualche_dato', TRUE);
+\end{code}
+
+Se la funzione viene chiamata senza parametri, verrà restituito un array con tutti gli elementi POST.
+
+Per ottenere tutti gli elementi POST e passarli al filtro \ac{XSS} si imposti il primo parametro della funzione con NULL. Questa restituirà FALSE se non ci sono elementi nel POST.
+
+\begin{code}
+$this->input->post(NULL, TRUE); // restituisce tutti gli elementi POST con filtro XSS
+$this->input->post(); // restituisce tutti gli elementi POST senza filtro XSS
+\end{code}
+
+\verb|$this->input->get()| questa funzione è identica alla precedente, solo che viene utilizzata per recuperare i dati GET.
+
+\begin{code}
+$this->input->get('qualche_dato', TRUE);
+\end{code}
+
+Per ottenere un array con tutti gli elementi GET chiamare la funzione senza alcun parametro.
+
+Per ottenere tutti gli elmenti GET e passarli attraverso il filtro \ac{XSS}, si imposti il primo parametro su NULL. La funzione restituirà FALSE se non ci sono elementi da recuperare.
+
+\begin{code}
+$this->input->get(NULL, TRUE); // restituisce tutti gli elementi GET con filtro XSS
+$this->input->get(); // restituisce tutti gli elementi GET senza filtro XSS
+\end{code}
+
+\verb|$this->input->get_post()| questa funzione cercherà di recuperare i dati sia da GET che da POST, incominciando prima da quest'ultimo.
+
+\begin{code}
+$this->input->get_post('qualche_dato', TRUE);
+\end{code}
+
+\verb|$this->input->cookie()| questa funzione è identica alla funzione post, solo che viene utilizzata per recuperare i dati cookie:
+
+\begin{code}
+$this->input->cookie('qualche_dato', TRUE);
+\end{code}
+
+\verb|$this->input->server()| viene utilizzate per recuperare i dati server:
+
+\begin{code}
+$this->input->server('qualche_dato');
+\end{code}
+
+\verb|$this->input->set_cookie()| imposta un cookie contenente i valori specificati. Ci sono due modi per passare le informazioni a questa funzione in modo che un cookie possa essere impostato: Metodo Array e Parametri discreti:
+
+\subsection*{Metodo Array}
+Il Metodo Array utilizza un array associativo passato come primo parametro:
+
+\begin{code}
+$cookie = array(
+    'name'   => 'Il nome del Cookie',
+    'value'  => 'Il valore',
+    'expire' => '86500',
+    'domain' => '.un-dominio.com',
+    'path'   => '/',
+    'prefix' => 'mioprefisso_',
+    'secure' => TRUE
+);
+
+$this->input->set_cookie($cookie);
+\end{code}
+
+Nota: solo il nome e il valore sono obbligatori. Per eliminare un cookie impostato si lasci vuoto il parametro ``value''.
+
+La scadenza è impostata in secondi, che devono essere sommati al tempo corrente. Se non si include il tempo, ma solo il numero di secondi, questi determineranno il numero di secondi per i quali il cookie sarà valido. Se la scadenza è impostata a zero il cookie durerà solo fino a quando il browser rimarrà aperto.
+
+Per i cookie del sito, a prescindere da come il sito viene ``richiesto'', viene aggiunto al dominio il suo \ac{URL} partendo da un periodo, come questo \verb|.tuo-dominio.com|
+
+Il percorso non è di solito necessario in quanto la funzione imposta un percorso root.
+
+Il prefisso è necessario solo se si vogliono evitare conflitti con altri cookie che hanno lo stesso nome sul server.
+
+Il valore booleano \var{secure} è necessario solo se si vuole rendere un cookie sicuro impostandolo su TRUE.
+
+\subsection*{Parametri discreti}
+Se si preferisce, è possibile impostare i cookie passando i dati come singoli parametri:
+
+\begin{code}
+$this->input->set_cookie($name, $value, $expire, $domain, $path, $prefix, $secure);
+\end{code}
+
+\verb|$this->input->cookie()| permette di recuperare un cookie. Il primo parametro conterrà il nome del cookie che si sta cercando (incluso qualsiasi prefisso).
+
+\begin{code}
+cookie('qualche_cookie');
+\end{code}
+
+Questa funzione restituisce FALSE se l'elemento che si sta cercando di recuperare non esiste. Il secondo parametro permette di eseguire i dati attraverso il filtro \ac{XSS} che verrà abilitato impostando il secondo parametro su TRUE.
+
+\begin{code}
+cookie('qulche_cookie', TRUE);
+\end{code}
+
+\verb|$this->input->ip_address()| restituisce l'indirizzo IP dell'utente corrente. Se l'indirizzo IP non è valido, la funzione restituisce l'IP: 0.0.0.0.
+
+\begin{code}
+echo $this->input->ip_address();
+\end{code}
+
+\verb|$this->input->valid_ip($ip)| Prende un indirizzo IP in ingresso e restituisce un valore booleano TRUE/FALSE se è valido o meno. La funzione \verb|$this->input->ip_address()| effettua la validazione dell'IP automaticamente.
+
+\begin{code}
+if ( ! $this->input->valid_ip($ip))
+{
+     echo 'Non valido';
+}
+else
+{
+     echo 'Valido';
+}
+\end{code}
+
+\'E accettata opzionalmente una stringa come secondo parametro di IPv4 oppure IPv6 per specificare il formato IP. Per impostazione predefinita vengono verificati tutti e due i formati.
+
+\verb|$this->input->user_agent()| restituisce lo user agent (browser web) dell'utente corrente. Restituisce FALSE se non è disponibile.
+
+\begin{code}
+echo $this->input->user_agent();
+\end{code}
+
+Per maggiori informazioni si guardi la classe User Agent \vpageref{class:useragent}.
+
+\verb|$this->input->request_headers()| \'E utile se si lavora in un ambiente diverso da Apache dove la funzione \verb|apache_request_headers()| non è supportata. Restituisce un array di header.
+
+\begin{code}
+$headers = $this->input->request_headers();
+\end{code}
+
+\verb|$this->input->get_request_header()| restituisce un singolo elemento dell'array di header richiesto.
+
+\begin{code}
+$this->input->get_request_header('qualche-header', TRUE);
+\end{code}
+
+\verb|$this->input->is_ajax_request()| permette di verificare se l'header del server \verb|HTTP_X_REQUESTED_WITH| è stato impostato e restituisce un valore booleano.
+
+\verb|$this->input->is_cli_request()| verifica se la costante STDIN è impostata, che è un modo intrinsecamente sicuro per vedere se PHP viene eseguito sulla riga di comando.
+
+\begin{code}
+$this->input->is_cli_request()
+\end{code}

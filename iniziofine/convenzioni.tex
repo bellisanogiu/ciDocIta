@@ -1,0 +1,37 @@
+% !TEX encoding = UTF-8
+% !TEX TS-program = pdflatex
+% !TEX root = ../Articolo.tex
+% !TEX spellcheck = it-IT
+
+%*******************************************************
+% Convenzioni
+%*******************************************************
+\phantomsection
+\pdfbookmark{Sommario}{Sommario}
+\clearpage
+%section*{Convenzioni}
+\chapter{Convenzioni}
+Nella guida di stampo tecnico, sono presenti riferimenti a codice inline, directory, percorsi di sistema e variabili. Si è cercato di essere il più possibile chiari adottando le seguenti convenzioni basate su alcune regole e colori:
+
+\begin{enumerate}
+\item Nonostante il termine ``funzione'' appartenga alla programmazione procedurale e il ``metodo'' a quella ad oggetti, in questo testo si utilizzano senza distinzione i due termini.
+\item Diverse parole sono virgolettate, tra cui comandi, nomi di file, o percorsi di sistema. Se non diversamente specificato, i comandi ``tra virgolette'' devono essere eseguiti senza i relativi doppi apici ``''.
+\item Il riferimento a directory di sistema, di CodeIgniter verranno evidenziate con un codice come \sys{application/view/}. I alcuni casi il percorso indicato potrebbe contenere nella parte finale anche il file a cui si fa riferimento come in \sys{application/view/index.php}
+\item I riferimenti a variabili, costanti e ai valori loro assegnati saranno evidenziati da espressioni come \var{var = view()}.
+\item Quando si vorrà mettere in risalto un nome proprio di un file saranno evidenziate con il colore \fil{index.php}.
+\item I listati di codice si è preferito metterli in risalto all'interno di apposite tabelle in questo modo:
+
+\begin{code}
+// caricamento dell'Helper per la gestione degli array
+$this->load->helper('array');
+
+// definizione di un array
+$mioarray = array('nome' => 'giuseppe', 
+	'cognome' => 'bellisano', 
+	'citta' => 'cagliari'
+	);
+
+// restituzione di un valore tramite funzione fornita dall'Helper
+echo element('nome', $mioarray);
+\end{code}
+\end{enumerate}

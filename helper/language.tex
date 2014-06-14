@@ -1,0 +1,19 @@
+%************************************************
+\section{Helper Language}
+\label{helper:language}
+%************************************************
+
+L'Helper viene caricato con l'istruzione:
+
+\begin{code}
+$this->load->helper('language');
+\end{code}
+
+La funzione disponibile con questo Helper è la seguente:
+
+\verb|lang('language line', 'element id')| restituisce una riga di testo caricata da un file di lingua  con sintassi semplificata. Questo metodo può essere per le Viste può essere preferibile alla funzione \verb|$this->lang->line()|. Il secondo parametro opzionale sarà anche l'output del label del form. Per esempio:
+
+\begin{code}
+echo lang('language_key', 'form_item_id');
+// diventa <label for="form_item_id">language_key</label>
+\end{code}

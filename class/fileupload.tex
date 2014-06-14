@@ -1,0 +1,261 @@
+%************************************************
+\section{Classe Upload File}
+\label{class:upload}
+%************************************************
+
+Questa classe fornisce diversi parametri per aiutare lo sviluppatore nel caricare i file sul server. Tra le preferenze possiamo contare molte parametri che circoscrivono il tipo e la dimensione del file.
+
+\section*{Le fasi}
+Il processo di caricamento di un file avviene attraverso le seguenti fasi:
+
+\begin{itemize}
+\item viene visualizzato un form attraverso cui l'utente seleziona il file e lo carica sul server(upload)
+\item quando il form viene eseguito, il file viene caricato sul server nel percorso specificato
+\item successivamente il file viene validato per essere sicuri che risponda ai parametri corretti
+\item una volta caricato con successo, verrà visualizzato un messaggio per confermare l'esecuzione corretta dell'operazione
+\end{itemize}
+
+\section*{Creare un form di upload}
+Si apra il proprio editor di testo preferito, quindi si crei un form con il nome \verb|upload_form.php| e lo si salvi nel percorso \sys{/applications/views/}. Per esempio:
+
+\begin{html}
+<html>
+<head>
+<title>Upload Form</title>
+</head>
+<body>
+
+<?php echo $error;?>
+
+<?php echo form_open_multipart('upload/do_upload');?>
+<input type="file" name="userfile" size="20" />
+
+<br /><br />
+
+<input type="submit" value="upload" />
+
+</form>
+
+</body>
+</html>
+\end{html}
+
+Per creare il tag di apertura del form si è utilizzato un Helper Form. L'upload dei file richiede un ``form multipart'', in modo che l'Helper si occupi della sintassi corretta per noi. \'E presente anche una variabile \var{\$error} che mostra i messaggi di errore nel caso in cui l'utente faccia qualcosa di sbagliato.
+
+\section*{Pagina di successo}
+Si crei un nuovo form con il nome \verb|upload_success.php| e lo si salvi nel percorso \sys{/applications/views/}. Per esempio:
+
+\begin{html}
+<html>
+<head>
+<title>Upload Form</title>
+</head>
+<body>
+
+<h3>Il file è stato caricato con successo</h3>
+
+<ul>
+<?php foreach ($upload_data as $item => $value):?>
+<li><?php echo $item;?>: <?php echo $value;?></li>
+<?php endforeach; ?>
+</ul>
+
+<p><?php echo anchor('upload', 'Carica un altro file!'); ?></p>
+
+</body>
+</html>
+\end{html}
+
+\section*{Il Controller}
+Sempre utilizzando un editor di testo, nel percorso \sys{/applications/controllers/} si definisca il file \var{upload.php} con il codice seguente:
+
+\begin{code}
+<?php
+
+class Upload extends CI_Controller {
+
+	function __construct()
+	{
+		parent::__construct();
+		$this->load->helper(array('form', 'url'));
+	}
+
+	function index()
+	{
+		$this->load->view('upload_form', array('error' => ' ' ));
+	}
+
+	function do_upload()
+	{
+		$config['upload_path'] = './uploads/';
+		$config['allowed_types'] = 'gif|jpg|png';
+		$config['max_size']	= '100';
+		$config['max_width']  = '1024';
+		$config['max_height']  = '768';
+
+		$this->load->library('upload', $config);
+
+		if ( ! $this->upload->do_upload())
+		{
+			$error = array('error' => $this->upload->display_errors());
+
+			$this->load->view('upload_form', $error);
+		}
+		else
+		{
+			$data = array('upload_data' => $this->upload->data());
+
+			$this->load->view('upload_success', $data);
+		}
+	}
+}
+?>
+\end{code}
+
+\section*{La cartella di upload}
+Ovviamente è necessaria una cartella che sia adibita a contenere i file caricati. Questa deve essere creata nella directory root di CodeIgniter con il nome \var{uploads} e i permessi di scrittura, lettura, esecuzione (777) abilitati.
+
+\'E possibile provare il form appena creato attraverso un \ac{URL} come il seguente:
+
+\begin{code}
+example.com/index.php/upload/
+\end{code}
+
+Provando ad effettuare l'upload di un file immagine (come jpeg, gif o png), se tutto è corretto, la cartella di destinazione alla fine dell'operazione di upload conterrà i file selezionati.
+
+\section*{Reference}
+Come in altre classi di CodeIgniter, è possibile inizializzare la classe Upload utilizzando l'istruzione:
+
+\begin{code}
+$this->load->library('upload');
+\end{code}
+
+Una volta caricata, l'oggetto della libreria sarà disponibile con \verb|$this->upload|
+
+\section*{Impostare le preferenze}
+Le impostazioni della classe possono essere definite nel controller modificando i seguenti parametri:
+
+\begin{code}
+$config['upload_path'] = './uploads/';
+$config['allowed_types'] = 'gif|jpg|png';
+$config['max_size']	= '100';
+$config['max_width'] = '1024';
+$config['max_height'] = '768';
+
+$this->load->library('upload', $config);
+
+// In alternativa è possibile impostare le preferenze richiamando la funzione di inizializzazione. Utile se si carica automaticamente la classe con:
+$this->upload->initialize($config);
+\end{code}
+
+\section*{Elenco dei parametri}
+Ecco un elenco di tutte le impostazioni e dei valori utilizzabili:
+
+\scriptsize
+\begin{tabx}{lXXX}
+%\caption{Preferenze Classe Upload}
+\toprule
+Parametro & Val.Default & Opzioni & Descrizione \\ 
+\midrule
+\verb|upload_path| & Nessuno & Nessuno & Il percorso della cartella in cui l'upload viene effettuato. La cartella che deve avere i permessi di scrittura e può avere un path assoluto o relativo \\
+\midrule
+\verb|allowed_types| & Nessuno & Nessuno & I tipi MIME corrispondenti ai tipi di file che possono essere caricati. Di solito l'estensione del file può essere utilizzato come tipo mime. Separare più tipi con un pipe \\
+\midrule
+\verb|file_name| & Nessuno & Nome del file & Se impostato CodeIgniter rinomina il file caricato con questo nome. L'estensione prevista nel nome del file deve essere un tipo di file consentito \\
+\midrule
+\verb|overwrite| & FALSE & TRUE/FALSE & Se impostato su true, allora se un file con lo stesso nome di quello che si sta caricando esiste, verrà sovrascritto. Se impostato su false, un  verrà aggiunto al nome del file un numerose \\
+\midrule
+\verb|max_size| & 0 & Nessuno & La dimensione massima (in kilobyte) prevista per il file da caricare. Impostare a zero questo valore per non avere alcun limite. Nota: La maggior parte delle installazioni di PHP hanno un limite, specificato nel file php.ini. Di solito questo è di 2 MB (o 2048 KB) per impostazione predefinita \\
+\midrule
+\verb|max_width| & 0 & Nessuno & La massima width (larghezza) in pixel del file. Impostare a zero questo valore per non avere alcun limite \\
+\midrule
+\verb|max_height| & 0 & Nessuno & La massima height (altezza) in pixel del file. Impostare a zero questo valore per non avere alcun limite \\
+\midrule
+\verb|max_filename| & 0 & Nessuno & La lunghezza massima (lenght) del nome del file. Impostare a zero questo valore per non avere alcun limite \\
+\midrule
+\verb|encrypt_name| & FALSE & TRUE/FALSE & Se impostato su TRUE il nome del file verrà convertito in una stringa crittografata casuale. Questo può essere utile se si desidera che il file possa essere salvato con un nome che non possa essere individuate dalla persona che ha effettuato l'upload \\
+\midrule
+\verb|remove_spaces| & TRUE & TRUE/FALSE & Se impostato su TRUE, eventuali spazi nel nome del file verranno convertiti in underscore (sottolineatura). Questa è una opzione raccomandata \\
+\bottomrule
+\end{tabx}
+\normalsize
+
+\section*{Preferenze tramite config}
+Se si preferisce non impostare le preferenze utilizzando il metodo di qui sopra, si può invece utilizzare il file di configurazione \fil{upload.php} in cui verrà aggiunto l'array \verb|\$config|. Si salvi il file di configurazione nel percorso \sys{/ config/upload.php} ed esso verrà utilizzato automaticamente dal sistema. Questo metodo non deve essere utilizzato con \var{\$this->upload->initialize}.
+
+Sono disponibili le seguenti funzioni:
+
+\begin{itemize}
+\item \verb|$this->upload->do_upload()| esegue l'upload in base alle preferenze selezionate. Per impostazione predefinita, la routine di caricamento si aspetta che il file provenga da un campo di form denominato userfile, e il form deve essere di tipo multipart:
+
+\begin{code}
+<form method="post" action="some_action" enctype="multipart/form-data" />
+\end{code}
+
+\begin{code}
+$field_name = "some_field_name";
+$this->upload->do_upload($field_name)
+\end{code}
+
+Se si desidera impostare il proprio campo per il form, lo si può fare semplicemente passando il suo valore alla funzione \verb|do_upload|:
+
+\begin{code}
+$field_name = "some_field_name";
+$this->upload->do_upload($field_name)
+\end{code}
+
+\item \verb|$this->upload->display_errors()| recupera eventuali messaggi di errore se \verb|do_upload()| restituisce FALSE. La funzione non visualizza automaticamente l'errore, ma il suo valore restituito può essere assegnato ad una variabile e utilizzata come si preferisce.
+
+Per impostazione predefinita la funzione di cui sopra spezza ogni errore con un ritorno a capo con il tag \verb|<p>|. \'E comunque possibile modificare questo delimitatore: 
+
+\begin{code}
+$this->upload->display_errors('<p>', '</p>');
+\end{code}
+
+\item \verb|$this->upload->data()| si tratta di una funzione helper che restituisce un array con tutti i dati relativi al file caricato. Qui di seguito si mostra il prototipo dell'array:
+
+\begin{code}
+Array
+(
+    [file_name]    => mypic.jpg
+    [file_type]    => image/jpeg
+    [file_path]    => /path/to/your/upload/
+    [full_path]    => /path/to/your/upload/jpg.jpg
+    [raw_name]     => mypic
+    [orig_name]    => mypic.jpg
+    [client_name]  => mypic.jpg
+    [file_ext]     => .jpg
+    [file_size]    => 22.2
+    [is_image]     => 1
+    [image_width]  => 800
+    [image_height] => 600
+    [image_type]   => jpeg
+    [image_size_str] => width="800" height="200"
+)
+\end{code}
+\end{itemize}
+
+\section*{Parametri dell'array}
+Qui di seguito una descrizione di tutti gli elementi dell'array.
+
+\begin{tabx}{lX}
+\toprule
+Indice & Descrizione \\ 
+\midrule
+\verb|file_name| & il nome del file da caricare compreso di estensione \\ 
+\verb|file_type| & il tipo di Mime del file \\ 
+\verb|file_path| & il percorso assoluto del file sul server \\ 
+\verb|full_path| & il percorso assoluto del file sul server comprensivo del nome del file \\ 
+\verb|raw_name| & il nome del file senza estensione \\ 
+\verb|orig_name| & Il nome originario del file. \'E utile nel caso si sia crittografato il nome del file \\ 
+\verb|client_name| & Il nome del file fornito dallo user agent client, prima di qualsiasi modifica sul nome del file \\ 
+\verb|file_ext| & l'estensione del file comprensivo del simbolo punto (.) \\ 
+\verb|file_size| & la dimensione del file in kilobyte \\ 
+\verb|is_image| & indica se il file è un'immagine. Se è un'immagine il valore è 1, altrimenti è 0 \\ 
+\verb|image_width| &  larghezza dell'immagine (pixel) \\ 
+\verb|image_height| & altezza dell'immagine (pixel) \\ 
+\verb|image_type| & formato dell'immagine. Solitamente è l'estensione senza il simbolo punto (.) \\ 
+\verb|image_size_str| & una stringa che contiene la larghezza e l'altezza. \'E utile quando si deve utilizzare un tag con l'immagine \\ 
+\bottomrule
+\end{tabx}
+\normalsize

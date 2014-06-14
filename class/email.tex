@@ -1,0 +1,189 @@
+%************************************************
+\section{Classe Email}
+\label{class:email}
+%************************************************
+
+La classe di CodeIgniter per le email è caratterizzata da robuste funzionalità capaci di soddisfare la maggior parte delle esigenze:
+
+\begin{itemize}
+\item protocolli multipli: mail, sendmail, SMTP
+\item recipienti multipli
+\item CC e BCC
+\item HTML e emal testuali
+\item allegati
+\item a capo automatico
+\item priorità
+\item modalità batch BCC: le grandi liste e-mail possono essere suddivise in piccoli parti BCC
+\item strumenti Email Debug
+\end{itemize}
+
+\section*{Invio dell'email}
+L'invio di posta elettronica non solo è semplice, ma anche veloce ed immediato. \'E possibile configurare inline ogni impostazione o definirle in un apposito file di configurazione. L'esempio seguente dimostra la facilità con cui è possibile inviare una e-mail. 
+
+Nota: si presuppone che l'e-mail sia spedita da uno dei propri controller.
+
+\begin{code}
+$this->load->library('email');
+
+$this->email->from('your@example.com', 'Your Name');
+$this->email->to('someone@example.com'); 
+$this->email->cc('another@another-example.com'); 
+$this->email->bcc('them@their-example.com'); 
+
+$this->email->subject('Test');
+$this->email->message('Test della classe Email');	
+
+$this->email->send();
+
+echo $this->email->print_debugger();
+\end{code}
+
+\section*{Impostare le preferenze}
+Ci sono diciasette diversi parametri preposti a definire la classe per l'invio dei messaggi di posta elettronica. \'E possibile impostarli manualmente come descritto precedentemente, o automaticamente tramite le preferenze memorizzate nel file di configurazione.Le preferenze sono impostate passando un array di valori alla funzione che inizializza l'email. Ecco un esempio:
+
+\begin{code}
+$config['protocol'] = 'sendmail';
+$config['mailpath'] = '/usr/sbin/sendmail';
+$config['charset'] = 'iso-8859-1';
+$config['wordwrap'] = TRUE;
+
+$this->email->initialize($config);
+\end{code}
+
+Nota: la maggior parte delle preferenze hanno valori predefiniti che verranno utilizzati se non diversamente impostati.
+
+\section*{Impostazione con il file Config}
+Se si preferisce non impostare le preferenze utilizzando il metodo di cui sopra, si può invece utilizzare un file di configurazione. \'E sufficiente creare un nuovo file chiamato \fil{email.php}, aggiungendo al suo interno l'array \var{\$config}. Il file salvato nel percorso \sys{/config/email.php} sarà utilizzato automaticamente e non sarà necessario utilizzare la funzione \verb|$this->email->initialize()|.
+
+\section*{Preferenze dell'email}
+Qui di seguito si riporta una lista di tutte le impostazioni e dei valori che permettono di impostare la classe secondo le proprie esigenze:
+
+\small
+\begin{tabx}{lXXX}
+\toprule
+Preferenze & Val.Default & Opzioni & Descrizione \\
+\midrule
+\verb|useragent| & CodeIgniter & Nessuno & user agent \\ 
+\verb|protocol| & mail & mail, sendmail, smtp & il protocollo di invio email \\ 
+\verb|mailpath| & /usr/sbin/sendmail & Nessuno &  Path Server per Sendmail\\ 
+\verb|smtp_host| & Nessuno & Nessuno & Indirizzo server SMTP \\ 
+\verb|smtp_user| & Nessuno & Nessuno & Username SMTP \\ 
+\verb|smtp_pass| & Nessuno & Nessuno & Password SMTP \\
+\verb|smtp_port| & 25 & Nessuno & Porta SMTP \\ 
+\verb|smtp_timeout| & 5 (sec) & Nessuno & Timeout SMTP \\ 
+\verb|wordwrap| & TRUE & TRUE/FALSE & Abilita il ritorno a capo \\ 
+\verb|wrapchars| & 76 & Nessuno & Imposta il carattere del ritorno a capo \\ 
+\verb|mailtype| & text & text/html & Formato di presentazione dell'email \\ 
+\verb|charset| & utf-8 & Nessuno & Formato dei caratteri (utf-8, iso-8859-1, etc.) \\ 
+\verb|validate| & FALSE & TRUE/FALSE & Abilita la validazione dell'email  \\ 
+\verb|priority| & 3 & 1, 2, 3, 4, 5 & Priorità dell'email. 1 = la più alta. 5 = la più bassa. 3 = normale \\ 
+\verb|crlf| & \verb|\n| & \verb|\r\n|, \verb|\n|, \verb|\r| & Carattere di ritorno a capo  (si usi \verb|r\n| per RFC 822) \\ 
+\verb|newline| & \verb|\n| & \verb|\r\n|, \verb|\n|, \verb|\r| & Carattere di ritorno a capo  (si usi \verb|r\n| per RFC 822) \\ 
+\verb|bcc_batch_mode| & FALSE & TRUE/FALSE & Abilita la modalità  BCC Batch \\ 
+\verb|bcc_batch_size| & 200 & Nessuno & Numero di email nel BCC Batch \\ 
+\bottomrule
+\end{tabx}
+\normalsize
+
+\section*{Reference}
+
+\verb|$this->email->from()| imposta l'indirizzo email e il nome della persona a cui inviare l'email.
+
+\begin{code}
+$this->email->from('you@example.com', 'Il tuo nome');
+\end{code}
+
+\verb|$this->email->reply_to()| imposta il campo ``rispondi a'' (reply to), se questa informazione non è fornita dal campo ``da'' (from):
+
+\begin{code}
+$this->email->reply_to('you@example.com', 'Il tuo nome');
+\end{code}
+
+\verb|$this->email->to()| imposta l'indirizzo di destinazione dell'email che può essere unico o multiplo (più indirizzi):
+
+\begin{code}
+$this->email->to('someone@example.com');
+\end{code}
+
+\begin{code}
+$this->email->to('one@example.com, two@example.com, three@example.com');
+\end{code}
+
+\begin{code}
+$list = array('uno@example.com', 'due@example.com', 'tre@example.com');
+
+$this->email->to($list)
+\end{code}
+
+\verb|$this->email->cc()| imposta il campo \ac{CC}; come nel campo ``to'' può essere un indirizzo singolo, o indirizzi multipli separati da una virgola o definiti da un array. 
+
+\verb|$this->email->bcc()| imposta il campo \ac{BCC}; come nel campo ``to'' può essere un indirizzo singolo, o multipli indirizzi separati da una virgola o definiti da un array. 
+
+\verb|$this->email->subject()| definisce l'oggetto (subject) dell'email.
+
+\begin{code}
+$this->email->subject('Questo è il soggetto');
+\end{code}
+
+\verb|$this->email->message()| definisce il corpo dell'email.
+
+\begin{code}
+$this->email->message('Questo è il testo');
+\end{code}
+
+\verb|$this->email->set_alt_message()| imposta il corpo di un messaggio alternativo. Si tratta di una stringa testuale (facoltativa) che sarebbe bene utilizzare quando si inviano email in formato \ac{HTML} non sempre visualizzabile correttamente. Permette quindi di specificare un messaggio alternativo senza formattazione \ac{HTML} che viene aggiunto alla stringa di intestazione per le persone che non accettano o non visualizzano le e-mail in tale formato. Se non si imposta il proprio messaggio alternativo, CodeIgniter estrarrà il messaggio dalla e-mail \ac{HTML} privandolo dei suoi tag.
+
+\begin{code}
+$this->email->set_alt_message('Un messaggio alternativo');
+\end{code}
+
+\verb|$this->email->clear()| inizializza tutte le variabili delle email ad uno stato vuoto (azzera i valori). Questa funzione viene utilizzata se l'invio delle email viene utilizzato in un ciclo: questo permette ai dati di essere resettati tra le varie fasi dei cicli in modo da assumerne di nuovi.
+
+\begin{code}
+foreach ($list as $name => $address)
+{
+    $this->email->clear();
+
+    $this->email->to($address);
+    $this->email->from('your@example.com');
+    $this->email->subject('Qui le tue informazioni '.$name);
+    $this->email->message('Ciao '.$name.' Qui le tue informazioni richieste.');
+    $this->email->send();
+}
+\end{code}
+
+Se il parametro sarà settato su TRUE ogni allegato (attach) sarà resettato:
+
+\begin{code}
+$this->email->clear(TRUE);
+\end{code}
+
+\verb|$this->email->send()| è la funzione per l'invio delle email, che restituisce un valore booleano TRUE/FALSE a seconda del successo o il fallimento della funzione. \'E quindi preferibile utilizzarla all'interno di una istruzione condizionale:
+
+\begin{code}
+if ( ! $this->email->send())
+{
+	// Genera un errore
+}
+\end{code}
+
+\verb|$this->email->attach()| abilita l'invio di allegati all'email: il primo parametro della funzione indica il percorso/nome dell'allegato. \'E necessario inserire il percorso del file (path) e non un \ac{URL}. Se si desidera utilizzare più allegati, richiamare la funzione più volte:
+
+\begin{code}
+$this->email->attach('/path/to/photo1.jpg');
+$this->email->attach('/path/to/photo2.jpg');
+$this->email->attach('/path/to/photo3.jpg');
+
+$this->email->send();
+\end{code}
+
+\verb|$this->email->print_debugger()| restituisce una stringa che contiene ogni messaggio del server, come l'header, il testo del messaggio. Questa funziona viene utilizzata per il debug.
+
+\subsection*{Word Wrapping}
+Se si abilita il ``ritorno a capo'' (raccomandato per conformarsi a RFC 822) e si dispone di un link molto esteso nella propria e-mail, questo potrebbe essere spezzato su più righe, rendendo non efficace il collegamento. CodeIgniter consente di ignorare manualmente il ritorno a capo all'interno di una parte del messaggio come in questo caso:
+
+\begin{code}
+{unwrap}http://example.com/a_long_link_that_should_not_be_wrapped.html{/unwrap}
+\end{code}
+
+Se quindi si vuole preservare l'integrità dei link o di qualsiasi codice particolare si posizioni il testo che non si vuole spezzare tra i delimitatori: \verb|{unwrap} {/unwrap}|

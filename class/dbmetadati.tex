@@ -1,0 +1,100 @@
+%inizio Table data
+\section*{Tabella metadati}
+Per ottenere informazioni sulle proprie tabelle, CodeIgniter fornisce due preziose funzioni:
+
+\begin{itemize}
+\item \verb|$this->db->list_tables()| restituisce un array che contiene i nomi di tutte le tabelle nel database a cui si è connessi. Per esempio:
+
+\begin{code}
+$tables = $this->db->list_tables();
+
+foreach ($tables as $table)
+{
+   echo $table;
+}
+\end{code}
+
+\item \verb|$this->db->table_exists()| alcune volte è di aiuto conoscere se una determinata tabella esiste prima di eseguire un'operazione su di essa. Questa funzione restituisce un valore booleano TRUE/FALSE:
+
+\begin{code}
+if ($this->db->table_exists('table_name'))
+{
+   // altro codice...
+}
+\end{code}
+
+Si sostituisca il parametro \verb|table_name| con il nome della tabella di cui si vuole verificare l'esistenza.
+\end{itemize}
+
+%fine Table Data
+
+%inizio Field Data
+\section*{Campi metadati}
+
+\begin{itemize}
+\item \verb|$this->db->list_fields()| restituisce un array che contiene i nomi dei campi. Questa query può essere chiamata in due modi:
+
+\begin{enumerate}
+\item \'E possibile fornire il nome della tabella e richiamarla \verb|$this->db->|
+
+\begin{code}
+$fields = $this->db->list_fields('table_name');
+
+foreach ($fields as $field)
+{
+   echo $field;
+}
+\end{code}
+
+\item \'E possibile raccogliere i nomi dei campi associati con qualsiasi query si stia eseguendo chiamando la funzione dall'oggetto risultato della query:
+
+\begin{code}
+$query = $this->db->query('SELECT * FROM some_table'); 
+
+foreach ($query->list_fields() as $field)
+{
+   echo $field;
+}
+\end{code}
+\end{enumerate}
+
+\item \verb|$this->db->field_exists()| alcune volte è di aiuto conoscere se un particolare campo esiste prima di eseguire un'azione: questa funzione restituisce un valore booleano TRUE/FALSE. Si sostituisca il campo \verb|field_name| con il nome dell'attributo che si desidera verificare.
+
+\begin{code}
+if ($this->db->field_exists('field_name', 'table_name'))
+{
+   // altro codice...
+}
+\end{code}
+
+\item \verb|$this->db->field_data()| restituisce un array di oggetti che contiene informazioni sul campo selezionato come per esempio, il tipo di attributo, la lunghezza massima del campo, ecc. Questa funzione può non è disponibile in tutti i database:
+
+\begin{code}
+$fields = $this->db->field_data('table_name');
+
+foreach ($fields as $field)
+{
+   echo $field->name;
+   echo $field->type;
+   echo $field->max_length;
+   echo $field->primary_key;
+}
+\end{code}
+
+Se si è già eseguita una query, è possibile utilizzare un oggetto (risultato della query) invece di fornire il nome della tabella.
+
+\begin{code}
+$query = $this->db->query("LA TUA QUERY");
+$fields = $query->field_data();
+\end{code}
+
+I seguenti metadati sono disponibili nella funzione se supportati dal proprio database:
+
+\begin{enumerate}
+\item \verb|name|: nome della colonna (attributo)
+\item \verb|max_length|: massima lunghezza della colonna
+\item \verb|primary_key|: fornisce il valore ``1'' se l'attributo è una chiave primaria (primary key)
+\item \verb|type|: il tipo di attributo
+\end{enumerate}
+\end{itemize}
+%fine Field Data

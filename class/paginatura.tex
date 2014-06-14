@@ -1,0 +1,113 @@
+%************************************************
+\section{Classe Pagination}
+\label{class:paginatura}
+%************************************************
+
+La classe Pagination è molto intuitiva, oltre ad essere completamente personalizzabile sia dinamicamente che tramite opportuni parametri. Se non si ha dimestichezza con il termine ``pagination'' si può pensare ad esso come alla lista dei link che permettono di navigare di pagina in pagina, come nell'esempio seguente:
+
+\verb|« First < 1 2 3 4 > Last »|
+
+Ecco un semplice codice che introduce la classe pagination all'interno del proprio controller:
+
+\begin{code}
+$this->load->library('pagination');
+
+$config['base_url'] = 'http://example.com/index.php/test/page/';
+$config['total_rows'] = 200;
+$config['per_page'] = 20; 
+
+$this->pagination->initialize($config); 
+
+echo $this->pagination->create_links();
+\end{code}
+
+L'array \var{\$config} contiene le variabili di configurazione: questi viene passato alla funzione \var{\$this->pagination->initialize()}. Esistono almeno una ventina di parametri che si possono impostare, ma almeno tre saranno fondamentali:
+
+\begin{itemize}
+\item \verb|base_url| si tratta dell'URL completo del controller classe/metodo che contiene il pagination. Nell'esempio precedendente, esso punta al controller chiamato \var{Test} e quindi al metodo \var{page}. Si tenga a mente che se si modifica la struttura è possibile apportare le opportune variazioni di instradamento agendo sull'URI (si veda la sezione\vref{sec:uri})
+\item \verb|total_rows| questo numero rappresenta il numero totale di righe che compariranno nella lista dei risultati del pagination. Solitamente questo combacia con il numero di record restituiti dall'interrogazione del database
+\item \verb|per_page| è il numero di elementi che si intende visualizzare in ogni pagina. Nell'esempio precedente, questo parametro è stato impostato su 20 elementi per pagina
+\end{itemize}
+
+La funzione \verb|create_link| restituisce una stringa vuota quando non vi è alcun pagination da mostrare.
+
+Se si preferisce impostare le preferenze non dinamicamente, ma tramite un file di configurazione, si deve definire l'array \var{\$config} all'interno del nuovo file \fil{pagination.php}; questo verrà salvato in sys{/config/pagination.php}. In questo modo, i parametri definiti al suo interno verranno automaticamente utilizzati, senza la necessità di istanziarli tramite la funzione \var{\$this->pagination->initialize()}.
+
+\section*{Parametri di configurazione}
+Qui di seguito vengono mostrati tutti i parametri per configurare il pagination secondo le proprie esigenze:
+
+\begin{itemize}
+\item \verb|$config['uri_segment'] = 3;| la funzione pagination determina automaticamente quale segmento dell'URI contiene il numero di pagina. Se si ha bisogno di qualcosa di diverso è possibile specificarlo
+\item \verb|$config['num_links'] = 2;| il numero di link che si vorrebbe visualizzare prima e dopo il numero di pagina selezionata. Ad esempio, il numero 2 conterrà due cifre (link) su entrambi i lati, come nell'esempio pubblicato in cima alla capitolo
+\item \verb|$config['use_page_numbers'] = TRUE;| per impostazione predefinita, il segmento URI utilizzerà l'indice iniziale per gli elementi che si stanno impaginando. Se si preferisce visualizzare il numero di pagina attuale, si scelga il valore su TRUE
+\item \verb|$config['page_query_string'] = TRUE;| per impostazione predefinita, la libreria pagination assume che si stia utilizzando la segmentazione URI, e costruisce i link come nell'esempio:
+
+\begin{code}
+http://example.com/index.php/test/page/20
+\end{code}
+
+Se si utilizzano gli slash per definire l'URI (query string) e quindi si è impostato su TRUE il parametro \verb|$config['enable_query_strings']|, allora i  link verranno automaticamente impostati utilizzando le stringhe di query (questa opzione può anche essere impostata esplicitamente). Utilizzando il parametro \verb|config['page_query_string'] | con valore TRUE, il link pagination diventerà:
+
+\begin{code}
+http://example.com/index.php?c=test&m=page&per_page=20
+\end{code}
+
+La stringa \verb|per_page| nell'istruzione precedente, è la stringa query che viene passata per default. Il suo valore si può impostare personalizzando il parametro \verb|$config['query_string_segment'] = 'tua_stringa'|
+\end{itemize}
+
+\section*{Markup}
+Se si vuole inserire la pagination tra elementi di markup, si possono utilizzare queste due funzioni:
+
+\begin{itemize}
+\item \verb|$config['full_tag_open'] = '<p>';| definisce il tag di apertura sul lato sinistro dei risultati
+\item \verb|$config['full_tag_close'] = '</p>';| definisce il tag di chiusura sul lato destro dei risultati
+\end{itemize}
+
+\section*{Il link First}
+\begin{itemize}
+\item \verb|$config['first_link'] = 'First';| specifica il testo che comparirà nel link ``first'' (primo) sulla sinistra. \'E possibile disabilitarlo impostando il valore su FALSE
+\item \verb|$config['first_tag_open'] = '<div>';| Il tag di apertura del link first (primo)
+\item \verb|$config['first_tag_close'] = '</div>';| Il tag di chiusura del link first (primo)
+\end{itemize}
+
+\section*{Il link Last}
+\begin{itemize}
+\item \verb|$config['last_link'] = 'Last';| specifica il testo che comparirà  sul link ``last'' (ultimo) sulla destra. \'E possibile disabilitarlo impostando il valore su FALSE
+\item \verb|$config['last_tag_open'] = '<div>';| il tag di apertura del link last (ultimo)
+\item \verb|$config['last_tag_close'] = '</div>';| il tag di chiusera del link last (ultimo)
+\end{itemize}
+
+\section*{Il link Next}
+\begin{itemize}
+\item \verb|$config['next_link'] = '&gt;';| specifica il testo che comparirà  sul link ``next'' (prossimo). \'E possibile disabilitarlo impostando il valore su FALSE
+\item \verb|$config['next_tag_open'] = '<div>';| il tag di apertura del link next (prossimo)
+\item \verb|$config['next_tag_close'] = '</div>';| il tag di chiusura del link next (prossimo)
+\end{itemize}
+
+\section*{Il link Previous}
+
+\begin{itemize}
+\item \verb|$config['prev_link'] = '&lt;';| specifica il testo che si comparirà  sul link ``previous'' (precedente). \'E possibile disabilitarlo, impostando il valore su FALSE
+\item \verb|$config['prev_tag_open'] = '<div>';| il tag di apertura del link previous (precedente)
+\item \verb|$config['prev_tag_close'] = '</div>';| il tag di chiusura del link previous (precedente)
+\end{itemize}
+
+\section*{Il link Current Page}
+\begin{itemize}
+\item \verb|$config['cur_tag_open'] = '<b>';| il tag di apertura del link current (attuale)
+\item \verb|$config['cur_tag_close'] = '</b>';| il tag di chiusura del link current (attuale)
+\end{itemize}
+
+\section*{Il link Digit}
+\begin{itemize}
+\item \verb|$config['num_tag_open'] = '<div>';| il tag di apertura del link digit (cifra)
+\item \verb|$config['num_tag_close'] = '</div>';| il tag di chiusura del link digit (cifra)
+\end{itemize}
+
+\section*{Nascondere le pagine}
+\begin{itemize}
+\item \verb|$config['display_pages'] = FALSE;| questo parametro impostato su FALSE non visualizza la pagina indicata nella lista dei link. In questo modo, per esempio, si possono visualizzare solo i link ``next'' e ``previous''.
+\end{itemize}
+
+\section*{Anchor}
+Nota: è anche possibile aggiungere una propria classe di attributi ad ogni link di navigazione attraverso la classe Pagination. Per fare questo si deve impostare la \verb|anchor_class| con lo stesso nome della classe desiderata.

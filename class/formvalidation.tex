@@ -1,0 +1,827 @@
+%************************************************
+\section{Classe Validazione dei Form}
+\label{class:formvalidation}
+%************************************************
+
+CodeIgniter fornisce una classe che aiuta il lavoro dello sviluppatore quando si tratta di validare i dati inviati al server, minimizzando quindi la scrittura di codice adibito a tale scopo.
+
+\section*{Introduzione}
+
+Prima di spiegare l'approccio utilizzato da CodeIgniter per la convalida dei dati, cerchiamo di descrivere lo scenario ideale:
+
+\begin{enumerate}
+\item viene visualizzato un modulo
+\item esso viene compilato e inviato al server
+\item se il contenuto non è valido o si è dimenticato di inserire un elemento obbligatorio, il form viene visualizzato nuovamente con i dati e un messaggio di errore che descrive il problema
+\item questo processo continua fino a quando non si compila un form interamente valido
+\end{enumerate}
+
+Sul lato ricevente, lo script deve:
+
+\begin{enumerate}
+\item verificare la presenza dei dati richiesti
+\item verificare che i dati siano del tipo corretto, e che soddisfino i criteri impostati. Ad esempio se viene inviato un ``nome utente'' che deve essere convalidato, questo deve contenere solo caratteri consentiti, deve avere una lunghezza minima e non superare la lunghezza massima. Il nome utente non può essere un ``nome utente'' già esistente, o una parola riservata.
+\item effettuare l'escape dei dati per la sicurezza
+\item pre-formattare i dati in caso di necessità
+\item preparare i dati per l'inserimento nel database
+\end{enumerate}
+
+Anche se non c'è niente di terribilmente complesso, il processo precedentemente descritto, di solito richiede una notevole quantità di codice adibito alla visualizzazione dei messaggi di errore, e alle varie strutture di controllo all'interno dei form \ac{HTML}. La validazione dei form anche se semplice, è quasi sempre un lavoro lungo e noioso da implementare.
+
+\section*{Tutorial}
+Quello che segue è una guida per l'implementazione della classe Form Validation di CodeIgniter. Al fine di attuare la validazione dei form si avranno bisogno di tre cose:
+
+\begin{enumerate}
+\item un file View contenente un form
+\item un file View con un messaggio di ``successo'' (da visualizzare in caso di validazione corretta del form)
+\item una funzione di controllo per ricevere ed elaborare i dati inviati
+\end{enumerate}
+
+Creiamo queste tre cose, utilizzando come esempio un form per l'iscrizione di un nuovo utente.
+
+\section*{Il form}
+Utilizzando un editor di testo, si crei il file \fil{myform.php} nel percorso \sys{/applications/views/}. Esso conterrà il codice del nostro form.
+
+\begin{html}
+<html>
+<head>
+<title>My Form</title>
+</head>
+<body>
+
+<?php echo validation_errors(); ?>
+
+<?php echo form_open('form'); ?>
+
+<h5>Username</h5>
+<input type="text" name="username" value="" size="50" />
+
+<h5>Password</h5>
+<input type="text" name="password" value="" size="50" />
+
+<h5>Password Confirm</h5>
+<input type="text" name="passconf" value="" size="50" />
+
+<h5>Email Address</h5>
+<input type="text" name="email" value="" size="50" />
+
+<div><input type="submit" value="Submit" /></div>
+
+</form>
+
+</body>
+</html>
+\end{html}
+
+\section*{La pagina di successo}
+Utilizzando un editor di testo, si definisca il file \fil{formsuccess.php} nel percorso \sys{/applications/views/} che informerà l'utente del corretto invio (e quindi validazione) del form.
+
+\begin{html}
+<html>
+<head>
+<title>My Form</title>
+</head>
+<body>
+
+<h3>Il tuo form è stato inviato correttamente!</h3>
+
+<p><?php echo anchor('form', 'Try it again!'); ?></p>
+
+</body>
+</html>
+\end{html}
+
+\section*{Il controller}
+Utilizzando un editor di testo, si crei il file \fil{form.php} nel percorso \sys{/applications/controllers/}.
+
+\begin{code}
+<?php
+
+class Form extends CI_Controller {
+
+	function index()
+	{
+		$this->load->helper(array('form', 'url'));
+
+		$this->load->library('form_validation');
+
+		if ($this->form_validation->run() == FALSE)
+		{
+			$this->load->view('myform');
+		}
+		else
+		{
+			$this->load->view('formsuccess');
+		}
+	}
+}
+?>
+\end{code}
+
+Molto semplicemente è possibile testare quando appena descritto provando il seguente \ac{URL}:
+
+\begin{code}
+example.com/index.php/form/
+\end{code}
+
+Se al momento si invia il modulo, il form viene caricato nuovamente: questo avviene perché non si è ancora stabilita alcuna regola di convalida. Infatti, poiché la classe Form Validation non sa come comportarsi, questa restituisce FALSE per impostazione predefinita. La funzione \var{run()} restituisce TRUE solo se le regole sono state rispettate senza alcuna eccezione.
+
+\section*{Spiegazione}
+Qualcuno avrà notato diverse cose sulle pagine di cui sopra:
+
+Il file \fil{myform.php} è un form standard con un paio di eccezioni:
+
+\begin{enumerate}
+\item esso usa un Helper Form per definire un form adibito all'inserimento dei dati. Anche se non è strettamente necessario, poiché è possibile utilizzare lo standard \ac{HTML} l'utilizzo dell'helper genera l'azione dell'URL automaticamente, in base all'URL impostato nel file di configurazione. Questo rende l'applicazione maggiormente portabile nel caso in cui gli URL cambiassero
+\item all'inizio del form appare la seguente chiamata di funzione \verb|?php echo validation_errors(); ?>|
+
+Questa funzione restituisce ogni messaggio di errore prodotto dal validatore. Se non vi è alcun errore, verrà restituita una stringa vuota.
+\end{enumerate}
+
+Il controller \fil{form.php} ha la sola funzione predefinita \var{index()}. Questa funzione inizializza la classe di validazione e carica l'Helper Form e l'Helper URL utilizzati per visualizzare i file. Viene inoltre eseguita la routine di validazione e, in base al successo o meno dell'operazione, la pagina di ``successo'' viene caricata. in caso contrario viene visualizzato nuovamente il form.
+
+\section*{Impostazione delle regole di validazione}
+CodeIgniter permette di impostare molte regole per la validazione dei campi di un form. Per impostare le regole si utilizzerà la funzione \verb|set_rules()|:
+
+\begin{code}
+$this->form_validation->set_rules();
+\end{code}
+
+La funzione di cui sopra è caratterizzato da tre parametri in ingresso:
+
+\begin{enumerate}
+\item il nome del campo: il nome esatto dato al campo del form
+\item un nome ``umano'' per il campo, ovvero un nome che faccia intuire all'utente immediatamente il contenuto del campo: questa informazione è utile perché il nome del form verrà utilizzata all'interno di eventuali messaggi di errori 
+\item le regole di validazione per il campo del form
+\end{enumerate}
+
+Questo è un esempio che mostra il codice da aggiungere al Controller \fil{form.php}:
+
+\begin{code}
+$this->form_validation->set_rules('username', 'Username', 'required');
+$this->form_validation->set_rules('password', 'Password', 'required');
+$this->form_validation->set_rules('passconf', 'Password Confirmation', 'required');
+$this->form_validation->set_rules('email', 'Email', 'required');
+\end{code}
+
+Il Controller a questo punto apparirà come:
+
+\begin{code}
+<?php
+
+class Form extends CI_Controller {
+
+	function index()
+	{
+		$this->load->helper(array('form', 'url'));
+
+		$this->load->library('form_validation');
+
+		$this->form_validation->set_rules('username', 'Username', 'required');
+		$this->form_validation->set_rules('password', 'Password', 'required');
+		$this->form_validation->set_rules('passconf', 'Password Confirmation', 'required');
+		$this->form_validation->set_rules('email', 'Email', 'required');
+
+		if ($this->form_validation->run() == FALSE)
+		{
+			$this->load->view('myform');
+		}
+		else
+		{
+			$this->load->view('formsuccess');
+		}
+	}
+}
+?>
+\end{code}
+
+Se si invia il form con i campi vuoti compariranno su schermo i messaggi di errore, altrimenti, se tutti i dati sono corretti verrà visualizzata la pagina di successo.
+
+\section*{Impostazione delle regole usando un array}
+
+Se si preferisce definire le regole di validazione in una sola azione, è possibile utilizzare un array che verrà passato alla funzione apposita:
+
+\begin{code}
+$config = array(
+               array(
+                     'field'   => 'username', 
+                     'label'   => 'Username', 
+                     'rules'   => 'required'
+                  ),
+               array(
+                     'field'   => 'password', 
+                     'label'   => 'Password', 
+                     'rules'   => 'required'
+                  ),
+               array(
+                     'field'   => 'passconf', 
+                     'label'   => 'Password Confirmation', 
+                     'rules'   => 'required'
+                  ),   
+               array(
+                     'field'   => 'email', 
+                     'label'   => 'Email', 
+                     'rules'   => 'required'
+                  )
+            );
+
+$this->form_validation->set_rules($config);
+\end{code}
+
+\section*{Regole in cascata}
+\'E possibile impostare regole multiple associandole mediante pipe (carattere |). Si osservi il terzo parametro:
+
+\begin{code}
+$this->form_validation->set_rules('username', 'Username', 'required|min_length[5]|max_length[12]|is_unique[users.username]');
+$this->form_validation->set_rules('password', 'Password', 'required|matches[passconf]');
+$this->form_validation->set_rules('passconf', 'Password Confirmation', 'required');
+$this->form_validation->set_rules('email', 'Email', 'required|valid_email|is_unique[users.email]');
+\end{code}
+
+Il codice precedente definisce le seguenti regole:
+
+\begin{enumerate}
+\item il campo username non può essere più corto di 5 caratteri e più lungo di 12 caratteri
+\item il campo password deve contenere un valore identico al campo di conferma password
+\item il campo email deve soddisfare le regole alla base degli indirizzi di posta elettronica
+\end{enumerate}
+
+Si invii il form senza i dati corretti e si vedranno nuovi messaggi di errore che corrispondono alle regole appena impostate. Ci sono numerose altre regole disponibili.
+
+\section*{Prepping data}
+Oltre alle funzioni di validazione appena viste, è possibile preparare i propri dati in vari modi. Per esempio, è possibile settare le regole:
+
+\begin{code}
+$this->form_validation->set_rules('username', 'Username', 'trim|required|min_length[5]|max_length[12]|xss_clean');
+$this->form_validation->set_rules('password', 'Password', 'trim|required|matches[passconf]|md5');
+$this->form_validation->set_rules('passconf', 'Password Confirmation', 'trim|required');
+$this->form_validation->set_rules('email', 'Email', 'trim|required|valid_email');
+\end{code}
+
+Nel precedente esempio i campi sono processati con la funzione trim, le password sono convertite in MD5, il nome utente passa per la funzione \verb|xss_clean|, che rimuove i dati potenzialmente dannosi.
+
+Qualsiasi funzione \ac{PHP} nativa che accetta un parametro può essere usato come regola come \verb|htmlspecialchars|, \verb|trim|, \verb|MD5|, etc.
+
+Nota: generalmente si desidera usare le funzioni di tipo prepping dopo le regole di validazione, in modo che, se vi è un errore, i dati originali possano essere visualizzati nuovamente nel form.
+
+\begin{deftabv}{Trim}{La funzione TRIM in SQL viene utilizzata per rimuovere il prefisso o il suffisso specificato da una stringa. Il modello più comunemente rimosso sono gli spazi vuoti. La funzione viene chiamata diversamente a seconda del tipo di database.}
+\end{deftabv}
+
+\section*{Ripopolare il form}
+Finora si è avuto solo a che fare con gli errori: è tempo di ripopolare i campi del form con i dati inviati al server. CodeIgniter offre diverse funzioni di supporto che permettono questa operazione, una delle quali, verrà utilizzata frequentemente:
+
+\begin{code}
+set_value('field name')
+\end{code}
+
+Si apra la Vista \fil{myform.php} e si aggiorni il valore in ogni campo, usando la funzione \verb|set_value()|. Non ci si deve dimenticare di includere il nome di ogni campo nelle funzioni \verb|set_value()|
+
+\begin{html}
+<html>
+<head>
+<title>My Form</title>
+</head>
+<body>
+
+<?php echo validation_errors(); ?>
+
+<?php echo form_open('form'); ?>
+
+<h5>Username</h5>
+<input type="text" name="username" value="<?php echo set_value('username'); ?>" size="50" />
+
+<h5>Password</h5>
+<input type="text" name="password" value="<?php echo set_value('password'); ?>" size="50" />
+
+<h5>Conferma Password</h5>
+<input type="text" name="passconf" value="<?php echo set_value('passconf'); ?>" size="50" />
+
+<h5>Email</h5>
+<input type="text" name="email" value="<?php echo set_value('email'); ?>" size="50" />
+
+<div><input type="submit" value="Submit" /></div>
+
+</form>
+
+</body>
+</html>
+\end{html}
+
+Ora è possibile ricaricare la propria pagina per testare le modifiche appena introdotte. Si compili il form facendo in modo che si verifichi un errore: si vedrà che il form viene ricaricato con i campi del form che saranno ripopolati. Per maggiori informazioni si faccia riferimento alla sezione Reference che contiene diverse funzioni per ripopolare i menu select, i pulsanti radio e i checkbox.
+
+Se come nome di un campo del form si utilizza un array, questo dovrà essere inviato anche come un array all'interno della funzione. Per esempio:
+
+\begin{code}
+<input type="text" name="colors[]" value="<?php echo set_value('colors[]'); ?>" size="50" />
+\end{code}
+
+\section*{Callback: le funzioni di validazione}
+Il sistema di validazione supporta i callback: questo permette di estendere la classe per soddisfare qualsiasi esigenza particolare. Ad esempio, se è necessario eseguire una query del database per vedere se l'utente ha scelto un nome utente univoco, si può creare una funzione di callback con questo preciso scopo. Nel controller si modifichi la regola "username" con questa:
+
+\begin{code}
+$this->form_validation->set_rules('username', 'Username', 'callback_username_check');
+\end{code}
+
+Quindi si aggiunga la nuova funzione chiamata \verb|username_check| al proprio controller. Questo è quello che dovrebbe contenere il file del Controller:
+
+\begin{code}
+<?php
+
+class Form extends CI_Controller {
+
+	public function index()
+	{
+		$this->load->helper(array('form', 'url'));
+
+		$this->load->library('form_validation');
+
+		$this->form_validation->set_rules('username', 'Username', 'callback_username_check');
+		$this->form_validation->set_rules('password', 'Password', 'required');
+		$this->form_validation->set_rules('passconf', 'Password Confirmation', 'required');
+		$this->form_validation->set_rules('email', 'Email', 'required|is_unique[users.email]');
+
+		if ($this->form_validation->run() == FALSE)
+		{
+			$this->load->view('myform');
+		}
+		else
+		{
+			$this->load->view('formsuccess');
+		}
+	}
+
+	public function username_check($str)
+	{
+		if ($str == 'test')
+		{
+			$this->form_validation->set_message('username_check', 'The %s field can not be the word "test"');
+			return FALSE;
+		}
+		else
+		{
+			return TRUE;
+		}
+	}
+
+}
+?>
+\end{code}
+
+Si ricarichi il form e si utilizzi come nome utente la parola ``test'': si può vedere che il campo data del form viene passato alla funzione di callback per essere elaborata.
+
+Per invocare un callback si inserisca il nome della funzione in una regola, con il prefisso \verb|callback_|. Se si ha bisogno di un parametro aggiuntivo nella funzione di callback, basta aggiungerlo dopo il nome della funzione tra parentesi quadre, come in: \verb|callback_foo[bar]|, quindi questo sarà passato come secondo argomento della funzione di callback.
+
+Nota: è anche possibile elaborare i dati del form che sono passati alla funzione callback a cui viene restituita. Se il callback restituisce qualcosa di diverso da un valore booleano TRUE/FALSE si presume che i dati provengano da un nuovo form.
+
+\section*{Configurare i messaggi di errore}
+Tutti i messaggi di errore nativi sono localizzati nel seguente file di linguaggio: \verb|/language/english/form_validation_lang.php|. Se si vuole configurare un proprio messaggio si deve editare questo file, oppure utilizzare la seguente funzione:
+
+\begin{code}
+$this->form_validation->set_message('rule', 'Error Message');
+\end{code}
+
+Dove la parola \var{rule} corrisponde al nome di una particolare regola e il testo \var{Error Message} che si desidera venga visualizzato. Se si include nella stringa di errore \var{\%s}, questa verrà sostituita con il nome ``umano'' del campo settato nella propria regola. 
+
+Per esempio nella funzione di callback di qui sopra, il messaggio di errore viene impostato passandolo alla funzione:
+
+\begin{code}
+ $this->form_validation->set_message('username_check')
+ \end{code} 
+
+ Un'altra possibilità è quella di sovrascrivere ogni messaggio di errore che si trova nel file del linguaggio. Per esempio per cambiare il messaggio relativo alla regola ``required'' (obbligatorio) è possibile operare nel seguente modo:
+
+ \begin{code}
+ $this->form_validation->set_message('required', 'il proprio messaggio di errore');
+ \end{code}
+
+\section*{Tradurre i nomi dei campi}
+Se si vogliono memorizzare i nomi ``umani'' passati alla funzione \verb|set_rules| in un file di linguaggio e quindi rendere il nome in grado di essere tradotto, si utilizzi il prefisso \var{lang} davanti al nome del campo ``umano'' come nell'esempio:
+
+\begin{code}
+$this->form_validation->set_rules('first_name', 'lang:first_name', 'required');
+\end{code}
+
+Quindi si memorizzi il nome in un proprio array del file di linguaggio (senza alcun prefisso):
+
+\begin{code}
+$lang['first_name'] = 'First Name';
+\end{code}
+
+Nota: se si memorizzano gli elementi del proprio array in un file di linguaggio, questo non sarà automaticamente caricato da CI, ma dovrà essere eseguito mediante il proprio Controller, utilizzando:
+
+\begin{code}
+$this->lang->load('file_name');
+\end{code}
+
+Per maggiori informazioni si rimanda all'esame approfondito della classe Language.
+
+\section*{Cambiare i delimitatori degli errori}
+La classe Form Validation come valore predefinito aggiunge un tag paragrafo \verb|<p>| attorno ad ogni messaggio di errore visualizzato. \'E possibile modificare questo delimitatore globalmente oppure per un singolo messaggio.
+
+\begin{itemize}
+\item modifica globale. In questo caso si aggiunge alla propria funzione Controller, dopo aver caricato la classe Form Validation, la seguente istruzione:
+
+\begin{code}
+$this->form_validation->set_error_delimiters('<div class="error">', '</div>');
+\end{code}
+
+In questo esempio, si sono impostati come nuovi delimitatori i tag <div>.
+
+\item modifica individuale. Ciascuna delle due funzioni di errore mostrate in questa guida sono forniti di singoli delimitatori come segue:
+
+\begin{code}
+<?php echo form_error('field name', '<div class="error">', '</div>'); ?>
+\end{code}
+
+oppure
+
+\begin{code}
+<?php echo validation_errors('<div class="error">', '</div>'); ?>
+\end{code}
+\end{itemize}
+
+\section*{Visualizzare i singoli errori}
+Se si preferisce visualizzare un messaggio di errore affianco ad ogni campo del form piuttosto che in una lista, è necessario appoggiarsi alla funzione \verb|form_error()|. Si modifichi il proprio form come segue e si effettui una prova:
+
+\begin{code}
+<h5>Username</h5>
+<?php echo form_error('username'); ?>
+<input type="text" name="username" value="<?php echo set_value('username'); ?>" size="50" />
+
+<h5>Password</h5>
+<?php echo form_error('password'); ?>
+<input type="text" name="password" value="<?php echo set_value('password'); ?>" size="50" />
+
+<h5>Password Confirm</h5>
+<?php echo form_error('passconf'); ?>
+<input type="text" name="passconf" value="<?php echo set_value('passconf'); ?>" size="50" />
+
+<h5>Email Address</h5>
+<?php echo form_error('email'); ?>
+<input type="text" name="email" value="<?php echo set_value('email'); ?>" size="50" />
+\end{code}
+
+Se non ci sono errori, ovviamente nulla verrà visualizzato, in caso contrario questo comparirà il valore errato. Un aspetto a cui prestare attenzione è che quando si utilizza un array come nome di un campo del form, è necessario specificarlo anche nella funzione:
+
+\begin{code}
+<?php echo form_error('options[size]'); ?>
+<input type="text" name="options[size]" value="<?php echo set_value("options[size]"); ?>" size="50" />
+\end{code}
+
+Per maggiori informazioni si rimanda ad una delle sezioni successive denominata ``Usare un array come nome del campo''.
+
+\section*{Salvare le proprie regole}
+Una caratteristica utile della classe Form Validation permette di memorizzare tutte le proprie regole di validazione in un file config. Inoltre è possibile organizzare queste regole in gruppi che possono essere caricati automaticamente quando un controller/metodo sono chiamati, oppure manualmente, quando necessari.
+
+Le regole di validazione possono essere salvate facilmente in un file denominato \verb|form_validation.php| nel percorso \sys{/application/config/}. In questo file sarà definito un array di nome (obbligatorio!) \var{\$config} con la definizione delle proprie regole. Un semplice esempio è mostrato nell'esempio seguente:
+
+\begin{code}
+$config = array(
+               array(
+                     'field'   => 'username', 
+                     'label'   => 'Username', 
+                     'rules'   => 'required'
+                  ),
+               array(
+                     'field'   => 'password', 
+                     'label'   => 'Password', 
+                     'rules'   => 'required'
+                  ),
+               array(
+                     'field'   => 'passconf', 
+                     'label'   => 'Password Confirmation', 
+                     'rules'   => 'required'
+                  ),   
+               array(
+                     'field'   => 'email', 
+                     'label'   => 'Email', 
+                     'rules'   => 'required'
+                  )
+            );
+\end{code}
+
+Le regole di validazione così definite vengono caricate automaticamente e utilizzate quando si chiama la funzione \var{run()}.
+
+Per quanto riguarda invece la loro organizzazione in gruppi, è necessario inserire le regole in sotto array. Si consideri il seguente esempio in cui vengono definiti due gruppi di regole che abbiamo chiamato ``signup'' e ``email'':
+
+\begin{code}
+$config = array(
+'signup' => array(
+                array(
+                        'field' => 'username',
+                        'label' => 'Username',
+                        'rules' => 'required'
+                     ),
+                array(
+                        'field' => 'password',
+                        'label' => 'Password',
+                        'rules' => 'required'
+                     ),
+                array(
+                        'field' => 'passconf',
+                        'label' => 'PasswordConfirmation',
+                        'rules' => 'required'
+                     ),
+                array(
+                        'field' => 'email',
+                        'label' => 'Email',
+                        'rules' => 'required'
+                     )
+                ),
+'email' => array(
+                array(
+                        'field' => 'emailaddress',
+                        'label' => 'EmailAddress',
+                        'rules' => 'required|valid_email'
+                     ),
+                array(
+                        'field' => 'name',
+                        'label' => 'Name',
+                        'rules' => 'required|alpha'
+                     ),
+                array(
+                        'field' => 'title',
+                        'label' => 'Title',
+                        'rules' => 'required'
+                     ),
+                array(
+                        'field' => 'message',
+                        'label' => 'MessageBody',
+                        'rules' => 'required'
+                     )
+                )                          
+);
+\end{code}
+
+A questo punto se si desidera richiamare solo un determinato gruppo di regole, è necessario passare il suo nome alla funzione \var{run()}. Per esempio se si volesse chiamare il solo gruppo signup si dovrà procedere nel seguente modo:
+
+\begin{code}
+if ($this->form_validation->run('signup') == FALSE)
+{
+   $this->load->view('myform');
+}
+else
+{
+   $this->load->view('formsuccess');
+}
+\end{code}
+
+Una possibilità alquanto interessante è quella di associare un gruppo di regole ad una funzione del proprio Controller in modo da richiamare automaticamente le regole di validazione desiderate. Il metodo si basa sul chiamare il gruppo di regole nello stesso identico modo della coppia ``controller'' e ``metodo'' che si desiderano utilizzare. Per esempio, se si possiede un controller di nome \var{Member} e di un metodo chiamato \var{signup} ecco come apparirà il suo prototipo:
+
+\begin{code}
+<?php
+
+class Member extends CI_Controller {
+
+   function signup()
+   {      
+      $this->load->library('form_validation');
+            
+      if ($this->form_validation->run() == FALSE)
+      {
+         $this->load->view('myform');
+      }
+      else
+      {
+         $this->load->view('formsuccess');
+      }
+   }
+}
+?>
+\end{code}
+
+Nel proprio file config, il proprio gruppo di regole prenderà il nome di \var{member/signup}:
+
+\begin{code}
+$config = array(
+'member/signup' => array(
+                    array(
+                            'field' => 'username',
+                            'label' => 'Username',
+                            'rules' => 'required'
+                         ),
+                    array(
+                            'field' => 'password',
+                            'label' => 'Password',
+                            'rules' => 'required'
+                         ),
+                    array(
+                            'field' => 'passconf',
+                            'label' => 'PasswordConfirmation',
+                            'rules' => 'required'
+                         ),
+                    array(
+                            'field' => 'email',
+                            'label' => 'Email',
+                            'rules' => 'required'
+                         )
+                    )
+);
+\end{code}
+
+Quando un gruppo di regole si chiama come un controller/metodo, esso verrà utilizzato automaticamente quando la funzione \var{run()} sarà invocata dalla classe/metodo.
+
+\section*{Utilizzare un array per i nomi dei campi}
+La classe Form Validation supporta l'utilizzo degli array nei nomi dei campi del form. Si consideri il seguente esempio:
+
+\begin{code}
+<input type="text" name="options[]" value="" size="50" />
+\end{code}
+
+Se come in questo caso si utilizza un array, obbligatoriamente si deve specificare il nome esatto dell'array anche nella funzione. Per esempio per definire un gruppo di regole per l'esempio sopra riportato, si dovrà usare:
+
+\begin{code}
+$this->form_validation->set_rules('options[]', 'Options', 'required');
+\end{code}
+
+oppure per visualizzare un errore:
+
+\begin{code}
+<?php echo form_error('options[]'); ?>
+\end{code}
+
+o ancora per ripopolare il campo:
+
+\begin{code}
+<input type="text" name="options[]" value="<?php echo set_value('options[]'); ?>" size="50" />
+\end{code}
+
+\'E anche possibile utilizzare un array multidimensionale come nome del campo. Per esempio:
+
+\begin{code}
+<input type="text" name="options[size]" value="" size="50" />
+\end{code}
+
+o anche:
+
+\begin{code}
+<input type="text" name="sports[nba][basketball]" value="" size="50" />
+\end{code}
+
+Come rimarcato nel primo esempio, è assolutamente obbligatorio utilizzare l'esatto nome dell'array nelle funzioni helper:
+
+\begin{code}
+<?php echo form_error('sports[nba][basketball]'); ?>
+\end{code}
+
+Se si usano i checkbox (o altri tipi di campi) che hanno opzioni multiple, non bisogna dimenticare di inserire delle parentesi quadre vuote (che non racchiudono alcun valore), in modo che tutte le selezioni vengano aggiunte all'array POST:
+
+\begin{code}
+<input type="checkbox" name="options[]" value="red" />
+<input type="checkbox" name="options[]" value="blue" />
+<input type="checkbox" name="options[]" value="green" />
+\end{code}
+
+oppure, se si una un array multidimensionale:
+
+\begin{code}
+<input type="checkbox" name="options[color][]" value="red" />
+<input type="checkbox" name="options[color][]" value="blue" />
+<input type="checkbox" name="options[color][]" value="green" />
+\end{code}
+
+Quando si utilizza una funzione helper, è necessario includere le parentesi quadre come segue:
+
+\begin{code}
+<?php echo form_error('options[color][]'); ?>
+\end{code}
+
+\section*{Reference delle regole}
+Qui di seguito una lista di tutte le regole native di CodeIgniter disponibili per l'uso:
+
+\scriptsize
+\begin{tabx}{lcXr}
+\toprule
+Regola & Paramettro & Descrizione & Esempio \\
+\midrule
+\verb|required| & No & Restituisce FALSE se l'elemento del form è vuoto \\
+\midrule
+\verb|matches| & Si & Restituisce FALSE se l'elemento del form non corrisponde a quello nel parametro &	\verb|matches[form_item]| \\
+\midrule
+\verb|is_unique| & Si & Restituisce FALSE se l'elemento form non è unico nel tabella e campo indicato nel parametro & \verb|is_unique[table.field]| \\
+\midrule
+\verb|min_length| & Si & Restituisce FALSE se l'elemento form ha meno caratteri rispetto a quelli indicati nel parametro & \verb|min_length[6]| \\
+\midrule
+\verb|max_length| & Si & Restituisce FALSE se l'elemento form ha più caratteri rispetto a quelli indicati nel parametro & \verb|max_length[12]| \\
+\midrule
+\verb|exact_length| & Si & Restituisce FALSE se l'elemento form non ha lo stesso numero di caratteri indicati nel parametro & \verb|exact_length[8]| \\
+\midrule
+ \verb|greater_than| & Si & Restituisce FALSE se l'elemento form ha un valore numerico inferiore a quello indicato nel parametro o non è un valore numerico & \verb|greater_than[8]| \\
+ \midrule
+ \verb|less_than| & Si & Restituisce FALSE se l'elemento form ha un valore numerico superiore a quello indicato nel parametro o non è un valore numerico & \verb|less_than[8]| \\
+ \midrule
+ \verb|alpha| & No & Restituisce FALSE se l'elemento form ha caratteri differenti da quelli alfabetici & \\
+ \midrule
+ \verb|alpha_numeric| & No & Restituisce FALSE se l'elemento form ha caratteri differenti da quelli alfanumerici & \\
+ \midrule
+ \verb|alpha_dash| & No & Restituisce FALSE se l'elemento formha caratteri differenti da quelli alfabetici, underscore o dash & \\  \midrule
+ \verb|numeric| & No & Restituisce FALSE se l'elemento form ha caratteri differenti da quelli numerici & \\
+ \midrule
+ \verb|integer| & No & Restituisce FALSE se l'elemento form ha un tipo di dati differente da un intero & \\
+ \midrule
+ \verb|decimal| & Si & Restituisce FALSE se l'elemento form non è identico a quello indicato nel parametro & \\
+ \midrule
+ \verb|is_natural| & No & Restituisce FALSE se l'elemento form qualcosa di diverso da un numero naturale: 0, 1, 2, 3, etc. & \\
+ \midrule 
+\verb|is_natural_no_zero| & No & Restituisce FALSE se l'elemento form contiene qualcosa di diverso da un numero naturale, ma non zero: 1, 2, 3, etc. & \\
+\midrule
+ \verb|valid_email| & No & Restituisce FALSE se l'elemento form non contiene un indirizzo email valido & \\
+ \midrule
+ \verb|valid_emails| & No & Restituisce FALSE se qualsiasi valore inserito in una lista, e separati da virgole, non corrisponde ad un indirizzo email valido & \\
+ \midrule
+ \verb|valid_ip| & No & Restituisce FALSE l'IP fornito non è valido. Accetta un parametro opzionale "IPv4" oppure "IPv6" per indicare un formato specifico & \\
+ \midrule
+ \verb|valid_base64| & No & Restituisce FALSE se la stringa fornita qualcosa di diverso da caratteri Base64 & \\
+\bottomrule
+\end{tabx}
+\normalsize
+
+Nota: queste regole possono essere richiamate come singole funzioni. Per esempio:
+
+\begin{code}
+$this->form_validation->required($string);
+\end{code}
+
+\'E anche possibile utilizzare qualsiasi funzione nativa \ac{PHP} che si basa su un parametro.
+
+\section*{Reference Prepping}
+Ecco una lista di funzioni prepping disponibili all'uso:
+
+%\scriptsize
+\begin{tabx}{lcX}
+\toprule
+Nome & Paramettro & Descrizione \\
+\midrule
+\verb|xss_clean| & No & Esegue i dati attraverso la funzione XSS filtering descritta nella classe Input \\
+\midrule
+\verb|prep_for_form| & No & Converte i caratteri speciali come quelli dell'HTML per essere visualizzati nei campi di un form senza interruzioni \\
+\midrule
+\verb|prep_url| & No & Aggiunge "http://" all'URL se manca \\
+\verb|strip_image_tags| & No & Elimina il codice HTML dal tag immagine, per ottenere il solo URL \\
+\midrule
+\verb|encode_php_tags| & No & Converte i tag PHP in entità \\
+\bottomrule
+\end{tabx}
+\normalsize
+
+\'E anche possibile utilizzare qualsiasi funzione nativa \ac{PHP} che si basa su un parametro come \var{trim} \var{htmlspecialchars}, \var{urlcode}, ecc.
+
+\section*{Reference delle Funzioni}
+Le seguenti funzioni sono da utilizzarsi all'interno dei controller.
+
+\begin{itemize}
+\item \verb|$this->form_validation->set_rules()| permette di definire un gruppo di regole di validazione come descritto qui sopra.
+
+\item \verb|$this->form_validation->run()| esegue le routine di validazione. Restituisce un valore booleano TRUE in caso di successo oppure FALSE in caso contrario. Opzionalmente è consentito passare il nome del gruppo di validazione tramite una funzione.
+
+\item \verb|$this->form_validation->set_message()| consente di definire un messaggio di errore predefinito.
+\end{itemize}
+
+\section*{Reference Helper}
+Qui di seguito si elencano una serie di helper che possono essere utilizzati nelle proprie Viste che contengono form. Si noti che si tratta di funzioni procedurali che quindi non richiedono di anteporre \verb|$this->form_validation|.
+
+\begin{itemize}
+\item \verb|form_error()| visualizza un messaggio di errore associato ad un campo specifico fornito alla funzione. I delimitatori degli errori possono essere opzionalmente specificati. Per esempio:
+
+\begin{code}
+<?php echo form_error('username'); ?>
+\end{code}
+
+\item \verb|validation_errors()| visualizza tutti gli errori come una stringa. I delimitatori degli errori possono essere opzionalmente specificati. Per esempio:
+
+\begin{code}
+<?php echo validation_errors(); ?>
+\end{code}
+
+\item \verb|set_value()| consente di definire il valore di un input o di una textarea in un form. \'E necessario fornire il nome del campo come primo parametro della funzione. Il secondo (opzionale) parametro consente di definire il valore di default del form. Per esempio:
+
+\begin{code}
+<input type="text" name="quantity" value="<?php echo set_value('quantity', '0'); ?>" size="50" />
+\end{code}
+
+Il precedente form visualizzerà ``0'' quando sarà caricato per la prima volta.
+
+\item \verb|set_select()| se si utilizza un menu \verb|<select>| questa funzione permette di visualizzare gli elementi del menu che sono stati selezionati. Il primo parametro deve contenere il nome del menu select, mentre il secondo il valore di ogni elemento. Il terzo (opzionale) parametro consente di definire quale elemento del menu sia quello predefinito (si utilizzino i valori booleani TRUE/FALSE). Per esempio:
+
+\begin{code}
+<select name="myselect">
+<option value="one" <?php echo set_select('myselect', 'one', TRUE); ?> >One</option>
+<option value="two" <?php echo set_select('myselect', 'two'); ?> >Two</option>
+<option value="three" <?php echo set_select('myselect', 'three'); ?> >Three</option>
+</select>
+\end{code}
+
+\item \verb|set_checkbox()| consente di visualizzare un checkbox nello stato in cui viene inviato al server. Il primo parametro deve contenere il nome del checkbox, mentre il secondo parametro, il suo valore. Il terzo parametro (opzionale) consente di definire un elemento del checkbox predefinito (si utilizzino i valori booleani TRUE/FALSE). Per esempio:
+
+\begin{code}
+<input type="checkbox" name="mycheck[]" value="1" <?php echo set_checkbox('mycheck[]', '1'); ?> />
+<input type="checkbox" name="mycheck[]" value="2" <?php echo set_checkbox('mycheck[]', '2'); ?> />
+\end{code}
+
+\item \verb|set_radio()| i pulsanti radio saranno visualizzati nello stato in cui vengono inviati al server. Questa funzione è identica a \verb|set_checkbox()| vista precedentemente:
+
+\begin{code}
+<input type="radio" name="myradio" value="1" <?php echo set_radio('myradio', '1', TRUE); ?> />
+<input type="radio" name="myradio" value="2" <?php echo set_radio('myradio', '2'); ?> />
+\end{code}
+\end{itemize}

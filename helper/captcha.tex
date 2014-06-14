@@ -1,0 +1,125 @@
+%************************************************
+\section{Helper Captcha}
+\label{helper:captcha}
+%************************************************
+
+L'Helper Captcha mette a disposizione molte funzionalità per la gestione delle immagini captcha. Il suo caricamento avviene con la funzione:
+
+\begin{code}
+$this->load->helper('captcha');
+\end{code}
+
+\begin{img}{Captcha}{8}{003}
+\end{img}
+
+Le funzioni disponibili sono le seguenti:
+
+\verb|create_captcha($data)| genera il captcha come un'immagine sulla base delle specifiche fornite, quindi restituisce un array di dati associativi sull'immagine.
+
+\begin{code}
+[array]
+(
+  'image' => IMAGE TAG
+  'time'	=> TIMESTAMP (in microsecondi)
+  'word'	=> CAPTCHA WORD
+)
+\end{code}
+
+L'``immagine'' è il tag dell'immagine corrente:
+
+\begin{code}
+<img src="http://example.com/captcha/12345.jpg" width="140" height="50" />
+\end{code}
+
+La parola ``time'' è il nome dell'immagine per cui si utilizza un timestamp in microsecondi (senza l'estensione del file). \'E un numero come questo: 1139612155.3422. Invece ``word'' è la parola che appare nell'immagine captcha che, se non è fornita dalla funzione, sarà una stringa casuale.
+
+%Using the CAPTCHA helper
+
+\section*{Utilizzare l'Helper Captcha}
+
+Una volta caricato l'helper è possibile generare un captcha come nel seguente codice:
+
+\begin{code}
+$vals = array(
+    'word'	 => 'Parola casuale',
+    'img_path'	 => './captcha/',
+    'img_url'	 => 'http://example.com/captcha/',
+    'font_path'	 => './path/to/fonts/texb.ttf',
+    'img_width'	 => '150',
+    'img_height' => 30,
+    'expiration' => 7200
+    );
+
+$cap = create_captcha($vals);
+echo $cap['image'];
+\end{code}
+
+\begin{itemize}
+\item la funzione captcha richiede la libreria GD
+\item sono richieste unicamente \verb|img_path| e \verb|img_url|
+\item se non viene fornita una ``word'', la funzione genererà una stringa ASCII casuale. Altrimenti si potrebbe usare una libreria per la loro generazione casuale.
+\item se non viene specificato un percorso per il font TRUE TYPE, sarà utilizzato quello nativo (e decisamente brutto) della libreria GD
+\item la directory ``captcha'' deve avere i permessi di scrittura (solitamente 666 o 777)
+\item l'indice ``expiration'' espresso in secondi, indica per quanto tempo l'immagine rimarrà nella cartella captcha prima di essere eliminata. Il valore predefinito è di due ore.
+\end{itemize}
+
+\section*{Aggiungere un database}
+
+Affinché la funzione captcha funzioni correttamente, sarà necessario aggiungere le informazioni restituite dalla funzione \verb|create_captcha()| al proprio database. Poi, quando l'utente compilerà il form captcha e invierà i dati, si verificherà se questi sono presenti nel database e che non siano scaduti.
+
+Ecco un prototipo della tabella:
+
+\begin{code}
+CREATE TABLE captcha (
+ captcha_id bigint(13) unsigned NOT NULL auto_increment,
+ captcha_time int(10) unsigned NOT NULL,
+ ip_address varchar(16) default '0' NOT NULL,
+ word varchar(20) NOT NULL,
+ PRIMARY KEY `captcha_id` (`captcha_id`),
+ KEY `word` (`word`)
+);
+\end{code}
+
+Qui vi è un esempio di utilizzo dell'Helper con un database. Nella pagina dove verrà visualizzato il captcha, si avrà un codice simile a questo:
+
+\begin{code}
+$this->load->helper('captcha');
+$vals = array(
+    'img_path'	 => './captcha/',
+    'img_url'	 => 'http://example.com/captcha/'
+    );
+
+$cap = create_captcha($vals);
+
+$data = array(
+    'captcha_time'	=> $cap['time'],
+    'ip_address'	=> $this->input->ip_address(),
+    'word'	 => $cap['word']
+    );
+
+$query = $this->db->insert_string('captcha', $data);
+$this->db->query($query);
+
+echo 'Submit the word you see below:';
+echo $cap['image'];
+echo '<input type="text" name="captcha" value="" />';
+\end{code}
+
+Quindi nella pagina che accetta l'invio dei dati, il codice sarà come il seguente:
+
+\begin{code}
+// Prima di tutto si cancellano i vecchi capthca
+$expiration = time()-7200; // Limite di due ore
+$this->db->query("DELETE FROM captcha WHERE captcha_time < ".$expiration);	
+
+// Quindi se esiste un captcha:
+$sql = "SELECT COUNT(*) AS count FROM captcha WHERE word = ? AND ip_address = ? AND captcha_time > ?";
+$binds = array($_POST['captcha'], $this->input->ip_address(), $expiration);
+$query = $this->db->query($sql, $binds);
+$row = $query->row();
+
+if ($row->count == 0)
+{
+    echo "Scrivi la parola che compare nell'immagine";
+}
+\end{code}

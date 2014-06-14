@@ -1,0 +1,326 @@
+              %******************************************%
+              %                                          %
+              %     			CodeIgniter      		 %
+              %            di Giuseppe Bellisano         %
+              %                                          %
+              %         versione: 30 aprile 2014         %
+              %                                          %
+              %******************************************%
+
+% I seguenti commenti speciali impostano:
+% 1. utf8 come codifica di input,
+% 2. PDFLaTeX come motore di composizione;
+% 3. book.tex come documento principale;
+% 4. il controllo ortografico italiano per l'editor.
+
+% !TEX encoding = UTF-8 Unicode
+% !TEX TS-program = pdflatex
+% !TEX root = book.tex
+% !TEX spellcheck = it-IT
+
+\documentclass[a4paper,10pt]{book} %formato libro
+\usepackage[T1]{fontenc} %imposta codifica dei font (output)
+\usepackage[utf8]{inputenc}	%lettere accentate da tastiera (input)
+\usepackage[english,italian]{babel}	%per scrivere in italiano
+\usepackage{classicthesis}
+\usepackage{arsclassica} %template alternativo
+\usepackage[]{layaureo} %imposta i margini di pagina automaticamente
+\usepackage{subfig}
+
+% ---- 
+% ---- Listato di codici
+% -----
+\usepackage{listings} % Per inserire listati di codice
+\addto\captionsitalian{\renewcommand{\lstlistingname}{Codice}} % sostituisce listing
+\addto\captionsitalian{\renewcommand{\lstlistlistingname}{Elenco dei codici}} % 
+
+%\definecolor{grigio}{RGB}{245,245,245} %colore alternativo per lo sfondo dei codici
+
+\lstset{
+frameround=fttf,
+language=PHP,
+keywordstyle=\color{red}\bfseries,
+commentstyle=\color{darkgray},
+stringstyle=\color{blue},
+basicstyle=\small\ttfamily,
+frame=single,
+tabsize=2,
+stepnumber=4,
+numbersep=2pt,
+columns=fullflexible,
+keepspaces=true,
+showstringspaces=false,
+extendedchars=false,
+breaklines=true,
+breakautoindent=true,
+aboveskip=2em,
+belowskip=2em,
+moredelim=[is][\color{orange}]{|*}{*|}
+}
+
+\usepackage[autostyle,italian=guillemets]{csquotes}
+\usepackage{graphicx} %gestione delle immagini
+%\graphicspath{{grafici/},{img/}} %path delle immagini
+\usepackage{tabularx} %gestione delle tabelle
+\usepackage{epigraph}
+\usepackage{caption} %didascalia sopra la tabella/figura
+\captionsetup{tableposition=top,figureposition=bottom,font=small,format=hang,labelfont={sf,bf}}
+
+\usepackage{float} %float
+\usepackage{booktabs} %tabelle con migliore formattazione
+\usepackage{hyperref}
+\usepackage{quoting} %citazioni
+\quotingsetup{font=small} %quote
+\usepackage{indentfirst} %rientra il primo capoverso di ogni sezione
+\usepackage{microtype} %migliora espansione e protusione dei caratteri
+\usepackage{mparhack,fixltx2e,relsize} % finezze tipografiche
+\usepackage[italian]{varioref} %agg vref
+\usepackage{acronym} %gestione degli acronimi
+\usepackage{makeidx} %gestione indice analitico
+
+\makeindex %attiva i comandi per la gestione dell'indice
+
+% -----
+% ----- Nuovi comandi/ambienti
+% -----
+
+% % % % % % % %
+% Parole chiave bianco e nero
+% % % % % % % %
+\newcommand{\sys}[1]{\textbf{#1}} %directory e percorsi di sistema
+\newcommand{\var}[1]{\textbf{#1}} %variabili, codice inline
+\newcommand{\fil}[1]{\textbf{#1}} %file
+\newcommand{\omissis}{[\textellipsis\unkern]}
+
+% % % % % % % %
+% Parole chiave colori
+% % % % % % % %
+%\newcommand{\sys}[1]{\textbf{\textcolor{Cerulean}{#1}}} %directory e percorsi di sistema
+%\newcommand{\var}[1]{\textbf{\textcolor{Plum}{#1}}} %variabili, codice inline
+%\newcommand{\fil}[1]{\textbf{\textcolor{Magenta}{#1}}} %file
+
+\newcommand{\mail}[1]{\href{mailto:#1}{\texttt{#1}}} %email --> da usare: \mail{sit6113@iperbole.%bologna.it}
+\newcommand{\cors}[1]{\emph{#1}}
+\newcommand{\copyl}[1]{\emph{#1}} %utilizzato per nomi e aziende
+
+% % % % % % % %
+% ambiente codice generico
+% % % % % % % %
+\lstnewenvironment{code}[1][]%
+{\noindent \minipage{\linewidth}%
+	{\lstset{language=PHP,extendedchars=false,caption={#1}}}{} %
+}
+{\endminipage}
+
+% % % % % % % %
+% ambiente codice HTML
+% % % % % % % %
+\lstnewenvironment{html}[1][]
+{\lstset{language=HTML,extendedchars=false,caption={#1}}}{}
+
+% % % % % % % %
+% ambiente codice generico float
+% % % % % % % %
+\lstnewenvironment{codef}[1][]
+{\lstset{extendedchars=false,float=tb,caption={#1}}}{}
+
+% % % % % % % %
+% ambiente definizione orizzontale
+% % % % % % % %
+\newenvironment{deftab}[2]{%
+     \table[hb]\centering%
+     \captionsetup{name=Definizione} %
+     \caption{#1}\label{def:#1}%
+     \tabular{lp{0.5\columnwidth}}%
+     \toprule%
+     \textbf{#1} & {#2} \\%
+}{%
+     \bottomrule
+     \endtabular%
+     \endtable%
+}%
+
+% % % % % % % %
+% ambiente definizione verticale
+% % % % % % % %
+\newenvironment{deftabv}[2]{%
+     \table[hb]\centering%
+     \captionsetup{name=Definizione} %
+     \caption{#1}\label{def:#1}%
+     \tabular{p{0.7\columnwidth}}%
+     \toprule%
+     \textbf{#1} \\ {#2} \\%
+}{%
+     \bottomrule
+     \endtabular%
+     \endtable%
+}%
+
+% % % % % % % %
+% ambiente definizione generico più righe
+% % % % % % % %
+\newenvironment{deftabg}[1]{%
+     \table[hb]\centering%
+     \captionsetup{name=Definizione} %
+     \caption{#1}\label{def:#1}%
+     \tabular{lp{0.5\columnwidth}}%
+     \toprule%
+
+}{%
+     \bottomrule
+     \endtabular%
+     \endtable%
+}%
+
+% % % % % % % %
+% ambiente tabella
+% % % % % % % %
+\newenvironment{tabx}[1]{%
+	\center%
+	\tabularx{\columnwidth}{#1}%
+}{%
+	\endtabularx%
+	\endcenter%
+}%
+
+% % % % % % % %
+% ambiente immagine
+% % % % % % % %
+\newenvironment{img}[3]{%
+     \figure[hb]%
+     \centering%
+     \includegraphics[scale=0.#2]{img/img_#3}%
+     \captionsetup{name=Fig.}%
+     \caption{#1}
+     \label{fig:#3}%
+}{%
+     \endfigure%
+}%
+
+\newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
+\overfullrule=5pt %evidenzia overfull del testo
+
+\begin{document}
+%\maketitle
+%******************************************************************
+% Materiale iniziale
+%******************************************************************
+\frontmatter
+\include{iniziofine/frontespizio}
+\include{iniziofine/colophon}
+\include{iniziofine/indici}
+\include{iniziofine/abstract}
+\include{iniziofine/prefazione}
+
+%******************************************************************
+% Materiale principale
+%******************************************************************
+\mainmatter
+\include{paragrafo/filosofia}
+\include{paragrafo/installazione}
+\include{paragrafo/pattern} %unito a architettura
+\include{paragrafo/architettura} %unito a pattern
+\include{paragrafo/fantastici} %capitolo su mvc contiene controller, view, model, evoluzione
+\include{paragrafo/controller} %parte del cap.fantastici
+\include{paragrafo/view} %parte del cap.fantastici
+\include{paragrafo/evoluzione} %parte del cap.fantastici
+\include{paragrafo/model} %parte del cap.fantastici
+\include{paragrafo/url}
+\include{paragrafo/helperplugin}
+\include{paragrafo/librerie}
+\include{paragrafo/classecore}
+\include{paragrafo/hook}
+\include{paragrafo/cache}
+\include{paragrafo/profilazione}
+\include{paragrafo/manage}
+\include{paragrafo/template}
+\include{paragrafo/funzionicomuni}
+\include{paragrafo/sicurezza}
+\include{paragrafo/stile}
+\include{paragrafo/uri}
+\include{paragrafo/nomiRiservati} % da nascondere nell'indice
+\include{paragrafo/script}
+% *****************************************************************
+% Classi sottosezioni
+%******************************************************************
+\include{paragrafo/elencoclassi}
+\include{class/benchmark}
+\include{class/cachingdriver} %driver
+\include{class/calendario}
+\include{class/cart}
+\include{class/config}
+%
+\include{class/database} %intro/driver
+\include{class/dbquickstart}
+\include{class/dbconfigurazione}
+\include{class/dbconnessione}
+\include{class/dbquery}
+\include{class/dbqueryresult}
+\include{class/dbqueryhelper}
+\include{class/dbactiverecord} % parte di database
+\include{class/dbtransazioni}
+\include{class/dbmetadati} %include table, field
+\include{class/dbcustomfunc}
+\include{class/dbcaching} % conosciuto anche come Query caching
+\include{class/dbforge}
+\include{class/dbutility}
+%
+\include{class/email}
+\include{class/encryption}
+\include{class/fileupload}
+\include{class/formvalidation}
+\include{class/ftp}
+\include{class/htmltable}
+\include{class/image}
+\include{class/input}
+\include{class/javascriptclass} %driver
+\include{class/loader}
+\include{class/language}
+\include{class/migration}
+\include{class/output}
+\include{class/paginatura}
+\include{class/sicurezza}
+\include{class/sessione}
+\include{class/trackback}
+\include{class/templateparser}
+\include{class/tipografia}
+\include{class/unittest}
+\include{class/uriclasse}
+\include{class/useragent}
+\include{class/xml}
+\include{class/zipencoding}
+
+% *****************************************************************
+% Helper sottosezioni
+%******************************************************************
+\include{paragrafo/elencohelper}
+\include{helper/array}
+\include{helper/captcha}
+\include{helper/cookie}
+\include{helper/date}
+\include{helper/directory}
+\include{helper/download}
+\include{helper/email}
+\include{helper/file}
+\include{helper/form}
+\include{helper/html}
+\include{helper/inflector}
+\include{helper/number}
+\include{helper/language}
+\include{helper/path}
+\include{helper/security}
+\include{helper/smiley}
+\include{helper/string}
+\include{helper/typograpy}
+
+\include{def/apc} % driver caching
+% *****************************************************************
+% Materiale finale
+%******************************************************************
+\backmatter
+\include{iniziofine/acronimi}
+%\clearpage
+%\phantomsection
+%\addcontentsline{toc}{section}{\indexname}
+%\printindex
+\end{document}

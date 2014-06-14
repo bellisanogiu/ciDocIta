@@ -1,0 +1,221 @@
+%************************************************
+\section{Classe HTML table}
+\label{class:htmltable}
+%************************************************
+
+Questa classe fornisce delle funzioni per generare automaticamente delle tabelle tramite un array di dati, oppure una lista di risultati forniti da un database. La classe è inizializzata tramite il proprio controller utilizzando la funzione \var{\$this->load->library}:
+
+\begin{code}
+$this->load->library('table');
+\end{code}
+
+Una volta caricata, l'oggetto della libreria Table è disponibile utilizzando \var{\$this->table}. Per esempio:
+
+Nel seguente codice viene creata una tabella partendo da un array multidimensionale. Si noti che il primo indice dell'array diventerà la testata della tabella; per chi lo desiderasse è possibile definire una testata personalizzata utilizzando la funzione \verb|set_heading()| descritta nel reference della classe.
+
+\begin{code}
+$this->load->library('table');
+
+$data = array(
+             array('Name', 'Color', 'Size'),
+             array('Fred', 'Blue', 'Small'),
+             array('Mary', 'Red', 'Large'),
+             array('John', 'Green', 'Medium')	
+             );
+
+echo $this->table->generate($data);
+\end{code}
+
+L'esempio successivo mostra una tabella creata a partire dal risultato di una query di un database. La classe Table genera automaticamente la testata della tabella; per chi lo desiderasse è possibile comunque definire una testata personalizzata utilizzando la funzione \verb|set_heading()| descritta nel reference della classe.
+
+\begin{code}
+$this->load->library('table');
+
+$query = $this->db->query("SELECT * FROM my_table");
+
+echo $this->table->generate($query);
+\end{code}
+
+Una tabella creata utilizzando singoli parametri, invece si presenta con il codice:
+
+\begin{code}
+$this->load->library('table');
+
+$this->table->set_heading('Name', 'Color', 'Size');
+
+$this->table->add_row('Fred', 'Blue', 'Small');
+$this->table->add_row('Mary', 'Red', 'Large');
+$this->table->add_row('John', 'Green', 'Medium');
+
+echo $this->table->generate();
+\end{code}
+
+Ecco lo stesso esempio, tranne che invece di singoli parametri, vengono utilizzati gli array:
+
+\begin{code}
+$this->load->library('table');
+
+$this->table->set_heading(array('Name', 'Color', 'Size'));
+
+$this->table->add_row(array('Fred', 'Blue', 'Small'));
+$this->table->add_row(array('Mary', 'Red', 'Large'));
+$this->table->add_row(array('John', 'Green', 'Medium'));
+
+echo $this->table->generate();
+\end{code}
+
+\section*{Cambiare l'aspetto della tabella}
+La classe Table definisce nei minimi dettagli il layout della tabella. Qui di seguito viene descritto il prototipo del template:
+
+\begin{code}
+$tmpl = array (
+    'table_open'          => '<table border="0" cellpadding="4" cellspacing="0">',
+
+    'heading_row_start'   => '<tr>',
+    'heading_row_end'     => '</tr>',
+    'heading_cell_start'  => '<th>',
+    'heading_cell_end'    => '</th>',
+
+    'row_start'           => '<tr>',
+    'row_end'             => '</tr>',
+    'cell_start'          => '<td>',
+    'cell_end'            => '</td>',
+
+    'row_alt_start'       => '<tr>',
+    'row_alt_end'         => '</tr>',
+    'cell_alt_start'      => '<td>',
+    'cell_alt_end'        => '</td>',
+
+    'table_close'         => '</table>'
+);
+
+$this->table->set_template($tmpl);
+\end{code}
+
+Si può notare come compaiano due blocchi di righe (row): questo permette di creare righe dai colori alternati, oppure di mettere in evidenza degli elementi che si alternano con ogni interazione.
+
+Non è quindi necessario fornire un template completo. Se si ha bisogno di cambiare solo alcuni aspetti del layout della tabella, si possono semplicemente ridefinire questi elementi. Per esempio, se si vuole solo personalizzare il tag di apertura della tabella:
+
+\begin{code}
+$tmpl = array ( 'table_open'  => '<table border="1" cellpadding="2" cellspacing="1" class="mytable">' );
+
+$this->table->set_template($tmpl);
+\end{code}
+
+\section*{Reference}
+\begin{itemize}
+\item \verb|$this->table->generate()| restituisce una stringa che contiene la tabella generata. Accetta un parametro opzionale che può essere un array o un risultato oggetto di un database.
+
+\item \verb|$this->table->set_caption()| permette di aggiungere una didascalia (caption) alla tabella:
+
+\begin{code}
+$this->table->set_caption('Colors');
+\end{code}
+
+\item \verb|$this->table->set_heading()| definisce il titolo della tabella. \'E possibile definire un array o singoli parametri:
+
+\begin{code}
+$this->table->set_heading('Name', 'Color', 'Size');
+\end{code}
+
+\begin{code}
+$this->table->set_heading(array('Name', 'Color', 'Size'));
+\end{code}
+
+\verb|$this->table->add_row()| aggiunge una riga alla tabella. \'E possibile definire un array o singoli parametri:
+
+\begin{code}
+$this->table->add_row('Blue', 'Red', 'Green');
+\end{code}
+
+\begin{code}
+$this->table->add_row(array('Blue', 'Red', 'Green'));
+\end{code}
+
+Se si vuole definire gli attributi di un tag di una ben definita cella, si può utilizzare un array. La chiave associativa \var{data} definisce per l'appunto l'informazione della cella. Tutte le altre coppie ``chiave => valore'' sono aggiunte come un attributo al tag, nel formato ``key='val'':
+
+\begin{code}
+$cell = array('data' => 'Blue', 'class' => 'highlight', 'colspan' => 2);
+$this->table->add_row($cell, 'Red', 'Green');
+
+// Genera
+// <td class='highlight' colspan='2'>Blue</td><td>Red</td><td>Green</td>
+\end{code}
+
+\item \verb|$this->table->make_columns()| questa funzione prende in ingresso un array (monodimensionale) e restituisce un array multidimensionale con una profondità uguale al numero di colonne desiderato. Questo permette ad un singolo array con diversi elementi di essere visualizzato in una tabella con un numero fisso di colonne. Si consideri il seguente esempio:
+
+\begin{html}
+$list = array('one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve');
+
+$new_list = $this->table->make_columns($list, 3);
+
+$this->table->generate($new_list);
+
+// Genera una tabella con questo prototipo
+
+<table border="0" cellpadding="4" cellspacing="0">
+<tr>
+<td>one</td><td>two</td><td>three</td>
+</tr><tr>
+<td>four</td><td>five</td><td>six</td>
+</tr><tr>
+<td>seven</td><td>eight</td><td>nine</td>
+</tr><tr>
+<td>ten</td><td>eleven</td><td>twelve</td></tr>
+</table>
+\end{html}
+
+\verb|$this->table->set_template()| consente di definire il proprio template. Si può modificare un intero template oppure solo una sua parte:
+
+\begin{code}
+$tmpl = array ( 'table_open'  => '<table border="1" cellpadding="2" cellspacing="1" class="mytable">' );
+
+$this->table->set_template($tmpl);
+\end{code}
+
+\item \verb|$this->table->set_empty()| definisce un valore predefinito da utilizzare in ogni cella ``vuota'' della tabella. Si potrebbe, ad esempio, impostare un spazio unificatore:
+
+\begin{code}
+$this->table->set_empty("&nbsp;");
+\end{code}
+
+\item \verb|$this->table->clear()| consente di pulire il titolo della tabella e le informazioni contenute nelle righe. Questa funzione è particolarmente utile se si ha la necessità di visualizzare più tabelle con differenti dati. Chiamando questa funzione subito dopo ogni tabella, questa verrà svuotata dei contenuti. Per esempio:
+
+\begin{code}
+$this->load->library('table');
+
+$this->table->set_heading('Name', 'Color', 'Size');
+$this->table->add_row('Fred', 'Blue', 'Small');
+$this->table->add_row('Mary', 'Red', 'Large');
+$this->table->add_row('John', 'Green', 'Medium');
+
+echo $this->table->generate();
+
+$this->table->clear();
+
+$this->table->set_heading('Name', 'Day', 'Delivery');
+$this->table->add_row('Fred', 'Wednesday', 'Express');
+$this->table->add_row('Mary', 'Monday', 'Air');
+$this->table->add_row('John', 'Saturday', 'Overnight');
+
+echo $this->table->generate();
+\end{code}
+
+\verb|$this->table->function| consente di specificare una funzione nativa \ac{PHP} oppure un oggetto array da applicare ai dati di tutte le celle:
+
+\begin{code}
+$this->load->library('table');
+
+$this->table->set_heading('Name', 'Color', 'Size');
+$this->table->add_row('Fred', '<strong>Blue</strong>', 'Small');
+
+$this->table->function = 'htmlspecialchars';
+echo $this->table->generate();
+\end{code}
+
+Nell'esempio precedente, tutti i dati delle celle verranno eseguite con la funzione del \ac{PHP} \var{htmlspecialchars()} come risulta dall'istruzione:
+
+\begin{html}
+<td>Fred</td><td>&lt;strong&gt;Blue&lt;/strong&gt;</td><td>Small</td>
+\end{html}
+\end{itemize}

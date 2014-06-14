@@ -1,0 +1,80 @@
+%************************************************
+\section{Alternative PHP Cache}
+\label{def:apc}
+%************************************************
+
+\section*{Come funziona APC}
+Uno degli scopi prefissati dal linguaggio PHP e da chi ovviamente lo utilizza nei propri progetti, è quello di ottimizzare le richieste fatte al server, in modo da migliorare le prestazioni dello stesso verso i terminali host, ovvero gli utenti finali.
+
+Il codice di scripting PHP ogni volta che viene richiamato, non viene immediatamente eseguito, ma inizialmente deve essere analizzato e precompilato in un codice intermedio, quindi ottimizzato e alla fine eseguito. Tutti questi passi, risultano ridondanti quando i contenuti della pagina sono immutati (pagine statiche) e risultano penalizzanti se il server deve soddisfare le richieste di innumerevoli client.
+
+Computo degli ``acceleratori'' come APC è appunto quello di velocizzare i passaggi che precedono l'esecuzione ultima del codice PHP, per garantire al server di preservare parte della potenza computazionale. Esaminiamo i passaggi a cui il codice di scripting PHP è sottoposto, partendo dalla sua lettura dal filesystem ed il suo spostamento in memoria.
+
+\begin{enumerate}
+\item Lexing: L'interno del codice PHP viene convertito in token o lexicon
+\item Parsing: Durante questa fase, i token vengono elaborati per ricavare delle espressioni significative
+\item Compilazione: Le espressioni derivate vengono compilate in opcode
+\item Esecuzione: L'opcode viene eseguito per ottenere il risultato finale
+\end{enumerate}
+
+L'obiettivo di APC è di saltare i passaggi da 1 a 4, sfruttando un segmento di memoria condivisa che faccia da cache: in questa porzione di memoria i codici operativi generati vengono salvati e quando necessari, copiati nel processo di esecuzione per essere eseguiti.
+
+\ac{APC} è in definitiva un'estensione nativa per PHP che svolge il compito di precompilare, ottimizzare e mantenere in memoria il codice intermedio associato agli script PHP dopo la prima richiesta effettuata ad un file PHP.
+
+\section*{Installazione con Windows}
+L'installazione, per chi ha già utilizzato librerie esterne a quelle native del PHP non comporterà alcun problema: avviene semplicemente copiando la DLL precompilata nella directory che contiene le altre estensioni. Infine si abilita l'estensione utilizzando la seguente istruzione nel file \fil{php.ini}:
+
+\begin{code}
+extension=php_apc.dll
+\end{code}
+
+\section*{Installazione con Linux}
+La libreria in questione, sotto sistemi Unix o simili, può avvenire compilando manualmente la libreria con il comando \var{phpsize}. Ecco i passi da compiere:
+
+\begin{itemize}
+\item scaricare i sorgenti della libreria dal sito di PECL \url{http://pecl.php.net/package/apc}
+\item decomprimere i file scaricati in una directory del server utilizzando i permessi di root
+\item a questo sarà necessario compilare la libreria.
+\begin{code}
+phpize
+./configure --enable-apc --enable-mmap
+make
+cp modules/apc.so /usr/local/lib/php
+\end{code}
+\item riavviare il server web con l'istruzione:
+\begin{code}
+service mysqld start
+service httpd start
+\end{code}
+\end{itemize}
+
+\section*{Configurazione di APC}
+
+\begin{itemize}
+\item \verb|apc.enabled| abilita/disabilita la libreria APC. Il valore 0 disabilita la libreria.
+\item \verb|apc.optimization| specifica il livello di ottimizzazione da applicare al bytecode intermedio generato dallo Zend Engine
+\item \verb|apc.ttl| specifica per quanti secondi il codice intermedio rimarrà memorizzato nella cache. Un valore uguale a 0 lascerà in memoria il codice per un tempo molto lungo
+\item \verb|apc-filters| è possibile impostare dei filtri per indicare quali file salvare in cache e invece quali tralasciare. I filtri sono definiti in una lista contenente particolari espressioni regolari separate da virgole
+\item \verb|apc.file_update_protection| alcuni comandi utilizzati per sostituire i file sul server non eseguono operazioni atomiche (non caricano in un file temporaneo e poi sostituiscono quello precedente): in questo APC può trovarsi ad accedere a file incompleti. Per evitare questo inconveniente si indica il ritardo in secondi dopo i quali si procede con l'operazione di compilazione. Il valore standard è 2, che dovrebbe andar bene quasi sempre, salvo casi in cui ci si trovi ad aver a che fare con sorgenti molto lunghi o server particolarmente lenti.
+\end{itemize}
+
+\section*{APC al lavoro}
+Ecco i passaggi dettagliati di ciò che fa realmente APC
+
+\begin{itemize}
+\item Durante l'inizializzazione del modulo (MINIT), APC utilizza mmap per mappare file in memoria condivisa
+
+\item APC durante la richiesta, rimpiazza \verb|zend_compile_file()| con i propri \verb|my_compile_file()|
+\end{itemize}
+
+Particolarmente importante è la funzione svolta da \verb|my_compile_file|:
+
+\begin{itemize}
+\item Se APC non riesce a trovare il file nella cache, APC chiamerà \verb|zend_compile_file| per compilare il file
+
+\item Prende l'opcode che viene restituito e lo pone nella memoria condivisa che viene letta/scritta dai vari processi child di Apache
+
+\item Conserva nella memoria condivisa anche classi e function tables
+
+\item Copia l'opcode nella memoria dei child di Apache in modo che Zend possa eseguirlo nella fase di esecuzione
+\end{itemize}

@@ -1,0 +1,111 @@
+%************************************************
+\subsection{Helper Text}
+\label{helper:text}
+%************************************************
+
+L'Helper che aiuta nella gestione del testo, viene caricato con la funzione:
+
+\begin{code}
+$this->load->helper('text');
+\end{code}
+
+\begin{itemize}
+
+\item \verb|word_limiter()| effettua il troncamento di una stringa dopo il numero di parole specificato. Per esempio:
+
+\begin{code}
+$string = "Una piccola stringa composta da sole otto parole";
+
+$string = word_limiter($string, 4);
+
+// Restituisce: Una piccola stringa composta...
+\end{code}
+
+Il terzo parametro è un suffisso opzionale che viene aggiunto alla stringa. Per impostazione predefinita vengono aggiunti i puntini di sospensione.
+
+\item \verb|character_limiter()| effettua il troncamento di una stringa dopo un numero di caratteri specificato. Per mantenere l'integrità delle parole il conteggio dei caratteri potrebbe essere leggermente differente da quello specifico. Per esempio:
+
+\begin{code}
+$string = "Una piccola stringa composta da sole otto parole";
+
+$string = character_limiter($string, 20);
+
+// Restituisce: Una piccola stringa...
+\end{code}
+
+Il terzo parametro è un suffisso opzionale che viene aggiunto alla stringa. Se non dichiarato vengono aggiunti i puntini di sospensione.
+
+\item \verb|ascii_to_entities()| converte i valori ASCII nei corrispondenti caratteri, includendo gli ASCII alti e i caratteri MS Word che possono causare dei problemi quando utilizzati in una pagina web. In questo modo i caratteri possono essere visualizzati in modo coerente indipendentemente dalle impostazioni del browser e immagazzinati in modo affidabile in un database. Questa funzione mostra una certa dipendenza dal set di caratteri supportati dal server, e  per questo può non essere sempre affidabile. Nella maggior parte questa funzione identifica correttamente i caratteri escludendo caratteri non convenzionali (come i caratteri accentati). Per esempio:
+
+\begin{code}
+$string = ascii_to_entities($string);
+\end{code}
+
+\item \verb|entities_to_ascii()| svolge il compito opposto a quello di \verb|ascii_to_entities()|: restituisce i caratteri codificati in ASCII.
+
+\item \verb|convert_accented_characters()| traslittera i caratteri ASCII alti in quelli equivalenti ASCII bassi; questa funzione è utile quando è necessario utilizzare i caratteri non-English dove solo i caratteri ASCII standard sono utilizzati in modo sicuro, per esempio, negli \ac{URL}.
+
+\begin{code}
+$string = convert_accented_characters($string);
+\end{code}
+
+Questa funzione utilizza un file di configurazione \fil{/application/config/foreign_chars.php} per definire un array di provenienza e di destinazione per la traslitterazione.
+
+\item \verb|word_censor()| consente di censurare le parole all'interno di una stringa di testo. Il primo parametro conterrà la stringa originale. Il secondo conterrà una serie di parole che si vogliono disabilitare. Il terzo parametro (opzionale) può contenere un valore per sostituire le parole. Se non specificato, le parole censurate vengono sostituite con il simbolo di cancelletto: \verb|####|. Esempio:
+
+\begin{code}
+$disallowed = array('darn', 'shucks', 'golly', 'phooey');
+
+$string = word_censor($string, $disallowed, 'Beep!');
+\end{code}
+
+\item \verb|highlight_code()| colora una stringa di codici (PHP, HTML, ecc). Per esempio:
+
+\begin{code}
+$string = highlight_code($string);
+\end{code}
+
+Viene usata la funzione PHP \verb|highlight_string()| quindi vengono utilizzati i coroli usati nel file \fil{php.ini}.
+
+\item \verb|highlight_phrase()| mette in evidenza una frase all'interno di una stringa di testo. Il primo parametro conterrà la stringa originale, il secondo conterrà la frase che si desidera evidenziare. Il terzo e il quarto parametro conterrà i tag \ac{HTML} di apertura/chiusura con cui si desidera inglobare la frase evidenziata. Esempio:
+
+\begin{code}
+$string = "Here is a nice text string about nothing in particular.";
+
+$string = highlight_phrase($string, "nice text", '<span style="color:#990000">', '</span>');
+\end{code}
+
+\item \verb|word_wrap()| spezza un testo su una nuova linea dopo un determinato numero di caratteri. Per esempio:
+
+\begin{code}
+$string = "Here is a simple string of text that will help us demonstrate this function.";
+
+echo word_wrap($string, 25);
+
+// Produce:
+
+Here is a simple string
+of text that will help
+us demonstrate this
+function
+\end{code}
+
+\item \verb|ellipsize()| questa funzione rimuove i tag da una stringa, la divide dopo una lunghezza massima definita, e inserisce i puntini di sospensione.
+
+Il primo parametro è la stringa, il secondo è il numero di caratteri nella stringa finale. Il terzo parametro è dove nella stringa i puntini di sospensione dovrebbe apparire (il valore va da 0 a 1, dove 0 è a sinistra, 1 a destra, .5 è al centro).
+
+Un quarto parametro facoltativo è il tipo di puntini di sospensione. Per impostazione predefinita vengono inseriti i caratteri \var{&hellip} (...)
+
+\begin{code}
+$str = 'this_string_is_entirely_too_long_and_might_break_my_design.jpg';
+
+echo ellipsize($str, 32, .5);
+\end{code}
+
+La funzione produce:
+
+\begin{code}
+this_string_is_e…ak_my_design.jpg
+\end{code}
+
+\end{itemize}

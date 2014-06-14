@@ -1,0 +1,290 @@
+%************************************************
+\section{Helper HTML}
+\label{helper:html}
+%************************************************
+
+L'Helper, che ha diverse funzione che aiutano nel lavoro con il codice HTML, viene caricato con:
+
+\begin{code}
+$this->load->helper('html');
+\end{code}
+
+\verb|br()| genera un tag <br /> (interruzione di linea) basato sul numero inviato. Per esempio
+
+\begin{code}
+echo br(3);
+\end{code}
+
+Il codice precedente produce tre ritorni a capo: \var{<br /><br /><br />}
+
+\verb|heading()| produce il tag HTML <h1> dove il primo parametro contiene i dati, e il secondo la dimensione dell'head (testata). Per esempio:
+
+\begin{code}
+echo heading('Benvenuto!', 3);
+\end{code}
+
+Viene generato: <h3>Benvenuto!</h3>
+
+Inoltre, tramite un terzo parametro si possono aggiungere ulteriori attributi al tag come per esempio:
+
+\begin{code}
+echo heading('Welcome!', 3, 'class="pink"');
+\end{code}
+
+Il codice produce: <h3 class="pink">Benvenuto!<<h3>
+
+\verb|img()| permette di generare i tag <img /> in cui il primo parametro contiene il percorso dell'immagine. Per esempio:
+
+\begin{code}
+echo img('images/picture.jpg');
+// genera <img src="http://site.com/images/picture.jpg" />
+\end{code}
+
+Vi è un secondo parametro opzionale che può essere TRUE/FALSE. Se viene specificato TRUE nell'attributo src viene inserita anche il segmento specificato da \verb|$config['index_page']| oltre all'indirizzo dell'immagine. Generalmente, questo parametro è consigliato quando si sta utilizzando un media controller.
+
+\begin{code}
+echo img('images/picture.jpg', TRUE);
+// genera <img src="http://site.com/index.php/images/picture.jpg" alt="" />
+\end{code}
+
+Inoltre, un array associativo può essere passato alla funzione \verb|img()| per il controllo completo su tutti gli attributi e valori. Se non viene fornito un attributo alt, CodeIgniter genererà una stringa vuota.
+
+\begin{code}
+$image_properties = array(
+          'src' => 'images/picture.jpg',
+          'alt' => 'Me, demonstrating how to eat 4 slices of pizza at one time',
+          'class' => 'post_images',
+          'width' => '200',
+          'height' => '200',
+          'title' => 'That was quite a night',
+          'rel' => 'lightbox',
+);
+
+echo img($image_properties);
+// <img src="http://site.com/index.php/images/picture.jpg" alt="Me, demonstrating how to eat 4 slices of pizza at one time" class="post_images" width="200" height="200" title="That was quite a night" rel="lightbox" />
+\end{code}
+
+\verb|link_tag()| consente di creare i tag HTML <link />. Ciò è utile per i collegamenti ai fogli di stile, così come ad altre risorse. I parametri sono \verb|href| (con rel opzionale), \verb|type|, \verb|title|, \verb|media| e \verb|index_page|. Quest'ultimo può assumente un valore TRUE/FALSE a seconda che l'attributo href debba contenere la pagina specificata da \verb|$config['index_page']| aggiunta all'indirizzo creato.
+
+\begin{code}
+echo link_tag('css/mystyles.css');
+//genera <link href="http://site.com/css/mystyles.css" rel="stylesheet" type="text/css" />
+\end{code}
+
+Un altro esempio:
+
+\begin{code}
+echo link_tag('favicon.ico', 'shortcut icon', 'image/ico');
+// <link href="http://site.com/favicon.ico" rel="shortcut icon" type="image/ico" /> 
+
+echo link_tag('feed', 'alternate', 'application/rss+xml', 'Il mio Feed RSS');
+// <link href="http://site.com/feed" rel="alternate" type="application/rss+xml" title="Il mio Feed RSS" />
+\end{code}
+
+Inoltre, un array associativo può essere passato alla funzione \verb|link()| per il controllo completo su tutti gli attributi e valori.
+
+\begin{code}
+$link = array(
+          'href' => 'css/printer.css',
+          'rel' => 'stylesheet',
+          'type' => 'text/css',
+          'media' => 'print'
+);
+
+echo link_tag($link);
+// <link href="http://site.com/css/printer.css" rel="stylesheet" type="text/css" media="print" />
+\end{code}
+
+\verb|nbs()| genera un numero di non-breaking space, ovvero spazi indivisibili \var{\&nbsp;} in base al numero fornito:
+
+\begin{code}
+echo nbs(3);
+\end{code}
+
+Produce: \&nbsp;\&nbsp;\&nbsp;
+
+\verb|ol()| e \verb|ul()| permettono di generare liste HTML rispettivamente ordinate e non ordinate grazie ad array mono o multidimensionali. Per esempio:
+
+\begin{code}
+$this->load->helper('html');
+
+$list = array(
+            'rosso', 
+            'blu', 
+            'verde',
+            'giallo'
+            );
+
+$attributes = array(
+                    'class' => 'boldlist',
+                    'id'    => 'mylist'
+                    );
+
+echo ul($list, $attributes);
+\end{code}
+
+Il codice precedente produce:
+
+\begin{code}
+<ul class="boldlist" id="mylist">
+  <li>rosso</li>
+  <li>blu</li>
+  <li>verde</li>
+  <li>giallo</li>
+</ul>
+\end{code}
+
+Qui di seguito un esempio più complesso, utilizzando un array multidimensionale:
+
+\begin{code}
+$this->load->helper('html');
+
+$attributes = array(
+                    'class' => 'boldlist',
+                    'id'    => 'mylist'
+                    );
+
+$list = array(
+            'colori' => array(
+                                'rosso',
+                                'blue',
+                                'verde'
+                            ),
+            'forme' => array(
+                                'rotondo', 
+                                'quadrato',
+                                'cerchio' => array(
+                                                    'ellisse', 
+                                                    'ovale', 
+                                                    'sfera'
+                                                    )
+                            ),
+            'stati'    => array(
+                                'felice', 
+                                'emozioni' => array(
+                                                    'sconfitto' => array(
+                                                                        'sconsolato',
+                                                                        'sfiduciato',
+                                                                        'depresso'
+                                                                        ),
+                                                    'annoiato',
+                                                    'irritato',
+                                                    'affamato'
+                                                )
+                            )
+            );
+
+
+echo ul($list, $attributes);
+\end{code}
+
+il codice precedente genera:
+
+\begin{code}
+<ul class="boldlist" id="mylist">
+  <li>colori
+    <ul>
+      <li>rosso</li>
+      <li>blue</li>
+      <li>verde</li>
+    </ul>
+  </li>
+  <li>forme
+    <ul>
+      <li>rotondo</li>
+      <li>quadrato</li>
+      <li>circolo</li>
+        <ul>
+          <li>ellisse</li>
+          <li>ovale</li>
+          <li>sfera</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li>stati
+    <ul>
+      <li>felice</li>
+      <li>emozioni
+        <ul>
+          <li>sconfitto
+            <ul>
+              <li>sconsolato</li>
+              <li>sfiduciato</li>
+              <li>depresso</li>
+            </ul>
+          </li>
+          <li>annoiato</li>
+          <li>irritato</li>
+          <li>affamato</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+\end{code}
+
+\verb|meta()| aiuta a generare i meta tag. \'E possibile passare alla funzione  le stringhe, oppure array semplici o multidimensionali. Esempio:
+
+\begin{code}
+echo meta('descrizione', 'Il mio grande sito');
+// Genera: <meta name="descrizione" content="Il mio grande sito" />
+
+
+echo meta('Content-type', 'text/html; charset=utf-8', 'equiv'); // Nota il terzo parametro: può assumere il valore di "equiv" oppure "name"
+// Genera: <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+
+
+echo meta(array('name' => 'robots', 'content' => 'no-cache'));
+// Genera: <meta name="robots" content="no-cache" />
+
+
+$meta = array(
+        array('name' => 'robots', 'content' => 'no-cache'),
+        array('name' => 'description', 'content' => 'Il mio grande sito'),
+        array('name' => 'keywords', 'content' => 'amore, passione, intrigo, inganno'),
+        array('name' => 'robots', 'content' => 'no-cache'),
+        array('name' => 'Content-type', 'content' => 'text/html; charset=utf-8', 'type' => 'equiv')
+    );
+
+echo meta($meta); 
+// Genera: 
+// <meta name="robots" content="no-cache" />
+// <meta name="description" content="Il mio grande sito" />
+// <meta name="keywords" content="amore, passione, intrigo, inganno" />
+// <meta name="robots" content="no-cache" />
+// <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+\end{code}
+
+\verb|doctype()| aiuta a generare dichiarazioni specificando il tipo di documento, o DTD. Per impostazione predefinita viene utilizzato ``XHTML 1.0'', ma sono disponibili molti altri doctype.
+
+\begin{code}
+echo doctype();
+// <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+echo doctype('html4-trans');
+// <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+\end{code}
+
+Di seguito è riportato un elenco di scelte DOCTYPE. Queste sono configurabili nel file \fil{/application/config/doctypes.php}.
+%
+
+%\small
+\scriptsize
+\begin{tabx}{llX}
+\toprule
+Doctype & Opzioni & Risultato \\
+\midrule
+\verb|XHTML 1.1| & doctype('xhtml11') & <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd"> \\
+\verb|XHTML 1.0 Strict| & doctype('xhtml1-strict') & <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"> \\
+\verb|XHTML 1.0 Frameset| & doctype('xhtml1-frame') & <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Frameset//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd"> \\
+\verb|HTML 5| & doctype('html5') & <!DOCTYPE html> \\
+\verb|HTML 4 Strict| & doctype('html4-strict') & <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd"> \\
+\verb|HTML 4 Transitional| & doctype('html4-trans') & <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd"> \\
+\verb|HTML 4 Frameset| & doctype('html4-frame') & <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Frameset//EN" "http://www.w3.org/TR/html4/frameset.dtd"> \\
+\bottomrule
+\end{tabx}
+\normalsize
+
+
+%table

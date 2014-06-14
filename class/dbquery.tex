@@ -1,0 +1,89 @@
+%inizio Query
+\section*{Query}
+In questa sezione tratteremo le query ovvero quelle istruzioni che permettono di ``interrogare'' i database per ottenere/modificare una grande mole di informazioni.
+
+\verb|$this->db->query();| è l'istruzione basilare: per eseguire una query, la sintassi dell'istruzione è:
+
+\begin{code}
+$this->db->query('INSERISCI QUI LA TUA QUERY');
+\end{code}
+
+La funzione \var{query()} restituisce un oggetto quando vengono eseguite le query di tipo read, utilizzate per visualizzare i risultati (per esempio \var{SELECT}).
+
+Quando invece vengono eseguite le query di tipo write, la funzione semplicemente restituisce il valore booleano TRUE oppure FALSE, a seconda del successo o meno dell'operazione. Quando si recuperano i dati, tipicamente si può assegnare la query alla propria variabile come nel seguente:
+
+\begin{code}
+$query = $this->db->query('INSERISCI QUI LA TUA QUERY');
+\end{code}
+
+\verb|$this->db->simple_query()| è la versione semplificata della funzione \verb|$this->db->query()|. Essa restituisce solo i valori TRUE oppure FALSE a seconda del successo o meno della query. Questa funzione perciò non restituisce una lista di risultati, né imposta le query timer, compila i dati bind, o memorizza le proprie query per il debug: viene semplicemente utilizzata per inviare/sottoporre una query. Questa funzione viene utilizzata raramente.
+
+\section*{Prefisso del database}
+Se si è configurato manualmente un prefisso per il database e lo si vuole anteporre ad un nome di tabella per utilizzarlo per esempio in una query nativa SQL, è possibile utilizzare il seguente comando:
+
+\begin{code}
+$this->db->dbprefix('tablename');
+// restituisce prefisso_tablename
+\end{code}
+
+Se per qualsiasi ragione è necessario cambiare il prefisso, senza creare una nuova connessione, si può utilizzare la funzione:
+
+\begin{code}
+$this->db->set_dbprefix('newprefix');
+
+$this->db->dbprefix('tablename');
+// restituisce nuovoprefisso_tablename
+\end{code}
+
+\section*{Proteggere gli identificatori}
+In molti database, è consigliabile proteggere la tabella e i record, per esempio con i backtick  in MySQL (si veda la definizione\vpageref{def:Backtick}). Con Active Record le query sono automaticamente protette, tuttavia se si ha bisogno di proteggere manualmente un identificatore è possibile utilizzare:
+
+\begin{code}
+$this->db->protect_identifiers('table_name');
+\end{code}
+
+\begin{deftab}{Backtick}{L'operatore di esecuzione backtick è costituito dagli apici inversi (``). Si noti che non si tratta di doppi apici o apostrofi. L'istruzione contenuta all'interno dei backtick verrà eseguito come se fosse un comando di shell: il risultato dovrà essere assegnato ad una variabile e visualizzato eventualmente con il comando echo. L'uso dell'operatore backtick è identico alla funzione shell\_exec() e diversamente da altri linguaggi non possono essere utilizzati all'interno di stringhe delimitate da doppi apici. Per finire, l'operatore backtick viene disabilitato quando la modalità sicura è attiva oppure quando è disabilitata shell\_exec().}
+\end{deftab}
+\normalsize
+
+Questa funzione si può anche aggiungere al prefisso della propria tabella, ipotizzando che un prefisso sia indicato nel proprio file di configurazione. Per abilitare l'uso del prefisso è necessario impostare su TRUE il secondo parametro:
+ 
+\begin{code}
+$this->db->protect_identifiers('table_name', TRUE);
+\end{code}
+
+\section*{Escape delle query}
+\'E una buona pratica di sicurezza effettuare l'escape dei dati prima di inviarli al proprio database. CodeIgniter ha tre metodi, utili a tale scopo.
+
+\begin{itemize}
+\item \verb|$this->db->escape()| questa funzione determina il tipo di dati, in modo che si possa fare l'escape solo dei dati stringa. Essa aggiunge le singole virgolette attorno al dato:
+
+\begin{code}
+$sql = "INSERT INTO table (title) VALUES(".$this->db->escape($title).")";
+\end{code}
+
+\item \verb|$this->db->escape_str()| questa funzione effettua l'escape dei dati che gli vengono passati indipendentemente dal tipo:
+
+\begin{code}
+$sql = "INSERT INTO table (title) VALUES('".$this->db->escape_str($title)."')";
+\end{code}
+
+\item \verb|$this->db->escape_like_str()| questa funzione deve essere usata quando le stringhe contengono la condizione LIKE e i wildcard (\verb| %, _|).
+
+\begin{code}
+$search = '20% raise';
+$sql = "SELECT id FROM table WHERE column LIKE '%".$this->db->escape_like_str($search)."%'";
+\end{code}
+\end{itemize}
+
+\section*{Query binding}
+I Binding consentono di semplificare la sintassi di query lasciando che il sistema inserisca le query per noi. Si consideri il seguente esempio:
+
+\begin{code}
+$sql = "SELECT * FROM some_table WHERE id = ? AND status = ? AND author = ?"; 
+
+$this->db->query($sql, array(3, 'live', 'Rick'));
+\end{code}
+
+I ``punto di domanda'' nella query vengono sostituiti automaticamente con i valori presenti nel secondo parametro dell'array della funzione \var|query()|. Il secondo vantaggio nell'utilizzare Bind è che i valori sono automaticamente controllati, permettendo così query più sicure. In paratica, non ci si deve più preoccupare di effettuare l'escape manualmente, perché sarà l'engine di CodeIgniter a farlo automaticamente.
+%fine {Query}

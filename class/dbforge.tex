@@ -1,0 +1,198 @@
+%inizio Database Forge Class
+\section*{Classe Database Forge}
+Si tratta di una classe che fornisce numerose funzionalità per gestire la propria base di dati, permettendo azioni come la creazione, o l'eliminazione di una tabella, aggiungere una chiave o un campo.
+
+\section*{Inizializzare la classe}
+
+Prima di tutto, per inizializzare la classe Forge, il driver di database deve essere già in esecuzione, poiché tale classe si basa su di esso. La seguente istruzione carica la classe:
+
+\begin{code}
+$this->load->dbforge()
+\end{code}
+
+\begin{code}
+$this->dbforge->some_function()
+\end{code}
+
+Una volta inizializzato si potrà accedere alle funzioni utilizzando il \verb|$this->dbforge|:
+
+\begin{code}
+$this->dbforge->some_function()
+\end{code}
+
+\begin{itemize}
+\item \verb|$this->dbforge->create_database('db_name')| permette di creare il database specificato come primo parametro; restituisce TRUE/FALSE in base al successo o meno della funzione.
+
+\begin{code}
+if ($this->dbforge->create_database('my_db'))
+{
+    echo 'Database created!';
+}
+\end{code}
+
+\item \verb|$this->dbforge->drop_database('db_name')| elimina il database specificato nel primo parametro; restituisce TRUE/FALSE in base al successo o meno della funzione.
+
+\begin{code}
+if ($this->dbforge->drop_database('my_db'))
+{
+    echo 'Il database è stato cancellato!';
+}
+\end{code}
+
+\section*{Creare e cancellare le tabelle}
+Quando si creano le tabelle, CodeIgniter fornisce un meccanismo per aggiungere campi, chiavi o modificare le colonne. 
+
+\section*{Aggiungere i campi}
+I campi vengono creati mediante un array associativo all'interno del quale è necessario includere una chiave ``type'' che si riferisce al tipo di dati del campo (ad esempio, INT, VARCHAR, TEXT, ecc). Alcuni tipi di dati (ad esempio VARCHAR) richiedono anche una chiave con un vincolo (constraint).
+
+\begin{code}
+$fields = array(
+        'users' => array(
+                'type' => 'VARCHAR',
+                'constraint' => '100',
+                ),
+);
+
+// sarà convertito in "users VARCHAR(100)" quando verrà aggiunto il campo.
+\end{code}
+
+Inoltre possono essere usati le seguenti chiavi/valori:
+
+\begin{itemize}
+\item unsigned/true: per generare UNSIGNED (senza segno) nella definizione del campo
+\item default/value: per generare un valore di default nella definizione del campo
+\item null/true: per generare NULL nella definizione del campo. Senza questo, il campo verrà impostato su NOT NULL
+\item \verb|auto_increment/true|: genera un flag \verb|auto_increment| sul campo. Si noti che il campo deve essere di un tipo supportato, come per esempio quello integer (intero)
+\end{itemize}
+
+\begin{code}
+$fields = array(
+    'blog_id' => array(
+                 'type' => 'INT',
+                 'constraint' => 5, 
+                 'unsigned' => TRUE,
+                 'auto_increment' => TRUE
+                  ),
+    'blog_title' => array(
+                 'type' => 'VARCHAR',
+                 'constraint' => '100',
+                  ),
+    'blog_author' => array(
+                 'type' =>'VARCHAR',
+                 'constraint' => '100',
+                 'default' => 'King of Town',
+                  ),
+    'blog_description' => array(
+                 'type' => 'TEXT',
+                 'null' => TRUE,
+                  ),
+);
+\end{code}
+
+Una volta definiti i campi, è possibile aggiungerli utilizzando la funzione \verb|$this->dbforge->add_field($fields)|, seguita da una chiamata alla funzione \verb|create_table()|.
+
+\item \verb|$this->dbforge->add_field()| questa funzione aggiunge i campi che saranno accettati dall'array precedentemente descritto.
+\end{itemize}
+
+\section*{Passaggio di stringhe}
+Se si sa esattamente quale campo si vuole creare è possibile passare una stringa alla funzione \verb|add_field()| con la corretta definizione.
+
+\begin{code}
+$this->dbforge->add_field("label varchar(100) NOT NULL DEFAULT 'default label'");
+\end{code}
+
+Le chiamata multiple alla funzione \verb|add_field()| sono cumulative.
+
+\section*{Creare un campo ID}
+Esiste una istruzione particolare per creare i campi id. Quando si specifica un argomento ``id'' viene automaticamente creato un campo chiave primaria auto incrementale di tipo INT(9).
+
+\begin{code}
+$this->dbforge->add_field('id');
+// produce: id INT(9) NOT NULL AUTO_INCREMENT
+\end{code}
+
+\section*{Aggiungere una chiave}
+Ogni tabella possiede generalmente una chiave. Questa si assegna con la funzione \verb|$this->dbforge->add_key('field')|. Un secondo parametro opzionale impostato su TRUE definirà l'argomento come una chiave primaria. Si noti che \verb|add_key()| deve essere seguita da una chiamata a \verb|create_table()|.
+
+Eventuali colonne multiple di chiavi non primarie devono essere specificate come un array. Un esempio di output è il seguente codice MySQL:
+
+\begin{code}
+$this->dbforge->add_key('blog_id', TRUE);
+// produce: PRIMARY KEY `blog_id` (`blog_id`)
+
+$this->dbforge->add_key('blog_id', TRUE);
+$this->dbforge->add_key('site_id', TRUE);
+// produce: PRIMARY KEY `blog_id_site_id` (`blog_id`, `site_id`)
+
+$this->dbforge->add_key('blog_name');
+// produce: KEY `blog_name` (`blog_name`)
+
+$this->dbforge->add_key(array('blog_name', 'blog_label'));
+// produce: KEY `blog_name_blog_label` (`blog_name`, `blog_label`)
+\end{code}
+
+\section*{Creare una tabella}
+Dopo che i campi e le chiavi sono state dichiarate è possibile creare una nuova tabella con:
+
+\begin{code}
+$this->dbforge->create_table('table_name');
+// produce: CREATE TABLE table_name
+\end{code}
+
+Un secondo parametro opzionale impostato su TRUE aggiunge una clausola IF NOT EXISTS nella definizione:
+
+\begin{code}
+$this->dbforge->create_table('table_name', TRUE);
+// produce: CREATE TABLE IF NOT EXISTS table_name
+\end{code}
+
+\section*{Cancellare una tabella}
+Per eseguire una istruzione sql DROP TABLE:
+
+\begin{code}
+$this->dbforge->drop_table('table_name');
+// produce: DROP TABLE IF EXISTS table_name
+\end{code}
+
+\section*{Rinominare una tabella}
+Per rinominare una tabella:
+
+\begin{code}
+$this->dbforge->rename_table('old_table_name', 'new_table_name');
+// produce: ALTER TABLE old_table_name RENAME TO new_table_name
+\end{code}
+
+\section*{Modificare le tabelle}
+\begin{itemize}
+\item \verb|$this->dbforge->add_column()| la funzione \verb|add_column()| è utilizzata per modificare una tabella esistente. Essa accetta lo stesso array specificato precedentemente tramite il quale si possono aggiungere un numero infinito di campi:
+
+\begin{code}
+$fields = array(
+            'preferences' => array('type' => 'TEXT')
+);
+$this->dbforge->add_column('table_name', $fields);
+
+// produce: ALTER TABLE table_name ADD preferences TEXT
+\end{code}
+
+\item \verb|$this->dbforge->drop_column()| è usata per cancellare una colonna da una tabella:
+
+\begin{code}
+$this->dbforge->drop_column('table_name', 'column_to_drop');
+\end{code}
+
+\item \verb|$this->dbforge->modify_column()| l'utilizzo di questa funzione è identica a \verb|add_column()|, tranne che modifica una colonna esistente piuttosto che aggiungerne una nuova. Per modificarne il nome è possibile aggiungere una chiave ``name'' nel campo che definisce l'array.
+
+\begin{code}
+$fields = array(
+            'old_name' => array(
+            'name' => 'new_name',
+            'type' => 'TEXT',
+            ),
+);
+$this->dbforge->modify_column('table_name', $fields);
+
+// produce: ALTER TABLE table_name CHANGE old_name new_name TEXT
+\end{code}
+\end{itemize}
+%fine Database Forge Class

@@ -1,0 +1,141 @@
+%************************************************
+\section{Classe User Agent}
+\label{class:useragent}
+%************************************************
+
+La classe User Agent fornisce degli utili strumenti per identificare le informazioni riguardanti i browser, i device mobile e i robot che si collegano al proprio sito. In aggiunta a questo, la classe rivela altri dati come il linguaggio e la codifica dei caratteri supportata.
+
+La classe viene inizializzata nel proprio controller con la funzione \verb|$this->load->library('user_agent')|. Una volta caricata, l'oggetto sarà disponibile con la funzione \var{\$this->agent}.
+
+\section*{Definizione}
+
+Le definizioni riguardanti lo ``user agent'' sono memorizzate nel file \verb|/application/config/user_agents.php| in cui è possibile aggiungere ulteriori elementi se necessario.
+
+Per esempio, quando la classe è inizializzata è possibile determinare se lo user agent che naviga nel sito è un browser web, un dispositivo mobile o un robot. \'E anche possibile ottenere altre informazioni sulla piattaforma come il sistema operativo utilizzato.
+
+\begin{code}
+$this->load->library('user_agent');
+
+if ($this->agent->is_browser())
+{
+    $agent = $this->agent->browser().' '.$this->agent->version();
+}
+elseif ($this->agent->is_robot())
+{
+    $agent = $this->agent->robot();
+}
+elseif ($this->agent->is_mobile())
+{
+    $agent = $this->agent->mobile();
+}
+else
+{
+    $agent = 'Unidentified User Agent';
+}
+
+echo $agent;
+
+echo $this->agent->platform(); // Platform info (Windows, Linux, Mac, etc.)
+\end{code}
+
+\section*{Reference delle funzioni}
+
+\begin{itemize}
+\item \verb|$this->agent->is_browser()| restituisce un valore booleano TRUE/FALSE se il browser web è un user agent conosciuto o meno:
+
+\begin{code}
+if ($this->agent->is_browser('Safari'))
+{
+    echo 'You are using Safari.';
+}
+else if ($this->agent->is_browser())
+{
+    echo 'You are using a browser.';
+}
+\end{code}
+
+La stringa ``Safari'', presente in questo esempio è una chiave dell'array che contiene la lista deii browser web. Il file \verb|application/config/user_agents.php| contiene la lista di tutti i browser a cui è possibile aggiungerne di nuovi o modificare quelli esistenti.
+
+\item \verb|$this->agent->is_mobile()| restituisce un valore booleano TRUE/FALSE se il dispositivo mobile è uno user agent conosciuto o meno:
+
+\begin{code}
+if ($this->agent->is_mobile('iphone'))
+{
+    $this->load->view('iphone/home');
+}
+else if ($this->agent->is_mobile())
+{
+    $this->load->view('mobile/home');
+}
+else
+{
+    $this->load->view('web/home');
+}
+\end{code}
+
+\item \verb|$this->agent->is_mobile()| restituisce un valore booleano TRUE/FALSE se il dispositivo mobile è uno user agent conosciuto o meno:
+
+\begin{code}
+if ($this->agent->is_mobile('iphone'))
+{
+    $this->load->view('iphone/home');
+}
+else if ($this->agent->is_mobile())
+{
+    $this->load->view('mobile/home');
+}
+else
+{
+    $this->load->view('web/home');
+}
+\end{code}
+
+\item \verb|$this->agent->is_robot()| restituisce un valore booleano TRUE/FALSE se il robot è uno user agent conosciuto o meno:
+
+Nota: La libreria degli user agent contiene solo le definizioni dei robot più comuni. Non è certo un elenco esaustivo dei bot: ne esistono centinaia e verificare ognuno di questi non sarebbe molto efficiente. In tutti i casi, se si scopre che alcuni bot che normalmente visitano il sito mancano nella lista è possibile aggiungerli manualmente al file \verb|application/config/user_agents.php|.
+
+\item \verb|$this->agent->is_referral()| restituisce il valore booleano TRUE/FALSE se lo user agent è riferito a quello di un altro sito.
+
+\item \verb|$this->agent->browser()| restituisce una stringa che contiene il nome del browser web che visita il proprio sito.
+
+\item \verb|$this->agent->version()| restituisce una stringa che contiene il numero di versione del browser web che visita il proprio sito.
+
+\item \verb|$this->agent->mobile()| restituisce una stringa che contiene il nome del dispositivo mobile che visita il proprio sito.
+
+\item \verb|$this->agent->robot()| restituisce una stringa che contiene il nome del robot che visita il proprio sito.
+
+\item \verb|$this->agent->platform()| restituisce una stringa che contiene il nome sistema operativo (Linux, Windows, OS X, etc.) utilizzato per visitare il proprio sito.
+
+\item \verb|$this->agent->referrer()| è una stringa che viene prodotta quando lo user agent è dovuto alla visita di un altro sito:
+
+\begin{code}
+if ($this->agent->is_referral())
+{
+    echo $this->agent->referrer();
+}
+\end{code}
+
+\item \verb|$this->agent->agent_string()| restituisce una stringa che contiene la stringa completa user agent. Un esempio:
+
+\begin{code}
+Mozilla/5.0 (Macintosh; U; Intel Mac OS X; en-US; rv:1.8.0.4) Gecko/20060613 Camino/1.0.2
+\end{code}
+
+\item \verb|$this->agent->accept_lang()| determina se lo user agent accetta una particolare lingua. Questa funzione non è in genere molto affidabile in quanto alcuni browser non forniscono informazioni sulla lingua, e tra quelli che lo fanno, il dato non è sempre preciso.
+
+\begin{code}
+if ($this->agent->accept_lang('en'))
+{
+    echo 'You accept English!';
+}
+\end{code}
+
+\item \verb|$this->agent->accept_charset()| determina se lo user agent accetta una codifica dei caratteri. Questa funzione non è in genere molto affidabile in quanto alcuni browser non forniscono informazioni sulla codifica dei caratteri, e tra quelli che lo fanno, il dato non è sempre preciso. Per esempio:
+
+\begin{code}
+if ($this->agent->accept_charset('utf-8'))
+{
+    echo 'You browser supports UTF-8!';
+}
+\end{code}
+\end{itemize}

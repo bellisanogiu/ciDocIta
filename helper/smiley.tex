@@ -1,0 +1,107 @@
+%************************************************
+\section{Helper Smiley}
+\label{helper:smiley}
+%************************************************
+
+Questo Helper permette di trasformare una serie definita di caratteri testuali in una immagine che rappresenta uno smiley. Inoltre, consente di visualizzare una serie di immagini smiley che quando vengono cliccate saranno inserite in un campo form. Ad esempio, se avete un blog che permette all'utente di commentare è possibile mostrare le faccine accanto per commentare il form. Gli utenti possono fare scegliere lo smiley desiderato che, con l'aiuto di alcuni JavaScript, verrà posizionato nel campo form.
+
+%Clickable Smileys Tutorial
+Ecco un esempio che dimostra come è possibile creare un set di emoticon cliccabili accanto a un campo di un form. Questo esempio richiede che prima si scarichi e si installari le immagini degli smiley, quindi è necessario creare un Controller e una Vista come descritto.
+
+Importante: prima di iniziare, si scarichino le immagini smiley che andranno inserite in un luogo accessibile (si vedano i permessi) sul server. Questo helper presuppone inoltre che l'array di sostituzione smiley si trovi nel file /fil{application/config/smileys.php}.
+
+\section*{Il Controller}
+Si crei il file chiamato \fil{smileys.php} nella directory \sys{/application/controllers/} e si inserisca il codice descritto in seguito. Si modifichi nella funzione \verb|get_clickable_smileys()| l'URL in modo che punti alla directory degli smiley. L'esempio utilizza anche la classe Table:
+
+\begin{code}
+<?php
+
+class Smileys extends CI_Controller {
+
+	function __construct()
+	{
+		parent::__construct();
+	}
+
+	function index()
+	{
+		$this->load->helper('smiley');
+		$this->load->library('table');
+
+		$image_array = get_clickable_smileys('http://example.com/images/smileys/', 'comments');
+
+		$col_array = $this->table->make_columns($image_array, 8);
+
+		$data['smiley_table'] = $this->table->generate($col_array);
+
+		$this->load->view('smiley_view', $data);
+	}
+
+}
+?>
+\end{code}
+
+Nota: l'istruzione \verb|$image_array = get_clickable_smileys('http://example.com/images/smileys/', 'comments');| indica il percorso in cui si trovano le immagini degli smile.
+
+Ora si definisca una Vista denominata \verb|smiley_view.php| nella  directory \sys{/application/views/} e si inserisca il codice:
+
+\begin{html}
+<html>
+<head>
+<title>Smiley</title>
+
+<?php echo smiley_js(); ?>
+
+</head>
+<body>
+
+<form name="blog">
+<textarea name="comments" id="comments" cols="40" rows="4"></textarea>
+</form>
+
+<p>Scegli il tuo smile</p>
+
+<?php echo $smiley_table; ?>
+
+</body>
+</html>
+\end{html}
+
+Ora sarà possibile vedere quanto prodotto, collegandosi all'URL: \sys{http://www.example.com/index.php/smileys/}.
+
+Nota: se non compaiono le immagini, è semplicemente perché queste non sono presenti nel server. CodeIgniter permette di utilizzare gli smile che si desidera senza alcuna limitazione.
+
+\section*{Campi Alias}
+Quando si effettuano modifiche ad una Vista può essere scomodo avere il campo id nel controller. Per ovviare a questo, è possibile fornire il link degli smiley e un nome generico nome che sarà legato a un ID specifico nella Vista.
+
+\begin{code}
+$image_array = get_smiley_links("http://example.com/images/smileys/", "comment_textarea_alias");
+\end{code}
+
+Per mappare l'alias ad un campo id, entrambi devono essere passati nella funzione \verb|smiley_js|:
+
+\begin{code}
+$image_array = smiley_js("comment_textarea_alias", "comments");
+\end{code}
+
+\verb|get_clickable_smileys()| restituisce un array contenente le immagini smiley insieme al relativo link cliccabile. \'E necessario fornire l'URL alla cartella smiley e un campo ID oppure un campo alias.
+
+\begin{code}
+$image_array = get_smiley_links("http://example.com/images/smileys/", "comment");
+\end{code}
+
+L'uso di questa funzione senza il secondo parametro, in combinazione con \verb|js_insert_smiley| è ora deprecato.
+
+\verb|smiley_js()| genera il codice JavaScript che permette alle immagini di essere cliccate ed inserite in un campo del form. Se si è fornito un alias invece di un id quando si generano i link degli smiley, è necessario passare l'alias e il corrispondente campo id alla funzione. Questa funzione è progettata per essere collocata nell'area <head> della propria pagina web.
+
+\begin{code}
+<?php echo smiley_js(); ?>
+\end{code}
+
+Questa funzione sostituisce \verb|js_insert_smiley| che è stata deprecata.
+
+\verb|parse_smileys()| prende una stringa di testo come input e sostituisce tutto il testo che codifica gli smile nell'equivalente immagine. Il primo parametro deve contenere la propria stringa, mentre il secondo deve contenere l'URL che punta alla cartella smiley:
+
+\begin{code}
+$str = 'Here are some simileys: :-) ;-)'; $str = parse_smileys($str, "http://example.com/images/smileys/"); echo $str;
+\end{code}

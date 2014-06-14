@@ -1,0 +1,60 @@
+\section{Classe Security}
+\label{class:sicurezza}
+%************************************************
+
+La classe Security contiene i metodi utili a definire un'applicazione sicura, grazie all'elaborazione dei dati in ingresso.
+
+\section*{Filtro XSS}
+CodeIgniter è dotato di un filtro di prevenzione Cross Site Scripting Hack, che può essere eseguito automaticamente per filtrare tutti i dati POST e COOKIE oppure manualmente, scegliendo uno o più elementi specifici. Per impostazione predefinita questo filtro non viene eseguito a livello globale poiché potrebbe non essere sempre necessario e poi perché aumenta, anche se di poco, il carico di elaborazione sul server.
+
+Il filtro XSS scova tecniche comunemente utilizzate per attivare Javascript o altri tipi di codice che dirottano i cookie o compiono altre operazioni dannose. Se si incontra ``qualcosa di non conosciuto'', questo viene reso sicuro convertendo i dati in entità carattere.
+
+Nota: Questa funzione deve essere utilizzata solo per gestire i dati che vengono inviati al server. Non deve quindi essere utilizzata per esaminare i dati coinvolti nei processi interni di esecuzione in quanto verrebbero inutilmente impegnate parte delle risorse di elaborazione del server.
+
+Per filtrare i dati attraverso il filtro \ac{XSS} viene utilizzata questa funzione:
+
+\begin{itemize}
+\item \verb|$this->security->xss_clean()| il cui argomento è una variabile che contiene i dati da esaminare. Per esempio:
+
+\begin{code}
+$data = $this->security->xss_clean($data);
+\end{code}
+
+Se si vuole che il filtro \ac{XSS} sia eseguito automaticamente ogni volta che si incontra un dato POST oppure COOKIE, è necessario intervenire sul file di configurazione generale \fil{/application/config/config.php}:
+
+\begin{code}
+$config['global_xss_filtering'] = TRUE;
+\end{code}
+
+Nota: Se si utilizzano i metodi della classe Form Validation (validazione dei form), il filtro \ac{XSS} verrà eseguito automaticamente.
+
+\'E inoltre possibile esaminare le immagini per prevenire sempre potenziali attacchi \ac{XSS}. Per abilitare questa funzionalità si utilizza un secondo parametro opzionale, \verb|is_image|: utile per l'upload di file sul server. Quando questo secondo parametro è impostato su TRUE, la funzione invece di restituire una stringa alterata, restituisce un valore booleano: TRUE se l'immagine è sicura, e FALSE se contiene informazioni potenzialmente dannose per il browser.
+
+\begin{code}
+if ($this->security->xss_clean($file, TRUE) === FALSE)
+{
+    // Il file ha fallito il test XSS
+}
+\end{code}
+
+\item \verb|$this->security->sanitize_filename()| quando si accettano i nomi di file inviati dall'utente, si è a rischio di attacchi di tipo ``Directory traversal`` (attraversamento di directory). Per prevenire anche questi rischi, CodeIgniter mette a disposizione il metodo \verb|sanitize_filename()|. Qui di seguito un esempio:
+
+\begin{code}
+$filename = $this->security->sanitize_filename($this->input->post('filename'));
+\end{code}
+
+Se si vuole consentire all'utente l'inserimento del percorso relativo di un file, come per esempio \fil{file/in/some/approved/folder.txt}, si può impostare un secondo parametro opzionale \verb|$relative_path| sul valore TRUE:
+
+\begin{code}
+$filename = $this->security->sanitize_filename($this->input->post('filename'), TRUE);
+\end{code}
+\end{itemize}
+
+\section*{Cross-site request forgery (CSRF)}
+La protezione \ac{CSRF} si abilita agendo sul file di configurazione generale, e più precisamente impostando il parametro sul valore booleano TRUE:
+
+\begin{code}
+$config['csrf_protection'] = TRUE;
+\end{code}
+
+Nota: se si utilizza la funzione \verb|form_open()| dell'Helper Form, verrà inserito un campo nascosto \ac{CSRF} nei propri form.

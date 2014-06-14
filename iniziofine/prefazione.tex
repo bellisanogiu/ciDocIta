@@ -1,0 +1,78 @@
+% !TEX encoding = UTF-8
+% !TEX TS-program = pdflatex
+% !TEX root = ../Articolo.tex
+% !TEX spellcheck = it-IT
+
+%*******************************************************
+% Sommario+Abstract
+%*******************************************************
+\phantomsection
+\pdfbookmark{Prefazione}{Prefazione}
+\section*{Prefazione}
+\label{cap:prefazione}
+%************************************************
+
+\epigraph{``Scrivere un libro è un'avventura.\\
+Per iniziare, è un gioco e un divertimento; \\
+poi diventa un padrone e infine un tiranno''.}%
+{Winston Churchill}
+
+Programmare oggi è indubbiamente più facile rispetto al passato. Grazie a programmi di sviluppo amichevoli e alla grande mole di documentazione reperibile in Rete, chiunque può prodigarsi nell'``arte della creazione'', ma programmare bene è però tutt'altro discorso. Aprire un semplice editor di testi e buttarsi a capofitto nello sviluppo selvaggio è ancora possibile, ma chiunque abbia scritto più di qualche centinaio di righe di codice, sa bene come questa pratica conduca ad un progetto confuso, difficile da comprendere (anche allo stesso sviluppatore), e in definitiva ingestibile.
+
+Molti libri sulla programmazione si soffermano pedantemente su ogni istruzione di un linguaggio, evitando però di fornire soluzioni a problemi realistici. Ricordo ancora le tante lezioni universitarie: mi avevano insegnato a compilare la serie di fibonacci in ogni inimmaginabile linguaggio di programmazione, tacendo però sui pattern di sviluppo, i paradigmi attuali, le \index{best practice} universalmente adottate. Tra i profani è abbastanza comune pensare: ``Cosa ci vorrà a programmare un software?'', ``Basta conoscere le basi di un linguaggio e scrivere, scrivere, scrivere''. Peccato che questa filosofia porti proprio ad una serie di problematiche che mina il buon esito di qualsiasi progetto, conducendo lo sviluppatore alla frustrazione e all'abbandono del proprio lavoro incompiuto. In tal senso non sono di aiuto neppure la maggior parte dei libri in commercio, che spesso trattano la programmazione in maniera eccessivamente astratta e accademica: si concentrano sulla sintassi dei comandi, tralasciando importanti concetti sulla sicurezza, la memorizzazione e protezione dei dati sensibili, con le spiacevoli conseguenze a cui si assiste tutti i giorni nel web.
+
+Con questa guida si è voluto accompagnare il lettore attraverso i software e le metodologie che vengono effettivamente utilizzate nelle aziende. Si è cercato di andare oltre il solito elenco neutro di funzioni, e di fornire quando è possibile vere e proprie soluzioni ai problemi che si affrontano quotidianamente nello sviluppo.
+
+Nel corso della guida si è cercato di estendere progressivamente gli argomenti, andando oltre la documentazione ufficiale del framework CodeIgniter, su cui comunque questo lavoro si basa ampiamente. in particolare sono state trattate le metodologie di programmazione (pattern) che conducono ad uno sviluppo ordinato, modulare e riusabile del codice. Ci si è soffermati ovviamente sul cuore di CodeIgniter, ovvero il modello \ac{MVC} che permette la separazione del codice dalla presentazione (ciò che si vede su schermo), senza trascurare di riportare le innumerevole funzionalità, attraverso tanto codice commentato.
+
+Fin dalla prima pagina si vedrà il modo corretto di utilizzare CodeIgniter, sviluppando più aspetti di un realistico progetto web professionale. La prassi seguita è quella di estendere i temi affrontati in maniera amichevole e senza dare nulla per scontato al profano, a cui questa guida principalmente si rivolge. Ovviamente molti aspetti importanti o capaci di suscitare curiosità sono stati trattati con meno dovizia per non appesantire l'apprendimento. In questi casi, quando possibile si è cercato di indirizzare il lettore verso la documentazione ufficiale.
+
+\section*{A chi \'e rivolto questo libro}
+Anche se questa guida cerca di non dare alcun argomento per scontato, si presuppone che il lettore abbia acquisito qualche conoscenza con i linguaggi di markup come l'HTML e i linguaggi di programmazione al fine di richiamare correttamente i metodi ed impostare i loro argomenti. Non è necessario essere degli esperti di programmazione per utilizzare inizialmente un framework, ma per  sfruttarne tutte le potenzialità e sviluppare un progetto professionale sarà necessaria costanza e una genuina curiosità.
+
+\section*{Convenzioni}
+Nella guida di stampo tecnico, sono presenti riferimenti a codice inline, directory, percorsi di sistema e variabili. Si è cercato di essere il più possibile chiari adottando le seguenti convenzioni basate su alcune regole:
+
+\begin{enumerate}
+\item Nonostante il termine ``funzione'' appartenga alla programmazione procedurale e il ``metodo'' a quella ad oggetti, in questo testo si utilizzano senza distinzione i due termini.
+\item Diverse parole sono virgolettate, tra cui comandi, nomi di file, o percorsi di sistema. Se non diversamente specificato, i comandi ``tra virgolette'' devono essere eseguiti senza i relativi doppi apici ``''.
+\item Il riferimento a directory di sistema di CodeIgniter verranno evidenziate con un codice come \sys{application/view/}. In alcuni casi il percorso indicato potrebbe contenere nella parte finale anche il file a cui si fa riferimento come in \sys{application/view/index.php}.
+\item I riferimenti a variabili, costanti e ai valori loro assegnati sono evidenziati da espressioni come \var{var = view()}.
+\item Quando si vorrà mettere in risalto un nome proprio di un file questo sarà evidenziato come \fil{index.php}.
+\item I listati di codice sono stati messi in risalto all'interno di apposite tabelle in questo modo:
+
+\begin{code}
+// caricamento dell'Helper per la gestione degli array
+$this->load->helper('array');
+
+// definizione di un array
+$mioarray = array('nome' => 'giuseppe', 
+	'cognome' => 'bellisano', 
+	'citta' => 'cagliari'
+	);
+
+// restituzione di un valore tramite funzione fornita dall'Helper
+echo element('nome', $mioarray);
+\end{code}
+\end{enumerate}
+
+\pdfbookmark{Argomenti trattati}{Argomenti trattati}
+\section*{Argomenti trattati}
+L'esposizione del lavoro è articolata come segue:
+
+\begin{itemize}
+\item Nel primo capitolo viene offerta una visione d'insieme sui framework, sui vantaggi derivanti dalla loro adozione e vengono analizzate le peculiarità di Codeigniter rispetto agli altri tool simili disponibili sul mercato.
+\item Nel secondo capitolo vengono spiegate le operazioni per installare CodeIgniter sul proprio sistema.
+\item Nel terzo capitolo vengono presentate le nozioni fondamentali alla base della moderna programmazione, con particolare attenzione al pattern \ac{MVC}.
+\item Nel quarto capitolo si esamina lo studio preliminare da condurre nello sviluppo di un progetto. Vengono descritti i vantaggi derivanti dall'individuazione dei requisiti funzionali e di quelli utente.
+\item Nel quinto  capitolo viene introdotto il Controller, uno dei punti focali del framework demandato all'analisi e instradamento dei dati forniti dall'utente. Si incomincia a definire il progetto alla base dell'esercitazione.
+\item Nel sesto capitolo viene esaminato lo strumento dedito alla presentazione del nostro progetto: la View.
+\item Nel settimo capitolo ci si sofferma sul progetto sin qui sviluppato. Si analizzano i progressi compiuti e si evidenziano ulteriori punti meritevoli di essere perfezionati.
+\item Nell'ottavo capitolo viene introdotto il Model, parte essenziale del framework nelle iterazioni con la base di dati.
+\item Nel nono capitolo vengono introdotti gli Helper, significativi aiutanti nella realizzazione delle parti più ripetitive, ma per questo non meno importanti di un software.
+\item Nel decimo capitolo breve accenno ai Plugin che dalla versione 2.0 di CodeIgniter sono stati accorpati con gli Helper condividendone obiettivi e utilizzo.
+\item Nell'undicesimo capitolo vengono esaminate le Librerie, vere e proprie collezioni di classi utilizzabili per le funzionalità più disparate di un progetto.
+\item Nel  capitolo si esaminano gli Hook, un comodo strumento dedicato a chi desidera personalizzare il core del framework CodeIgniter senza per questo precluderne la stabilità e il corretto funzionamento.
+\item Nel dedicesimo capitolo viene svolta un'analisi approfondita sugli URI e sul sistema di caching del framework.
+\item Nel tredicesimo capitolo infine, vengono descritte le pratiche volte a garantire la migliore sicurezza al prodotto sviluppato. Si analizzano, in tale contesto, gli strumenti messi a disposizione da CodeIgniter.
+\end{itemize}

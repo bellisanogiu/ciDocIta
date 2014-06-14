@@ -1,0 +1,177 @@
+%************************************************
+\section{Classe FTP}
+\label{class:ftp}
+%************************************************
+
+La classe di CodeIgniter ac{FTP} è dedicata alla gestione dei trasferimenti tra host remoti: i file che si trovano su un altro server possono essere così spostati, rinominati e cancellati. La classe in oggetto inoltre include una funzione di mirroring che permette ad una directory locale di essere ricreata in remoto tramite \ac{FTP}. 
+
+Nota: attualmente i protocolli ``SFTP'' e ``SSL FTP'' non sono supportati.
+
+La classe è inizializzata tramite il proprio controller utilizzando la funzione \var{\$this->load->library}:
+
+\begin{code}
+$this->load->library('ftp');
+\end{code}
+
+Una volta caricato, l'oggetto FTP sarà disponibile utilizzando \var{\$this->ftp}.
+
+\section*{Esempi di utilizzo}
+In questo esempio viene aperta una connessione verso il server \ac{FTP} e un file locale viene letto e uplodato in modalità \ac{ASCII}. I permessi del file devono essere impostati su 755.
+
+\begin{code}
+$this->load->library('ftp');
+
+$config['hostname'] = 'ftp.example.com';
+$config['username'] = 'your-username';
+$config['password'] = 'your-password';
+$config['debug']	= TRUE;
+
+$this->ftp->connect($config);
+
+$this->ftp->upload('/local/path/to/myfile.html', '/public_html/myfile.html', 'ascii', 0775);
+
+$this->ftp->close();
+\end{code}
+
+Il codice seguente mostra come una lista di file possa essere recuperata dal server.
+
+\begin{code}
+$this->load->library('ftp');
+
+$config['hostname'] = 'ftp.example.com';
+$config['username'] = 'your-username';
+$config['password'] = 'your-password';
+$config['debug']	= TRUE;
+
+$this->ftp->connect($config);
+
+$list = $this->ftp->list_files('/public_html/');
+
+print_r($list);
+
+$this->ftp->close();
+\end{code}
+
+In questo esempio viene effettuato un mirror di una directory locale sul server.
+
+\begin{code}
+$this->load->library('ftp');
+
+$config['hostname'] = 'ftp.example.com';
+$config['username'] = 'your-username';
+$config['password'] = 'your-password';
+$config['debug']	= TRUE;
+
+$this->ftp->connect($config);
+
+$this->ftp->mirror('/path/to/myfolder/', '/public_html/myfolder/');
+
+$this->ftp->close();
+\end{code}
+
+\section*{Reference delle funzioni}
+\begin{itemize}
+\item \verb|$this->ftp->connect()| consente di connettersi e loggarsi ad un server FTP. Le impostazioni della connessione sono passate alla funzione mediante un array, oppure memorizzate in un file config. Qui di seguito si mostra come impostare le preferenze di connessione manualmente:
+
+\begin{code}
+$this->load->library('ftp');
+
+$config['hostname'] = 'ftp.example.com';
+$config['username'] = 'your-username';
+$config['password'] = 'your-password';
+$config['port']     = 21;
+$config['passive']  = FALSE;
+$config['debug']    = TRUE;
+
+$this->ftp->connect($config);
+\end{code}
+
+Se si preferisce memorizzare le impostazioni di connessione FTP in un file config, è sufficiente creare un nuovo file chiamato \fil{ftp.php} e aggiungere al suo interno un array \var{\$config}. Questo file andrà salvato nel percorso \sys{/config/ftp.php} e verrà automaticamente utilizzato.
+
+Le opzioni disponibili per la connessione sono:
+
+\begin{itemize}
+\item hostname. \'E l'indirizzo FTP che viene solitamente espresso nel formato: ftp.esempio.com
+\item username. Il nome di login FTP
+\item password. La password FTP
+\item port. Il numero di porta (il valore di default è 21)
+\item debug. Abilita il debug per visualizzare i messaggi di errore (valori: TRUE/FALSE)
+\item passive. Abilita la modalità passiva che è quella predefinita (valori: TRUE/FALSE)
+\end{itemize}
+
+\item \verb|$this->ftp->upload()| consente di caricare un file sul proprio server. \'E necessario fornire un percorso locale e uno remoto. Opzionalmente si può definire la modalità di upload e i permessi. Per esempio:
+
+\begin{code}
+$this->ftp->upload('/local/path/to/myfile.html', '/public_html/myfile.html', 'ascii', 0775);
+\end{code}
+
+Le opzioni per la modalità di upload sono: ascii, binary e auto (valore di default). Se viene utilizzato il valore auto, la modalità sarà impostata sulla base dell'estensione del file locale. 
+
+I permessi possono essere passati in base ottale con quattro cifre.
+
+\item \verb|$this->ftp->download()| è utilizzata per scaricare un file dal server remoto. \'E necessario fornire un percorso locale e uno remoto e, opzionalmente, definire la modalità. Questa funzione restituisce FALSE se il download non viene eseguito correttamente (include anche il caso in cui \ac{PHP} non ha i permessi per scrivere un file localmente). Per esempio: 
+
+\begin{code}
+$this->ftp->download('/public_html/myfile.html', '/local/path/to/myfile.html', 'ascii');
+\end{code}
+
+Le opzioni per la modalità di upload sono: ascii, binary e auto (valore di default). Se viene utilizzato il valore auto, la modalità sarà impostata sulla base dell'estensione del file locale. 
+
+\item \verb|$this->ftp->rename()| consente di rinominare un file. Si deve fornire il nome/percorso del file attuale e il nuovo nome/percorso.
+
+\begin{code}
+// Rinomina green.html in blue.html
+$this->ftp->rename('/public_html/foo/green.html', '/public_html/foo/blue.html');
+\end{code}
+
+\item \verb|$this->ftp->move()| permette di spostare un file definendo il percorso del file attuale e quello di destinazione. Se il nome del file specificato nella ``destinazione'' è differente da quello iniziale, il file viene rinominato.
+
+\begin{code}
+// Sposta blog.html da "joe" in "fred"
+$this->ftp->move('/public_html/joe/blog.html', '/public_html/fred/blog.html');
+\end{code}
+
+\item \verb|$this->ftp->delete_file()| è utilizzata per cancellare un file definendo il suo percorso iniziale e quello di destinazione (con il nome del file):
+
+\begin{code}
+is->ftp->delete_file('/public_html/joe/blog.html');
+\end{code}
+
+\verb|$this->ftp->delete_dir()| cancella una directory e ogni cosa al suo interno. \'E necessario fornire il percorso di origine della directory in oggetto con uno slash (/) finale:
+
+\begin{code}
+$this->ftp->delete_dir('/public_html/path/to/folder/');
+\end{code}
+
+Nota: \'E molto importante prestare la massima attenzione nell'utilizzo di questa funzione. La sua natura ricorsiva consente di cancellare tutto all'interno del percorso specificato, comprese le sottocartelle e tutti i file. Assicurarsi che il percorso sia corretto utilizzando la funzione \verb|list_files()|.
+
+\item \verb|$this->ftp->list_files()| consente di ottenere una lista di file sul server remoto sotto forma di un array. Si deve fornire il percorso della directory in oggetto:
+
+\begin{code}
+$list = $this->ftp->list_files('/public_html/');
+
+print_r($list);
+\end{code}
+
+\item \verb|$this->ftp->mirror()| permette la creazione di un mirror. Questa funzione legge ricorsivamente una directory locale e tutto quello che contiene (comprese eventuali sottocartelle) e crea una sua copia sul server remoto. \'E necessario fornire il percorso della sorgente e della destinazione:
+
+\begin{code}
+$this->ftp->mirror('/path/to/myfolder/', '/public_html/myfolder/');
+\end{code}
+
+\item \verb|$this->ftp->mkdir()| crea una directory sul server remoto. Si deve fornire il percorso finale della directory in oggetto compreso di uno slash (/) finale. I permessi, definiti in base ottale, possono essere passati come secondo parametro alla funzione:
+
+\begin{code}
+// Crea una directory di nome "bar"
+$this->ftp->mkdir('/public_html/foo/bar/', DIR_WRITE_MODE);
+\end{code}
+
+\item \verb|$this->ftp->chmod()| consente di definire i permessi dei file. Si deve fornire il percorso del file o della directory di cui si vogliono modificare i permessi di lettura/scrittura/esecuzione:
+
+\begin{code}
+// Chmod "bar" impostato sui permessi 777
+$this->ftp->chmod('/public_html/foo/bar/', DIR_WRITE_MODE);
+\end{code}
+
+\item \verb|$this->ftp->close()| questa funzione termina la connessione al server. \'E consigliabile utilizzarla sempre quando si conclude l'operazione di upload.
+\end{itemize}

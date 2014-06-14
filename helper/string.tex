@@ -1,0 +1,114 @@
+%************************************************
+\section{Helper String}
+\label{helper:string}
+%************************************************
+
+Questo Helper assiste nel lavoro con le stringhe. Il suo caricamento avviene con l'istruzione:
+
+\begin{code}
+$this->load->helper('string');
+\end{code}
+
+\begin{itemize}
+\item \verb|random_string()| genera una stringa casuale basata sul tipo e sulla lunghezza specificata. Questa funzione è utile per creare password o generare hash random. Il primo parametro specifica il tipo di stringa, il secondo parametro speifica la lunghezza. Le scelte elencate in seguito sono disponibili come parametri: alpha, alunum, numeric, nozero, unique, md5, encrypt e sha1.
+
+\begin{itemize}
+\item alpha: una stringa con solo lettere minuscole e maiuscole
+\item alnum: una stringa alfanumerica con caratteri minuscole e maiuscole
+\item numeric: stringa numerica
+\item nozero: stringa numerica senza zeri
+\item unique: stringa crittografata con MD5 e \verb|uniqid()|. Nota: il parametro lenght che specifica la lunghezza non è disponibile per questo parametro, poiché viene restituita sempre una stringa di lunghezza fissa (32 caratteri)
+\item sha1: stringa numerica casuale crittografata con la funzione \verb|do_hash()|. Per maggiori informazioni si veda la sezione\vref{helper:security}
+\end{itemize}
+
+Esempio di utilizzo:
+
+\begin{code}
+echo random_string('alnum', 16);
+\end{code}
+
+\item \verb|increment_string()| incrementa una stringa aggiungendo nella parte finale un numero  o incrementando il numero della stringa. Questa funzione è utile per creare copie di un file o per duplicare il contenuto del database con un titolo o un marcatore univoco.
+
+Per esempio:
+
+\begin{code}
+echo increment_string('file', '_'); // "file_1"
+echo increment_string('file', '-', 2); // "file-2"
+echo increment_string('file-4'); // "file-5"
+\end{code}
+
+\item \verb|alternator()| permette di alternare due o più elementi in un ciclio. Per esempio:
+
+\begin{code}
+for ($i = 0; $i < 10; $i++)
+{
+    echo alternator('string one', 'string two');
+}
+\end{code}
+
+Si possono aggiungere quanti parametri si desidera e ad ogni iterazione del ciclo verrà restituito un nuovo elemento:
+
+\begin{code}
+for ($i = 0; $i < 10; $i++)
+{
+    echo alternator('one', 'two', 'three', 'four', 'five');
+}
+\end{code}
+
+Per utilizzare più chiamate a se stanti a questa funzione, basta invocarla senza argomenti per reinizializzarla.
+
+\item \verb|repeater()| genera copie ripetute dei dati forniti alla funzione. L'esempio seguente genera 30 ritorni a capo:
+
+\begin{code}
+$string = "\n";
+echo repeater($string, 30);
+\end{code}
+
+\item \verb|reduce_double_slashes()| converte gli slash doppi in uno singolo, eccetto quello definito in \var{http://}. Per esempio:
+
+\begin{code}
+$string = "http://example.com//index.php";
+echo reduce_double_slashes($string); // results in "http://example.com/index.php"
+\end{code}
+
+\item \verb|trim_slashes()| rimuove ogni slash all'inizio o alla fine di una stringa. Per esempio:
+
+\begin{code}
+$string = "/this/that/theother/";
+echo trim_slashes($string); // results in this/that/theother
+\end{code}
+
+\item \verb|reduce_multiples()| consente di ridurre la ripetizione di un determinato carattere in una stringa subito dopo un altro carattere specificato. Per esempio:
+
+\begin{code}
+$string="Fred, Bill,, Joe, Jimmy";
+$string=reduce_multiples($string,","); //results in "Fred, Bill, Joe, Jimmy"
+\end{code}
+
+La funzione accetta i seguenti parametri:
+
+\begin{code}
+reduce_multiples(string: text to search in, string: character to reduce, boolean: whether to remove the character from the front and end of the string)
+\end{code}
+
+Il primo parametro contiene la stringa che si vuole esaminare, il secondo parametro contiene il carattere che si vuole ridurre, mentre il terzo parametro assume il valore FALSE di default. Se questo viene impostato su TRUE rimuoverà le occorrenze del carattere all'inizio e alla fine della stringa. Esempio:
+
+\begin{code}
+$string=",Fred, Bill,, Joe, Jimmy,";
+$string=reduce_multiples($string, ", ", TRUE); //results in "Fred, Bill, Joe, Jimmy"
+\end{code}
+
+\item \verb|quotes_to_entities()| converte le singole e le doppie virgolette in una stringa nelle corrispondenze entità HTML. Per esempio:
+
+\begin{code}
+$string="Joe's \"dinner\"";
+$string=quotes_to_entities($string); //results in "Joe&#39;s &quot;dinner&quot;"
+\end{code}
+
+\item \verb|strip_quotes()| rimuove le virgolette singole e doppie da una stringa. Per esempio:
+
+\begin{code}
+$string="Joe's \"dinner\"";
+$string=strip_quotes($string); //results in "Joes dinner"
+\end{code}
+\end{itemize}

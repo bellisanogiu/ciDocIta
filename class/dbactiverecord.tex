@@ -1,0 +1,781 @@
+%************************************************
+\section{Classe Active Record}
+\label{class:activerecord}
+%************************************************
+
+CodeIgniter usa una versione modificata del pattern Active Record Database. Questo pattern consente alle informazioni di essere recuperate, inserite e modificate attraverso i metodi di una specifica classe. In molti casi sono necessarie solo una o due linee di codice per eseguire una operazione sul database. CodeIgniter non richiede che ogni tabella della base di dati abbia il proprio file di classe poiché fornisce un'interfaccia maggiormente semplificata.
+
+Al di là della semplicità, un grande vantaggio nell'utilizzare le funzionalità Active Record è la possibilità di creare applicazioni indipendenti dal database utilizzato, attraverso l'astrazione. Ciò consente inoltre di generare query più sicure, in quanto l'escape sui valori viene svolto automaticamente dal sistema.
+
+Se comunque si intende scrivere la propria query autonomamente, si può tranquillamente disabilitare questa classe attraverso il file di configurazione del database. Questo permette alla libreria core del database, tra le altre cose, di consumare meno risorse.
+
+\begin{deftabv}{Active Record}{Si tratta di un modulo implementato seguendo il pattern descritto da Martin Fowlor (\url{http://www.martinfowler.com/}) nel suo libro del 2003: Patterns of enterprise application architecture. Addison-Wesley. ISBN 978-0-321-12742-6. Secondo questo pattern esiste una relazione molto stretta fra tabella e classe, colonne e attributi della classe. Ecco alcuni punti importanti:
+\begin{itemize}
+\normalsize
+
+\item una tabella del database relazionale è gestita con una classe
+\item una riga della tabella può essere definita da una singola istanza della classe
+\item una nuova istanza della classe crea una nuova riga all'interno della tabella, mentre modificare l'istanza produce un aggiornamento della riga
+\end{itemize}
+}
+\end{deftabv}
+\normalsize
+
+\begin{deftabv}{Persistenza}{Una base di dati è persistente, cioè ha un tempo di vita superiore al tempo di esecuzione delle applicazioni che la utilizzano.}
+\end{deftabv}
+\normalsize
+
+\section*{Active Record: i principi}
+Le colonne delle tabelle sono rappresentante come attributi della classe: ogni istanza quindi può effettuare qualsiasi operazione sui valori dei propri attributi e renderli persistenti. In pratica, creando un'istanza di un oggetto (che rappresenta un record), si possono modificare gli attributi (i campi, o le colonne) e rendere persistente i dati (con le istruzioni INSERT o UPDATE), lasciando che Active Record faccia il resto.
+
+Le convenzioni sui nomi delle tabelle, classi, colonne e attributi permettono di semplificare la produzione di codice SQL, partendo dalla definizione del modello:
+
+\begin{itemize}
+\item per ogni modello, una tabella possiede lo stesso nome al plurale e scritto tutto in minuscolo. Se il modello si chiama Blog, la tabella prenderà il nome di blogs
+\item i nomi dei modelli composti da più parole sono rappresentati con rappresentazione camel case (l'iniziale maiuscola); la tabella corrispondente avrà un nome separate da trattini bassi (underscore)
+\item ogni colonna della tabella è rappresentato da un attributo con lo stesso nome
+\item in ogni tabella vi è un identificatore univoco rappresentato da una colonna id (intero positivo)
+\end{itemize}
+
+\section*{Selezione}
+Le seguenti istruzioni si basano sull'istruzione SELECT dell'SQL, per selezionare parte o tutte le informazioni contenute nella base di dati.
+
+Nota: se si sta utilizzando PHP 5 è possibile utilizzare il metodo di concatenamento per una sintassi più compatta. Maggiori informazioni sono disponibili alla fine di questo capitolo.
+
+\begin{itemize}
+
+\item \verb|$this->db->get()| esegue la query di selezione e restituisce il risultato. Può essere utilizzata per recuperare tutti i record da una tabella:
+
+\begin{code}
+$query = $this->db->get('mytable');
+
+// Produce: SELECT * FROM mytable
+\end{code}
+
+Il secondo e il terzo parametro del codice seguente limitano la lista dei risultati:
+
+\begin{code}
+$query = $this->db->get('mytable', 10, 20);
+
+// Produce: SELECT * FROM mytable LIMIT 20, 10 (in MySQL. Altri database hanno una sintassi leggermente diversa)
+\end{code}
+
+Si noterà che la funzione di cui sopra viene assegnata ad una variabile denominata \verb|\$query|, che può essere utilizzata per mostrare i risultati:
+
+\begin{code}
+$query = $this->db->get('mytable');
+
+foreach ($query->result() as $row)
+{
+    echo $row->title;
+}
+\end{code}
+
+Per maggiori informazioni si rimanda alla funzione dei risultati.
+
+\item \verb|$this->db->get_where()| è identica alla funzione sopra descritta: consente di aggiungere la condizione WHERE nel secondo parametro, invece di usare la funzione \verb|db->where()|:
+
+\begin{code}
+$query = $this->db->get_where('mytable', array('id' => $id), $limit, $offset);
+\end{code}
+
+Nota: \verb|get_where()| era precedentemente nota come \verb|getwhere()|, ora rimossa.
+
+\item \verb|$this->db->select()| permette di scrivere la parte SELECT della query:
+
+\begin{code}
+$this->db->select('title, content, date');
+
+$query = $this->db->get('mytable');
+
+// Produce: SELECT title, content, date FROM mytable
+\end{code}
+
+Nota: se si selezionano tutti i dati (*) di una tabella non è necessario utilizzare questa funzione. Se omesso, CodeIgniter presuppone che si desidera selezionare *.
+La funzione accetta un secondo parametro opzionale: se lo si imposta su FALSE, CodeIgniter non cercherà di proteggere i vostri campi o la tabella con apici inversi. Questo è utile se si ha bisogno di una select composta:
+
+\begin{code}
+$this->db->select('(SELECT SUM(payments.amount) FROM payments WHERE payments.invoice_id=4') AS amount_paid', FALSE); 
+$query = $this->db->get('mytable');
+\end{code}
+
+\item \verb|$this->db->select_max()| scrive una parte della query \\ ``SELECT MAX(attributo)''. Opzionalmente è possibile includere un secondo parametro per rinominare il campo del risultato:
+
+\begin{code}
+$this->db->select_max('age');
+$query = $this->db->get('members');
+// Produce: SELECT MAX(age) as age FROM members
+
+$this->db->select_max('age', 'member_age');
+$query = $this->db->get('members');
+// Produce: SELECT MAX(age) as member_age FROM members
+\end{code}
+
+\item \verb|$this->db->select_min()| 
+scrive una parte della query \\ ``SELECT MIN(attributo)'' e come con \verb|select_max()| è possibile includere opzionalmente un parametro per rinominare l'attributo risultante.
+
+\begin{code}
+$this->db->select_min('age');
+$query = $this->db->get('members');
+// Produce: SELECT MIN(age) as age FROM members
+\end{code}
+
+\item \verb|$this->db->select_avg()| scrive una parte della query \\ ``SELECT AVG(attributo)'' e come con \verb|select_max()| è possibile includere opzionalmente un parametro per rinominare l'attributo risultante.
+
+\begin{code}
+$this->db->select_avg('age');
+$query = $this->db->get('members');
+// Produce: SELECT AVG(age) as age FROM members
+\end{code}
+
+\item \verb|$this->db->select_sum()|scrive una parte della query \\ ``SELECT SUM(attributo)'' e come con \verb|select_max()| è possibile includere opzionalmente un parametro per rinominare l'attributo risultante.
+
+\begin{code}
+$this->db->select_sum('age');
+$query = $this->db->get('members');
+// Produce: SELECT SUM(age) as age FROM members
+\end{code}
+
+\item \verb|$this->db->from()| scrive la parte FROM della propria query:
+
+\begin{code}
+$this->db->select('title, content, date');
+$this->db->from('mytable');
+
+$query = $this->db->get();
+
+// Produce: SELECT title, content, date FROM mytable
+\end{code}
+
+Nota: come indicato in precedenza, la parte della query FROM può anche essere specificata nella funzione \verb|this->db->get()|: è quindi possibile utilizzare il metodo preferito.
+
+\item \verb|$this->db->join()| permette di scrivere la parte della query JOIN:
+
+\begin{code}
+$this->db->select('*');
+$this->db->from('blogs');
+$this->db->join('comments', 'comments.id = blogs.id');
+
+$query = $this->db->get();
+
+// Produce: 
+// SELECT * FROM blogs
+// JOIN comments ON comments.id = blogs.id
+\end{code}
+
+Chiamate a funzioni multiple possono essere effettuate se si ha bisogno di più join in una query. Se è necessario un particolare tipo di JOIN è possibile specificarlo tramite il terzo parametro della funzione. Le opzioni sono: left, right, outer, inner, left outer, e right outer.
+
+\begin{code}
+$this->db->join('comments', 'comments.id = blogs.id', 'left');
+
+// Produce: LEFT JOIN comments ON comments.id = blogs.id
+\end{code}
+
+\item \verb|$this->db->where()| questa funziona abilita la configurazione della clausola WHERE usando uno dei quattro metodi seguenti. Tutti i valori passati alla funzione effettuano automaticamente l'escape, producendo query sicure:
+
+\begin{enumerate}
+\item Chiave semplice/metodo valore
+
+\begin{code}
+$this->db->where('name', $name); 
+
+// Produce: WHERE name = 'Joe'
+\end{code}
+
+Si noti che il segno di uguaglianza viene aggiunto automaticamente. Se si utilizzano più chiamate di funzione, queste saranno concatenate insieme con la clausola AND:
+
+\begin{code}
+$this->db->where('name', $name);
+$this->db->where('title', $title);
+$this->db->where('status', $status); 
+
+// Produce: WHERE name = 'Joe' AND title = 'boss' AND status = 'active'
+\end{code}
+
+\begin{code}
+$this->db->where('name', $name);
+$this->db->where('title', $title);
+$this->db->where('status', $status); 
+
+// Produce: WHERE name = 'Joe' AND title = 'boss' AND status = 'active'
+\end{code}
+
+\item Chiave personalizzata/metodo valore
+\'E possibile includere un operatore nel primo parametro in ordine per controllare il confronto:
+
+\begin{code}
+$this->db->where('name !=', $name);
+$this->db->where('id <', $id); 
+
+// Produce: WHERE name != 'Joe' AND id < 45
+\end{code}
+
+\item Array associativo
+
+\begin{code}
+$array = array('name' => $name, 'title' => $title, 'status' => $status);
+
+$this->db->where($array); 
+
+// Produce: WHERE name = 'Joe' AND title = 'boss' AND status = 'active'
+\end{code}
+
+\'E possibile includere i propri operatori usando il seguente metodo:
+
+\begin{code}
+$array = array('name !=' => $name, 'id <' => $id, 'date >' => $date);
+
+$this->db->where($array);
+\end{code}
+
+\item Stringhe personalizzate
+\'E possibile scrivere le clausole manualmente:
+
+\begin{code}
+$where = "name='Joe' AND status='boss' OR status='active'";
+
+$this->db->where($where);
+\end{code}
+
+L'istruzione \verb|$this->db->where()| accetta un terzo parametro opzionale: se questo viene impostato su FALSE, CodeIgniter non proteggerà l'attributo o il nome della tabella con gli apici inversi.
+
+\begin{code}
+$this->db->where('MATCH (field) AGAINST ("value")', NULL, FALSE);
+\end{code}
+\end{enumerate}
+
+\item \verb|$this->db->or_where()| questa funzione è identica a quella sopra descritta, tranne per il fatto che istanze multiple possono essere collegate tramite l'operatore OR:
+
+\begin{code}
+$this->db->where('name !=', $name);
+$this->db->or_where('id >', $id); 
+
+// Produce: WHERE name != 'Joe' OR id > 50
+\end{code}
+
+Nota: \verb|or_where()| era conosciuta precedentemente come \verb|orwhere()|: ora quest'ultima funzione è stata rimossa.
+
+\item \verb|$this->db->where_in()| genera una query con campo WHERE associato a IN ('elemento', 'elemento'); può essere associata anche all'operatore AND, se necessario:
+
+\begin{code}
+$names = array('Frank', 'Todd', 'James');
+$this->db->where_in('username', $names);
+// Produce: WHERE username IN ('Frank', 'Todd', 'James')
+\end{code}
+
+\item \verb|$this->db->or_where_in();| genera una query con campo WHERE associato a IN ('elemento', 'elemento'); può essere associata anche all'operatore OR, se necessario:
+
+\begin{code}
+$names = array('Frank', 'Todd', 'James');
+$this->db->or_where_in('username', $names);
+// Produce: OR username IN ('Frank', 'Todd', 'James')
+\end{code}
+
+\item \verb|$this->db->where_not_in()| genera una query con campo WHERE associato a NOT IN ('elemento', 'elemento'); può essere associata anche all'operatore AND, se necessario:
+
+\begin{code}
+$names = array('Frank', 'Todd', 'James');
+$this->db->or_where_not_in('username', $names);
+// Produce: OR username NOT IN ('Frank', 'Todd', 'James')
+\end{code}
+
+\item \verb|$this->db->like()| questa funzione abilita l'uso della clausole LIKE, utile per effettuare delle ricerche/comparazioni. Tutti i valori passati a questa funzione hanno l'escape automatico.
+
+\begin{enumerate}
+
+\item Chiave semplice/metodo valore
+
+\begin{code}
+$this->db->like('title', 'match'); 
+
+// Produce: WHERE title LIKE '%match%'
+\end{code}
+
+Se si utilizzano chiamate a funzioni multiple, queste saranno concatenate assieme con l'operatore AND:
+
+\begin{code}
+$this->db->like('title', 'match');
+$this->db->like('body', 'match'); 
+
+// Produce: WHERE title LIKE '%match%' AND body LIKE '%match%
+\end{code}
+
+Se si desidera controllare dove è posto il wildcard (\%), è possibile usare opzionalmente un terzo argomento. Le opzioni possibili sono before, after e both (quest'ultimo è il parametro di default):
+
+\begin{code}
+$this->db->like('title', 'match', 'before'); 
+// Produce: WHERE title LIKE '%match'	
+
+$this->db->like('title', 'match', 'after'); 
+// Produce: WHERE title LIKE 'match%' 
+
+$this->db->like('title', 'match', 'both'); 
+// Produce: WHERE title LIKE '%match%'
+\end{code}
+
+Se non si vuole usare il wildcard (%), si può passare un terzo argomento opzionale none.
+
+\begin{code}
+$this->db->like('title', 'match', 'none'); 
+// Produce: WHERE title LIKE 'match'
+\end{code}
+
+\item Metodo array associativo
+
+\begin{code}
+$array = array('title' => $match, 'page1' => $match, 'page2' => $match);
+
+$this->db->like($array); 
+
+// WHERE title LIKE '%match%' AND page1 LIKE '%match%' AND page2 LIKE '%match%'
+\end{code}
+\end{enumerate}
+
+\item \verb|$this->db->or_like()| questa funzione è identica ad una già esaminata, eccetto per il fatto che istanze multiple possono essere collegate tramite l'operatore OR:
+
+\begin{code}
+$this->db->like('title', 'match');
+$this->db->or_like('body', $match); 
+
+// WHERE title LIKE '%match%' OR body LIKE '%match%'
+\end{code}
+
+Nota: \verb|or_like()| era prima conosciuta come orlike() che è stata ora rimossa.
+
+\item \verb|$this->db->not_like()| questa funzione è identica a like() eccetto per il fatto che genera una dichiarazione NOT LIKE.
+
+\begin{code}
+$this->db->not_like('title', 'match');
+
+// WHERE title NOT LIKE '%match%
+\end{code}
+
+\item \verb|$this->db->or_not_like()| è identica a \verb|not_like()| eccetto per il fatto che istanze multiple sono collegabili tramite OR:
+
+\begin{code}
+$this->db->like('title', 'match');
+$this->db->or_not_like('body', 'match'); 
+
+// WHERE title LIKE '%match% OR body NOT LIKE '%match%'
+\end{code}
+
+\item \verb|$this->db->group_by()| permette di definire la parte GROUP BY della query:
+
+\begin{code}
+$this->db->group_by("title"); 
+
+// Produce: GROUP BY title
+\end{code}
+
+\'E anche possibile passare un array di valori multipli come:
+
+\begin{code}
+$this->db->group_by(array("title", "date")); 
+
+// Produce: GROUP BY title, date
+\end{code}
+
+Nota: \verb|group_by()| è conosciuto anche come groupby() ma quest'ultimo è stato ora rimosso.
+
+\item \verb|$this->db->distinct()| viene aggiunta la parola chiave DISTINCT alla query.
+
+\begin{code}
+$this->db->distinct();
+$this->db->get('table');
+
+// Produce: SELECT DISTINCT * FROM table
+\end{code}
+
+\item \verb|$this->db->having()| permette di scrivere la parte HAVING della query. Per quanto riguarda la sintassi, esistono due possibilità a seconda del numero di argomenti:
+
+\begin{code}
+$this->db->having('user_id = 45'); 
+// Produce: HAVING user_id = 45
+
+$this->db->having('user_id', 45); 
+// Produce: HAVING user_id = 45
+\end{code}
+
+Se si utilizza un database per cui si effettua automaticamente l'escape delle query, è possibile evitare che il contenuto venga reso sicuro (escaping) passando un terzo argomento facoltativo, con il valore FALSE.
+
+\begin{code}
+$this->db->having('user_id', 45); 
+// Produce: HAVING `user_id` = 45 in some databases such as MySQL 
+$this->db->having('user_id', 45, FALSE); 
+// Produce: HAVING user_id = 45
+\end{code}
+
+\item \verb|$this->db->or_having()| è identica alla funzione having() dalla quale differisce per il fatto che le clausole sono separate da OR.
+
+\item \verb|$this->db->order_by()| consente di impostare una clausola ORDER BY. Il primo parametro contiene il nome dell'attributo che si desidera ordinare. Il secondo parametro imposta la direzione del risultato: le opzioni sono asc (crescente) o desc (decrescente), o random (casuale).
+
+\begin{code}
+$this->db->order_by("title", "desc"); 
+
+// Produce: ORDER BY title DESC
+\end{code}
+
+\'E possibile anche passare come primo parametro la propria stringa:
+
+\begin{code}
+$this->db->order_by('title desc, name asc'); 
+
+// Produce: ORDER BY title DESC, name ASC
+\end{code}
+
+Oppure si possono realizzare chiamate multiple alle funzione se si ha bisogno di più campi:
+
+\begin{code}
+$this->db->order_by("title", "desc");
+$this->db->order_by("name", "asc"); 
+
+// Produce: ORDER BY title DESC, name ASC
+\end{code}
+
+Nota: \verb|order_by()| è conosciuto anche come \verb|orderby()|, ma quest'ultimo è stato rimosso.
+
+Nota: l'ordine random non è attualmente supportato dai driver Oracle o MSSQL: per questi il valore di default sarà ASC.
+
+\item \verb|$this->db->limit()| permette di limitare il numero di righe (record) che la query restituisce:
+
+\begin{code}
+$this->db->limit(10);
+
+// Produce: LIMIT 10
+\end{code}
+
+Il secondo parametro permette di settare l'offset del risultato:
+
+\begin{code}
+$this->db->limit(10, 20);
+
+// Produce: LIMIT 20, 10 (in MySQL. Gli altri database possono avere una sintassi leggermente differente)
+\end{code}
+
+\item \verb|$this->db->count_all_results()| permette di determinare il numero di righe di una particolare query Active Record. Le query accetteranno delle funzioni limitatrici come \verb|where(), or_where(), like(), or_like()|, ecc. Per esempio:
+
+\begin{code}
+echo $this->db->count_all_results('my_table');
+// Produce un intero come 25
+
+$this->db->like('title', 'match');
+$this->db->from('my_table');
+echo $this->db->count_all_results();
+// Produce un intero come 17
+\end{code}
+
+\item \verb|$this->db->count_all()| consente di determinare il numero di righe di una determinata tabella. \'E necessario fornire come primo parametro il nome della tabella. Per esempio:
+
+\begin{code}
+echo $this->db->count_all('my_table');
+
+// Produce un intero come 25
+\end{code}
+
+\section*{Inserimento}
+\item \verb|$this->db->insert()| genera una stringa di inserimento basata sui dati che si forniscono, e quindi esegue la query. \'E possibile passare alla funzione un array oppure un oggetto; in questo esempio, verrà fornito un array:
+
+\begin{code}
+$data = array(
+   'title' => 'Il mio titolo' ,
+   'name' => 'Il mio nome' ,
+   'date' => 'La mia data'
+);
+
+$this->db->insert('mytable', $data); 
+
+// Produce: INSERT INTO mytable (title, name, date) VALUES ('Il mio titolo', 'Il mio nome', 'La mia data')
+\end{code}
+
+Il primo parametro conterrà il nome della tabella, mentre il secondo è un array associativo di valori. Qui di seguito l'esempio che utilizza un oggetto:
+
+\begin{code}
+/*
+    class Myclass {
+        var $title = 'Il mio titolo';
+        var $content = 'Il mio contenuto';
+        var $date = 'La mia data';
+    }
+*/
+
+$object = new Myclass;
+
+$this->db->insert('mytable', $object); 
+
+// Produce: INSERT INTO mytable (title, content, date) VALUES ('Il mio titolo', 'Il mio contenuto', 'La mia data')
+\end{code}
+
+Il primo parametro conterrà il nome della tabella, mentre il secondo è un oggetto. Tutti i valori sono resi sicuri (escaping) automaticamente, cosa che produce query prive di rischi.
+
+\item \verb|$this->db->insert_batch()| genera una stringa di inserimento basata sui dati che verranno forniti, quindi esegue la query. \'E possibile passare alla funzione un array o un oggetto. Qui di seguito si mostra un esempio utilizzando un array: il primo parametro contiene il nome della tabella, mentre il secondo è un array associativo di valori:
+
+\begin{code}
+$data = array(
+   array(
+      'title' => 'Il mio titolo' ,
+      'name' => 'Il mio nome' ,
+      'date' => 'La mia data'
+   ),
+   array(
+      'title' => 'Un'altro titolo' ,
+      'name' => 'Un altro nome' ,
+      'date' => 'Un'altra data'
+   )
+);
+
+$this->db->insert_batch('mytable', $data); 
+
+// Produce: INSERT INTO mytable (title, name, date) VALUES ('Il mio titolo', 'Il mio nome', 'La mia data'), ('Un'altro titolo', 'Un altro nome', 'Un'altra data')
+\end{code}
+
+ Tutti i valori sono resi sicuri (escaping) automaticamente, cosa che produce query pulite.
+ 
+ \item \verb|$this->db->set()| questa funzione permette di impostare i valori per gli inserimenti o gli aggiornamenti. Può essere usata al posto di  un array di dati. Per esempio:
+
+\begin{code}
+$this->db->set('name', $name); 
+$this->db->insert('mytable'); 
+
+// Produce: INSERT INTO mytable (name) VALUES ('{$name}')
+\end{code}
+
+Se si utilizzano più chiamate di funzione, queste  saranno organizzate correttamente a seconda che si stia facendo un inserimento o un aggiornamento:
+
+\begin{code}
+$this->db->set('name', $name);
+$this->db->set('title', $title);
+$this->db->set('status', $status);
+$this->db->insert('mytable');
+\end{code}
+
+La funzione \var{set()} accetta un terzo parametro opzionale (\$escape): se settato su FALSE non verrà effettuato l'escaping dei caratteri. Per meglio comprendere la differenza, qui di seguito si mostra \var{set()} con e senza il parametro di escape:
+
+\begin{code}
+$this->db->set('field', 'field+1', FALSE);
+$this->db->insert('mytable'); 
+// Produce: INSERT INTO mytable (field) VALUES (field+1)
+
+$this->db->set('field', 'field+1');
+$this->db->insert('mytable'); 
+// Produce INSERT INTO mytable (field) VALUES ('field+1')
+\end{code}
+
+\'E possibile passare anche un array associativo alla funzione:
+
+\begin{code}
+$array = array('name' => $name, 'title' => $title, 'status' => $status);
+
+$this->db->set($array);
+$this->db->insert('mytable');
+\end{code}
+
+oppure un oggetto:
+
+\begin{code}
+/*
+    class Myclass {
+        var $title = 'Il mio titolo';
+        var $content = 'Il mio contenuto';
+        var $date = 'La mia data';
+    }
+*/
+
+$object = new Myclass;
+
+$this->db->set($object);
+$this->db->insert('mytable');
+\end{code}
+
+\section*{Aggiornamento}
+\item \verb|$this->db->update()| questa funzione genera e aggiorna la stringa quindi esegue la query sulla base dei dati forniti. Si può passare alla funzione un array oppure un oggetto. Per esempio, utilizzando un array si avrà:
+
+\begin{code}
+$data = array(
+               'title' => $title,
+               'name' => $name,
+               'date' => $date
+            );
+
+$this->db->where('id', $id);
+$this->db->update('mytable', $data); 
+
+// Produce:
+// UPDATE mytable 
+// SET title = '{$title}', name = '{$name}', date = '{$date}'
+// WHERE id = $id
+\end{code}
+
+oppure inviando un oggetto:
+
+\begin{code}
+/*
+    class Myclass {
+        var $title = 'Il mio titolo';
+        var $content = 'Il mio contenuto';
+        var $date = 'La mia data';
+    }
+*/
+
+$object = new Myclass;
+
+$this->db->where('id', $id);
+$this->db->update('mytable', $object); 
+
+// Produce:
+// UPDATE mytable 
+// SET title = '{$title}', name = '{$name}', date = '{$date}'
+// WHERE id = $id
+\end{code}
+
+Nota: viene effettuato l'escape di tutti i valori, cosa che rende le query sicure.
+
+Si noterà che l'uso dell'istruzione \verb|$this->db->where()|, consente di impostare la clausola WHERE. Opzionalmente si possono passare queste informazioni direttamente alla funzione di aggiornamento sotto forma di una stringa:
+
+\begin{code}
+$this->db->update('mytable', $data, "id = 4");
+\end{code}
+
+oppure come un array:
+
+\begin{code}
+$this->db->update('mytable', $data, array('id' => $id));
+\end{code}
+
+\'E inoltre possibile utilizzare la funzione \verb|$this->db->set()| descritta in precedenza nelle operazioni che riguardano gli aggiornamenti.
+
+\item \verb|$this->db->update_batch()| questa funzione genera e aggiorna la stringa ed esegue la query sulla base dei dati forniti. Si può passare alla funzione un array oppure un oggetto. Per esempio, utilizzando un array si avrà:
+
+\begin{code}
+$data = array(
+   array(
+      'title' => 'Il mio titolo' ,
+      'name' => 'Il mio nome 2' ,
+      'date' => 'La mia data 2'
+   ),
+   array(
+      'title' => 'Un'altro titolo' ,
+      'name' => 'Un altro nome 2' ,
+      'date' => 'Un'altra data 2'
+   )
+);
+
+$this->db->update_batch('mytable', $data, 'title'); 
+
+// Produce: 
+// UPDATE `mytable` SET `name` = CASE
+// WHEN `title` = 'Il mio titolo' THEN 'Il mio nome 2'
+// WHEN `title` = 'Un'altro titolo' THEN 'Un altro nome 2'
+// ELSE `name` END,
+// `date` = CASE 
+// WHEN `title` = 'Il mio titolo' THEN 'La mia data 2'
+// WHEN `title` = 'Un'altro titolo' THEN 'Un'altra data 2'
+// ELSE `date` END
+// WHERE `title` IN ('Il mio titolo','Un'altro titolo')
+\end{code}
+
+Il primo parametro è il nome della tabella, il secondo è un array associativo di valori, mentre il terzo è la chiave WHERE. 
+
+Nota: viene effettuato l'escape di tutti i valori, cosa che rende le query sicure.
+
+\section*{Cancellazione}
+\item \verb|$this->db->delete()| genera e cancella la stringa SQL ed esegue la query.
+
+\begin{code}
+this->db->delete('mytable', array('id' => $id)); 
+
+// Produce:
+// DELETE FROM mytable 
+// WHERE id = $id
+\end{code}
+
+Il primo parametro è il nome della tabella, il secondo è la clausola WHERE. \'E possibile anche utilizzare le funzioni \verb|where()| oppure \verb|or_where()| invece di passare i dati al secondo parametro della funzione.
+
+\begin{code}
+$this->db->where('id', $id);
+$this->db->delete('mytable'); 
+
+// Produce:
+// DELETE FROM mytable 
+// WHERE id = $id
+\end{code}
+
+Un array di nomi di tabella possono essere passati nella funzione \verb|delete()| se si desiderano cancellare i dati provenienti da più di una tabella.
+
+\begin{code}
+$tables = array('table1', 'table2', 'table3');
+$this->db->where('id', '5');
+$this->db->delete($tables);
+\end{code}
+
+Se si desiderano cancellare tutti i dati da una tabella, allora è consigliabile utilizzare la funzione \verb|truncate()| oppure \verb|empty_table()|.
+
+\item \verb|$this->db->empty_table()| genera e cancella la stringa SQL ed esegue la query.
+
+\begin{code}
+$this->db->empty_table('mytable'); 
+
+// Produce
+// DELETE FROM mytable
+\end{code}
+
+\item \verb|$this->db->truncate()| genera e tronca la stringa SQL, quindi esegue la query.
+
+\begin{code}
+$this->db->from('mytable'); 
+$this->db->truncate(); 
+// or 
+$this->db->truncate('mytable'); 
+
+// Produce:
+// TRUNCATE mytable 
+\end{code}
+
+Nota: se il comando TRUNCATE non è disponibile, allora sarà eseguita la funzione \verb|truncate()|  come ``DELETE FROM table''.
+
+\end{itemize}
+
+\section*{Metodo di concatenamento}
+Questo metodo (che funziona solo con PHP 5) permette di semplificare la sintassi collegando più funzioni. Si consideri il seguente esempio:
+
+\begin{code}
+$this->db->select('title')->from('mytable')->where('id', $id)->limit(10, 20);
+
+$query = $this->db->get();
+\end{code}
+
+\section*{Active Record Caching}
+Anche se non si tratta di un caching ``vero'', Active Record permette di salvare (o meglio memorizzare nella cache) alcune parti delle query per riutilizzarle successivamente quando il proprio script verrà eseguito nuovamente. Normalmente, quando una chiamata Active Record viene eseguita, tutte le informazioni memorizzate sono resettate per la chiamata successiva. Con la memorizzazione nella cache, è possibile evitare questo ripristino, e riutilizzare facilmente le informazioni.
+
+Le chiamate cache sono cumulative: se vengono fatte due chiamate \var{select()} (memorizzate nella cache) e successivamente due chiamate \var{select()} (non memorizzate nella cache), questo si tradurrà in quattro chiamate \var{select()}. Ci sono tre funzioni caching disponibili:
+
+\begin{itemize}
+\item \verb|$this->db->start_cache()|
+
+\item \verb|$this->db->stop_cache()|
+
+\item \verb|$this->db->flush_cache()|
+\end{itemize}
+
+\begin{code}
+$this->db->start_cache();
+$this->db->select('field1');
+$this->db->stop_cache();
+
+$this->db->get('tablename');
+
+//Genera: SELECT `field1` FROM (`tablename`)
+
+$this->db->select('field2');
+$this->db->get('tablename');
+
+//Genera: SELECT `field1`, `field2` FROM (`tablename`)
+
+$this->db->flush_cache();
+
+$this->db->select('field2');
+$this->db->get('tablename');
+
+//Genera: SELECT `field2` FROM (`tablename`)
+\end{code}
+
+Nota: le seguenti istruzioni possono essere memorizzate nella cache: \verb|select|, \verb|from|, \verb|join|, \verb|where|, \verb|like|, \verb|group_by|, \verb|having|, \verb|order_by|, \verb|set|.

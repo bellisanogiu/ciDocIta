@@ -1,0 +1,169 @@
+%inizio Generating Query Results
+\section*{I risultati delle query}
+Ci sono diverse strade per generare i risultati delle query: qui analizzeremo tutte le funzioni messe a disposizione da CodeIgniter:
+
+\begin{itemize}
+\item \verb|result()| questa funzione restituisce il risultato di una query come un array di oggetti o un array vuoto in caso di fallimento; solitamente viene utilizzata in un loop foreach come il seguente:
+
+\begin{code}
+$query = $this->db->query("LA TUA QUERY");
+
+foreach ($query->result() as $row)
+{
+   echo $row->title;
+   echo $row->name;
+   echo $row->body;
+}
+\end{code}
+
+La funzione è un alias di \verb|result_object()|. In tutti i casi se si esegue una query che potrebbe non produrre il risultato, è consigliabile verificare prima il risultato:
+
+\begin{code}
+$query = $this->db->query("LA TUA QUERY");
+
+if ($query->num_rows() > 0)
+{
+   foreach ($query->result() as $row)
+   {
+      echo $row->title;
+      echo $row->name;
+      echo $row->body;
+   }
+}
+\end{code}
+
+\'E anche possibile passare una stringa alla funzione \verb|result()| che rappresenta una classe per istanziare ogni risultato oggetto (nota: questa classe deve essere caricata):
+
+\begin{code}
+$query = $this->db->query("SELECT * FROM users;");
+
+foreach ($query->result('User') as $row)
+{
+   echo $row->name; // chiama gli attributi
+   echo $row->reverse_name(); // o i metodi definiti nella classe User
+}
+\end{code}
+
+\item \verb|result_array()| questa funzione restituisce il risultato della query come un array o un array vuoto quando non viene prodotto alcun risultato. Solitamente questa funzione viene utilizzata in un loop foreach come:
+
+\begin{code}
+$query = $this->db->query("LA TUA QUERY");
+
+foreach ($query->result_array() as $row)
+{
+   echo $row['title'];
+   echo $row['name'];
+   echo $row['body'];
+}
+\end{code}
+
+\item \verb|row()| restituisce come risultato una singola riga. Se la query ha più di una riga, sarà processata solo la prima. Il risultato è restituito con un oggetto. Un esempio:
+
+\begin{code}
+$query = $this->db->query("LA TUA QUERY");
+
+if ($query->num_rows() > 0)
+{
+   $row = $query->row(); 
+
+   echo $row->title;
+   echo $row->name;
+   echo $row->body;
+}
+\end{code}
+
+Se si desidera che venga restituita una specifica riga tra i vari risultati, è possibile indicarla nel primo parametro sotto forma di numero intero:
+
+\begin{code}
+$row = $query->row(5);
+\end{code}
+
+\'E anche possibile aggiungere un secondo parametro con una stringa, ovvero il nome della classe per istanziare la riga:
+
+\begin{code}
+$query = $this->db->query("SELECT * FROM users LIMIT 1;");
+
+$query->row(0, 'User')
+echo $row->name; // chiama gli attributi
+echo $row->reverse_name(); // o i metodi definiti nella classe User
+\end{code}
+
+\item \verb|row_array()| è una funzione simile a \verb|row()| eccetto per il fatto che restituisce un array. Per esempio:
+
+\begin{code}
+$query = $this->db->query("LA TUA QUERY");
+
+if ($query->num_rows() > 0)
+{
+   $row = $query->row_array(); 
+
+   echo $row['title'];
+   echo $row['name'];
+   echo $row['body'];
+}
+\end{code}
+
+Se si desidera che venga restituita una specifica riga, è possibile specificare il numero della riga nel primo parametro:
+
+\begin{code}
+$row = $query->row_array(5);
+\end{code}
+
+In aggiunta ci si può spostare tra i risultati in avanti/indietro/all'inizio/alla fine utilizzando questi metodi:
+
+\begin{code}
+$row = $query->first_row()
+$row = $query->last_row()
+$row = $query->next_row()
+$row = $query->previous_row()
+\end{code}
+
+Per impostazione predefinita questi metodi restituiscono un oggetto a meno di mettere la parola ``array'' nel parametro:
+
+\begin{code}
+$row = $query->first_row('array')
+$row = $query->last_row('array')
+$row = $query->next_row('array')
+$row = $query->previous_row('array')
+\end{code}
+\end{itemize}
+
+\section*{Funzioni Helper: i risultati}
+\begin{itemize}
+\item \verb|$query->num_rows()| fornisce il numero di righe restituite dalla query. In questo esempio \verb|$query| è la variabile a cui viene assegnato il risultato dell'interrogazione:
+
+
+\begin{code}
+$query = $this->db->query('SELECT * FROM my_table');
+
+echo $query->num_rows();
+\end{code}
+
+\item \verb|$query->num_fields()| viene restituito il numero di colonne (attributi) della query. \'E necessario essere sicuri di chiamare la funzione utilizzando il risultato della query memorizzato in \var{\$query}:
+
+\begin{code}
+
+$query = $this->db->query('SELECT * FROM my_table');
+
+echo $query->num_fields();
+\end{code}
+
+\item \verb|$query->free_result()| questa funzione libera la memoria associata al risultato e cancella il risultato della risorsa individuata dall'ID. Normalmente \ac{PHP} libera automaticamente la memoria al termine dell'esecuzione dello script, tuttavia, se si eseguono numerose interrogazioni in un particolare script è consigliabile eliminare subito questi risultati. Per esempio:
+
+\begin{code}
+$query = $this->db->query('SELECT title FROM my_table');
+
+foreach ($query->result() as $row)
+{
+   echo $row->title;
+}
+$query->free_result(); // L'oggetto $query non è più disponibile
+
+$query2 = $this->db->query('SELECT name FROM some_table');
+
+$row = $query2->row();
+echo $row->name;
+$query2->free_result(); // L'oggetto $query2 non è ora disponibile
+\end{code}
+\end{itemize}
+%fine Generating Query Results

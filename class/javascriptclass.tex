@@ -1,0 +1,207 @@
+%************************************************
+\section{Classe Javascript}
+\label{class:javascriptclass}
+%************************************************
+
+Nota: questo driver si trova in uno stato sperimentale e molte funzionalità potrebbero cambiare nelle future versioni.
+
+CodeIgniter fornisce una libreria che aiuta lo sviluppatore ad implementare Javascript nel proprio lavoro. Non è comunque necessario installare la libreria jQuery per eseguire qualsiasi funzione presente nella libreria del framework.
+
+La classe viene inizializzata con la funzione \var{\$this->load->library} nel proprio costruttore del controller. Attualmente l'unica libreria disponibile è jQuery la quale sarà automaticamente caricata con una istruzione simile alla seguente:
+
+\begin{code}
+$this->load->library('javascript');
+\end{code}
+
+La classe Javascript accetta solo i parametri \verb|js_library_driver (string) default 'jquery'| e \verb|autoload (bool) default TRUE|. \'E anche possibile sovrascrivere le impostazioni predefinite, fornendo alla funzione un array associativo:
+
+\begin{code}
+$this->load->library('javascript', array('js_library_driver' => 'scripto', 'autoload' => FALSE));
+\end{code}
+
+Anche in questo caso, solo jQuery è disponibile: se comunque non si desidera che la libreria includa automaticamente un tag script, si può impostare il parametro \var{autoload} sul valore FALSE. Questo è utile se si sta caricando lo script al di fuori di CodeIgniter, o se è già presente un tag script.
+
+Una volta caricato, sarà disponibile l'oggetto jQuery usando l'istruzione \var{\$this->javascript}.
+
+\section*{Installazione e configurazione}
+Poiché Javascript è un linguaggio client-side, la libreria deve essere in grado di scrivere contenuti nell'output finale del proprio progetto, in genere una Vista. Sarà necessario includere le seguenti variabili nelle sezioni <head> dell'output:
+
+\begin{code}
+<?php echo $library_src;?>
+<?php echo $script_head;?>
+\end{code}
+
+\verb|$library_src| indica dove la libreria attuale sarà caricata in seguito ad una chiamata.
+
+\verb|$script_head| indica dove gli eventi, le funzioni o altri comandi saranno finalizzati.
+
+\section*{Percorso delle Librerie}
+I parametri che definiscono la configurazione della libreria Javascript possono essere impostati nel file \fil{/application/config.php} e \fil{/config/javascript.php}, oppure in qualsiasi controller utilizzando la funzione \verb|set_item()|.
+
+Una immagine può essere usata come ``ajax loader'', o come indicatore di progresso in modo da informare l'utente sull'avanzamento del caricamento. Senza uno di questi elementi, quando sarà fatta una chiamata Ajax verrà visualizzato semplicemente il messaggio ``loading''.
+
+\begin{code}
+$config['javascript_location'] = 'http://localhost/codeigniter/themes/js/jquery/';
+$config['javascript_ajax_img'] = 'images/ajax-loader.gif';
+\end{code}
+
+Se si mantengono i propri file nella stessa directory da cui sono stati scaricati, allora non sarà necessario impostare alcun elemento di configurazione.
+
+\section*{La classe jQuery}
+Per inizializzare la classe jQuery manualmente nel costruttore del controller si usa la funzione \var{\$this->load->library}:
+
+\begin{code}
+$this->load->library('jquery');
+\end{code}
+
+Si può specificare un ulteriore parametro opzionale per determinare se un tag script per il file principale jQuery dovrà essere incluso automaticamente durante il caricamento della libreria. Questi sarà creato per impostazione predefinita, ma può essere evitato caricando la libreria nel modo seguente:
+
+\begin{code}
+$this->load->library('jquery', FALSE);
+\end{code}
+
+Una volta caricata, l'oggetto library jQuery sarà disponibile utilizzando: \var{\$this->jquery}.
+
+\section*{Gli eventi jQuery}
+Gli eventi sono impostati con la seguente sintassi:
+
+\begin{code}
+$this->jquery->event('element_path', code_to_run());
+\end{code}
+
+\begin{itemize}
+\item \verb|event| assume un valore tra blur, change, click, dblclick, error, focus, hover, keydown, keyup, load, mousedown, mouseup, mouseover, mouseup, resize, scroll, unload
+\item \verb|element_path| indica qualsiasi selettore valido jQuery (si veda \url{http://api.jquery.com/category/selectors/}: questo di solito è un elemento id oppure un selettore \ac{CSS}. Un esempio chiarificatore è dato da \verb|# notice_area| che ha l'effetto di produrre \verb|<div id="notice_area">|, mentre \verb|"# content a.notice"| ha effetto su tutte le ancore (i collegamenti) con una classe di ``notice'' nel div con id ``content''.
+\item \verb|code_to_run()| è lo script che si è sviluppati da soli, o un'azione Effect forniti dalla libreria jQuery
+\end{itemize}
+
+\section*{Effetti}
+La libreria jQuery supporta un vasto elenco di potenti strumenti per aggiungere animazioni alle pagine web. Questi elementi, definiti Effect \url{http://api.jquery.com/category/effects/}, per essere utilizzati hanno bisogno di essere caricati:
+
+\begin{code}
+$this->jquery->effect([optional path] plugin name); // for example $this->jquery->effect('bounce');
+\end{code}
+
+\begin{itemize}
+\item \verb|hide() / show()| ciascuna di queste funzioni influenzerà la visibilità di un articolo sulla pagina. hide() imposterà un elemento invisibile, show() lo renderà visibile.
+
+\begin{code}
+$this->jquery->hide(target, optional speed, optional extra information);
+$this->jquery->show(target, optional speed, optional extra information);
+\end{code}
+
+\begin{itemize}
+\item target: qualsiasi selettore jQuery o selettore comune
+\item speed: è opzionale ed indica la velocità con delle parole chiave (slow, normal, fast) oppure indicando il numero di millisecondi desiderati
+\item extra information: è opzionale e può contenere un callback o altre informazioni aggiuntive
+\end{itemize}
+
+\item \verb|toggle()| farà sì che un elemento assuma lo stato opposto a quello corrente.
+
+\begin{code}
+$this->jquery->toggle(target);
+\end{code}
+
+Il parametro target potrà essere un selettore comune o uno jQuery
+
+\item \verb|animate()| fornisce funzionalità legate all'animazione dell'elemento.
+
+\begin{code}
+$this->jquery->animate(target, parameters, optional speed, optional extra information);
+\end{code}
+
+\begin{itemize}
+\item target: qualsiasi selettore jQuery o selettore comune
+\item parameters: una serie di proprietà CSS che si desidera modificare
+\item speed: è opzionale ed indica la velocità con delle parole chiave (slow, normal, fast) oppure specificata con il numero di millisecondi desiderati
+\item extra information: è opzionale e può contenere una callback o altre informazioni aggiuntive
+\end{itemize}
+
+Qui di seguito si mostra un esempio della funzione \var{animate()} richiamata all'interno di un elemento div con un id ``note'' che verrà azionato attraverso un evento  click() della libreria jQuery.
+
+\begin{code}
+$params = array(
+'height' => 80,
+'width' => '50%',
+'marginLeft' => 125
+);
+$this->jquery->click('#trigger', $this->jquery->animate('#note', $params, normal));
+\end{code}
+
+Per un elenco approfondito di tutti i parametri si consulti la documentazione ufficiale: \url{http://api.jquery.com/animate/}.
+
+\item \verb|fadeIn() / fadeOut()|
+
+\begin{code}
+$this->jquery->fadeIn(target, optional speed, optional extra information);
+$this->jquery->fadeOut(target, optional speed, optional extra information);
+\end{code}
+
+\begin{itemize}
+\item target: qualsiasi selettore jQuery o selettore comune
+\item speed: è opzionale ed indica la velocità con delle parole chiave (slow, normal, fast) oppure specificata con il numero di millisecondi desiderati
+\item extra information: è opzionale e può contenere una callback o altre informazioni aggiuntive
+\end{itemize}
+
+\item \verb|toggleClass()| questa funzione aggiunge o rimuove una classe CCS al proprio target.
+
+\begin{code}
+$this->jquery->toggleClass(target, class)
+\end{code}
+
+\begin{itemize}
+\item target: qualsiasi selettore jQuery o selettore comune
+\item class: è il nome di una classe CSS che deve essere definita e disponibile prima di essere caricata
+\end{itemize}
+
+\item \verb|fadeIn() / fadeOut()| questi effetti permettono ad uno o più elementi di scomparire o riapparire nel tempo.
+
+\begin{code}
+$this->jquery->fadeIn(target, optional speed, optional extra information);
+$this->jquery->fadeOut(target, optional speed, optional extra information);
+\end{code}
+
+\begin{itemize}
+\item target: qualsiasi selettore jQuery o selettore comune
+\item speed: è opzionale ed indica la velocità con delle parole chiave (slow, normal, fast) oppure specificata con il numero di millisecondi desiderati
+\item extra information: è opzionale e può contenere una callback o altre informazioni aggiuntive
+\end{itemize}
+
+\item \verb|slideUp() / slideDown() / slideToggle()| questi effetti permettono lo slide (scorrimento) di uno o più elementi:
+
+\begin{code}
+$this->jquery->slideUp(target, optional speed, optional extra information);
+$this->jquery->slideDown(target, optional speed, optional extra information);
+$this->jquery->slideToggle(target, optional speed, optional extra information);
+\end{code}
+
+\begin{itemize}
+\item target: qualsiasi selettore jQuery o selettore comune
+\item speed: è opzionale ed indica la velocità con delle parole chiave (slow, normal, fast) oppure specificata con il numero di millisecondi desiderati
+\item extra information: è opzionale e può contenere una callback o altre informazioni aggiuntive
+\end{itemize}
+\end{itemize}
+
+\section*{Plugin}
+Diversi plugin jQuery possono essere utilizzati con questa libreria.
+
+\verb|corner()| è utilizzato per aggiungere angoli distinti agli elementi della pagina. Per ulteriori dettagli si veda la documentazione ufficiale: \url{http://www.malsup.com/jquery/corner/}
+
+\begin{code}
+$this->jquery->corner(target, corner_style);
+\end{code}
+
+\begin{itemize}
+\item target: qualsiasi selettore jQuery o selettore comune
+\item \verb|corner_style|: è un parametro opzionale e può essere impostato per ogni stile valido come round, sharp, bevel, bite, dog, etc. Possono essere impostati angoli individuali con uno stile che prevede uno spazio e con \verb|tl| (in alto a sinistra), \verb|tr| (in alto a destra), \verb|bl| (in basso a sinistra), o \verb|br| (in basso a destra).
+\end{itemize}
+
+\begin{code}
+$this->jquery->corner("#note", "cool tl br");
+\end{code}
+
+\verb|tablesorter()| \omissis
+
+\verb|modal()| \omissis
+
+\verb|calendar()| \omissis

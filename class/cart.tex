@@ -1,0 +1,199 @@
+%************************************************
+\section{Classe Shopping Cart}
+\label{class:cart}
+%************************************************
+
+La classe Cart (carrello) mette a disposizione dello sviluppatore delle comode funzionalità per progetti di e-commerce. Fulcro della classe sono gli elementi (per esempio i prodotti acquistati) che possono essere aggiunti alla sessione attiva, sin quando l'utente si trova sul sito sviluppato con CodeIgniter. Questi elementi possono essere recuperati e visualizzati in un formato standard ``shopping cart'', che consente all'utente di aggiornare la loro quantità, oppure rimuoverli dal carrello. 
+
+Questa classe, automatizza molti compiti legati alla sessione, ma non prevede funzionalità aggiuntive come lo shopping, l'autorizzazione delle carte di credito o altre caratteristiche che si basano sull'analisi e il processo di dati.
+
+Prima di utilizzare la classe Cart è importante fare alcune precisazioni. La prima è che Cart si basa a sua volta sulla classe Session per salvare le informazioni del carrello in un database: quindi prima di utilizzare la classe si deve configurare la tabella del database come indicato nella documentazione delle Sessioni\vref{class:sessione} e definire le preferenze nel file \fil{/application/config/config.php} per utilizzare una base di dati.
+
+\section*{Inizializzare la classe}
+Per inizializzare la classe Shopping Cart nel proprio costruttore del Controller è necessario usare la seguente funzione adibita al caricamento:
+
+\begin{code}
+$this->load->library('cart');
+\end{code}
+
+Una volta caricata, l'oggetto Cart sarà disponibile usando: 
+
+\begin{code}
+$this->cart
+\end{code}
+
+Nota: la classe Cart caricherà e inizializzerà la classe Session automaticamente, quindi a meno che non si stiano utilizzando altre sessioni nell'applicazione, non è necessario caricare manualmente la classe Session.
+
+\section*{Aggiungere un oggetto al carrello}
+Per aggiungere un oggetto al carrello della spesa è sufficiente passare un array con le informazioni dei prodotti alla funzione \verb|$this->cart->insert()| come mostrato nell'esempio:
+
+\begin{code}
+$data = array(
+	'id'      => 'sku_123ABC',
+	'qty'     => 1,
+	'price'   => 39.95,
+	'name'    => 'T-Shirt',
+	'options' => array('Taglia' => 'L', 'Colore' => 'Rosso')
+	);
+\end{code}
+
+I primi quattro indici dell'array (id, qty, price, name) sono obbligatori: se ommessi tutti o solo uno di essi, i dati non verranno memorizzati nel carrello. Il quinto indice (options) è invece opzionale: è utilizzato nei casi in cui il prodotto contenga ulteriori opzioni da associare; in questo caso viene passato un nuovo array, come nell'esempio in cui si sono specificati anche la taglia e il colore dell'articolo.
+
+\begin{description}
+\item[id] ogni prodotto nel negozio deve essere caratterizzato da un identificatore univoco. L'id, solitamente rappresentato da un numero, ha un prefisso, per garantire una maggiore sicurezza. Negli esempi di questa classe verrà utilizzato il prefisso ``sku''.
+\item [qty] la quantità dell'oggetto da acquistare
+\item [price] il prezzo
+\item [name] il nome dell'oggetto
+\item [options] un array aggiuntivo per inserire altre informazioni (questo parametro è opzionale)
+\end{description}
+
+\begin{deftab}{Identificatore}{\'E un elemento che definisce l'identità di un elemento di un insieme senza che questo possa essere confuso con un altro dello stesso insieme.}
+\end{deftab}
+
+Esistono, oltre a questi cinque indici, due parole riservate: \var{rowid} e \var{subtotal}. Questo significa che tali nomi non devono essere utilizzati per definire gli indici dell'array.
+
+L'array dei prodotti può contenere dati aggiuntivi: tutto ciò che si include, verrà memorizzato nella sessione. Tuttavia, è meglio adottare uno standard comune tra i dati di tutti i prodotti: in questo modo la visualizzazione delle informazioni in una tabella risulterà omogenea.
+
+Il metodo \var{insert()} restituirà \verb|$rowid| (l'identificatore del prodotto) solo se il dato sarà inserito correttamente nel database.
+
+\section*{Aggiungere pi\'u oggetti}
+Per aggiungere più prodotti al carrello bisogna affidarsi ad un array multidimensionale come nell'esempio: in questo modo tutti i dati vengono inseriti in una singola azione. Questo è utile per permettere agli utenti di scegliere tra diversi elementi collocati sulla stessa pagina.
+
+\begin{code}
+$data = array(
+               array(
+                       'id'      => 'sku_123ABC',
+                       'qty'     => 1,
+                       'price'   => 39.95,
+                       'name'    => 'T-Shirt',
+                       'options' => array('Taglia' => 'L', 'Colore' => 'Red')
+                    ),
+               array(
+                       'id'      => 'sku_567ZYX',
+                       'qty'     => 1,
+                       'price'   => 9.95,
+                       'name'    => 'Tazza da caffé'
+                    ),
+               array(
+                       'id'      => 'sku_965QRS',
+                       'qty'     => 1,
+                       'price'   => 29.95,
+                       'name'    => 'Occhiali'
+                    )
+            );
+
+$this->cart->insert($data);
+\end{code}
+
+\label{sec:vedicarrello}
+\section*{Visualizzare il carrello}
+Per visualizzare il carrello si utilizzano, come è facile immaginare, una Vista con un codice simile a quello riportato nell'esempio e l'Helper Form:
+
+\begin{html}
+<?php echo form_open('path/to/controller/update/function'); ?>
+
+<table cellpadding="6'' cellspacing="1'' style="width:100%'' border="0">
+
+<tr>
+  <th>QTY</th>
+  <th>Descrizione dell'oggetto</th>
+  <th style="text-align:right">Prezzo dell'oggetto</th>
+  <th style="text-align:right">totale parziale</th>
+</tr>
+
+<?php $i = 1; ?>
+
+<?php foreach ($this->cart->contents() as $items): ?>
+
+	<?php echo form_hidden($i.'[rowid]', $items['rowid']); ?>
+
+	<tr>
+	  <td><?php echo form_input(array('name' => $i.'[qty]', 'value' => $items['qty'], 'maxlength' => '3', 'size' => '5')); ?></td>
+	  <td>
+		<?php echo $items['name']; ?>
+
+			<?php if ($this->cart->has_options($items['rowid']) == TRUE): ?>
+
+				<p>
+					<?php foreach ($this->cart->product_options($items['rowid']) as $option_name => $option_value): ?>
+
+						<strong><?php echo $option_name; ?>:</strong> <?php echo $option_value; ?><br />
+
+					<?php endforeach; ?>
+				</p>
+
+			<?php endif; ?>
+
+	  </td>
+	  <td style="text-align:right"><?php echo $this->cart->format_number($items['price']); ?></td>
+	  <td style="text-align:right">$<?php echo $this->cart->format_number($items['subtotal']); ?></td>
+	</tr>
+
+<?php $i++; ?>
+
+<?php endforeach; ?>
+
+<tr>
+  <td colspan="2"> </td>
+  <td class="right"><strong>Totale</strong></td>
+  <td class="right">$<?php echo $this->cart->format_number($this->cart->total()); ?></td>
+</tr>
+
+</table>
+
+<p><?php echo form_submit('', 'Update your Cart'); ?></p>
+\end{html}
+
+\section*{Aggiornare il carrello}
+L'aggiornamento del carrello con le informazioni dei prodotti in esso contenuti, avviene passando alla funzione \verb|$this->cart->update()| un array contenente l'id della riga (Row ID) e la relativa quantità. Un aspetto utile, è che se la quantità dell'oggetto in questione è zero, l'oggetto automaticamente verrà rimosso dal carrello.
+
+\begin{code}
+$data = array(
+               'rowid' => 'b99ccdf16028f015540f341130b6d8ec',
+               'qty'   => 3
+            );
+
+$this->cart->update($data); 
+
+// Oppure un array multidimensionale
+
+$data = array(
+               array(
+                       'rowid'   => 'b99ccdf16028f015540f341130b6d8ec',
+                       'qty'     => 3
+                    ),
+               array(
+                       'rowid'   => 'xw82g9q3r495893iajdh473990rikw23',
+                       'qty'     => 4
+                    ),
+               array(
+                       'rowid'   => 'fh4kdkkkaoe30njgoe92rkdkkobec333',
+                       'qty'     => 2
+                    )
+            );
+
+$this->cart->update($data);
+\end{code}
+
+Ma cosa è un \var{ID Row}? Si tratta di un identificatore univoco che viene generato dal codice del carrello quando un elemento viene aggiunto. La ragione per cui viene creato un ID univoco è per consentire la gestione di prodotti identici ma con piccole differenze significative. Si immagini per esempio di acquistare due birre, identiche in tutto, tranne per il fatto che una è ``analcolica'' e l'altra no. Un ulteriore esempio è dato da due t-shirt identiche (stesso prodotto), ma con taglie differenti: l'ID del prodotto (ma anche altri attributi) risulteranno così identici proprio perché ci si riferisce al medesimo prodotto, ovvero una t-shirt. Il carrello deve quindi permettere di identificare questa differenza sottile, ma importante in modo che le due taglie (e i relativi prodotti) possano essere gestiti indipendentemente l'uno dall'altro. CodeIgniter rende possibile tutto questo creando un unico ``ID Row'' in base all'ID del prodotto e alle eventuali opzioni associate.
+
+In quasi tutti i casi, l'aggiornamento del carrello sarà un'operazione che l'utente eseguirà attraverso la pagina ``Visualizza carrello''. In pratica non ci si dovrà preoccupare dell'ID Row perché CodeIgniter lo celerà in un opportuno campo nascosto per poi passarlo alla funzione demandata all'aggiornamento del carrello. Per maggiori informazioni si rimanda alla sezione ``Visualizza il carrello'' a pagina \pageref{sec:vedicarrello}. 
+
+\section*{Reference}
+\begin{itemize}
+\item \verb|$this->cart->insert()| è utilizzata per aggiungere i prodotti al carrello.
+
+\item \verb|$this->cart->update()| permette di aggiornare il carrello.
+
+\item \verb|$this->cart->total()| visualizza il totale del carrello.
+
+\item \verb|$this->cart->total_items()| visualizza il numero totale di oggetti nel carrello.
+
+\item \verb|$this->cart->contents()| restituisce un array che contiene qualsiasi elemento nel carrello.
+
+\item \verb|$this->cart->has_options(rowid)| restituisce TRUE se una particolare riga nel carrello contiene delle opzioni. Questa funzione è comoda se utilizzata in un ciclo con \verb|$this->cart->contents()| poiché è necessario passare rowid a questa funzione, come mostrato nell'esempio ``Visualizza il carrello'' a pagina \pageref{sec:vedicarrello}.
+
+\item \verb|$this->cart->product_options(rowid)| restituisce un array di opzioni per un particolare prodotto. Questa funzione è disegnata per essere usata in un ciclo con \verb|$this->cart->contents()| poiché è necessario passare rowid a questa funzione, come mostrato nell'esempio ``Visualizza il carrello'' a pagina \pageref{sec:vedicarrello}.
+
+\item \verb|$this->cart->destroy()| permette di eliminare il carrello. Questa funzione solitamente è richiamata quando termina il processo di acquisto da parte dell'utente e si vuole concludere l'ordine.
+\end{itemize}

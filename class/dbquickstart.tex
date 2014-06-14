@@ -1,0 +1,103 @@
+%inizio Database Quick Start: Example Code
+\section*{Introduzione}
+Qui di seguito verranno alcuni esempi su come viene utilizzata la classe Database. Per informazioni dettagliate si rimanda alla lettura delle singole sezioni che descrivono ogni funzione.
+
+\section*{Query Standard con risultati multipli (object}
+Qui di seguito si mostra un codice di una query standard con risultati multipli (versione Object). La funzione \var{resul()} restituisce un array di oggetti. Esempio \var{\$row->title}.
+
+\begin{code}
+$query = $this->db->query('SELECT name, title, email FROM my_table');
+
+foreach ($query->result() as $row)
+{
+    echo $row->title;
+    echo $row->name;
+    echo $row->email;
+}
+
+echo 'Totale dei risultati: ' . $query->num_rows();
+\end{code}
+
+\section*{Query Standard con risultati multipli (array}
+Le query standard con risultati multipli, ma che utilizza l'array per i propri dati, prevede una sintassi leggermente differente. In questo caso la funzione \verb|result_array()| restituisce un array di indici di array, come per esempio \var{\$row['title']}:
+
+\begin{code}
+$query = $this->db->query('SELECT name, title, email FROM my_table');
+
+foreach ($query->result_array() as $row)
+{
+    echo $row['title'];
+    echo $row['name'];
+    echo $row['email'];
+}
+\end{code}
+
+Quando si esegue una query solitamente non vengono prodotti risultati su schermo: questo rende difficile capire se il comportamento della query sia corretto. La funzione \verb|num_rows()| aiuta in tal senso perché fornisce il numero di righe prodotto dalla query, ovvero i risultati ottenuti.
+
+\begin{code}
+$query = $this->db->query("LA TUA QUERY");
+
+if ($query->num_rows() > 0)
+{
+   foreach ($query->result() as $row)
+   {
+      echo $row->title;
+      echo $row->name;
+      echo $row->body;
+   }
+}
+\end{code}
+
+La query standard con un singolo risultato, presenta la funzione \var{row()} che resistuisce un oggetto:
+
+\begin{code}
+$query = $this->db->query('SELECT name FROM my_table LIMIT 1');
+
+$row = $query->row();
+echo $row->name;
+\end{code}
+
+La query standard con un singolo risultato può fare uso anche di un array. In questo caso la funzione \verb|row_array()| restituisce un array:
+
+\begin{code}
+$query = $this->db->query('SELECT name FROM my_table LIMIT 1');
+
+$row = $query->row_array();
+echo $row['name'];
+\end{code}
+
+\section*{Inserimento dei dati in modalit\'a standard}
+\begin{code}
+$sql = "INSERT INTO mytable (title, name) 
+        VALUES (".$this->db->escape($title).", ".$this->db->escape($name).")";
+
+$this->db->query($sql);
+
+echo $this->db->affected_rows();
+\end{code}
+
+\section*{Query Active Record}
+Il pattern Active Record fornisce un sistema per semplificare le interrogazioni al database. La funzione \var{get()} per esempio restituisce tutti i risultati disponibili in una tabella. La classe Active Record contiene un nutrita serie di funzioni per lavorare agevolmente con un database.
+
+\begin{code}
+$query = $this->db->get('table_name');
+
+foreach ($query->result() as $row)
+{
+    echo $row->title;
+}
+\end{code}
+
+\section*{Inserimento dei dati con Active Record}
+\begin{code}
+$data = array(
+               'title' => $title,
+               'name' => $name,
+               'date' => $date
+            );
+
+$this->db->insert('mytable', $data); 
+
+// Produce: INSERT INTO mytable (title, name, date) VALUES ('{$title}', '{$name}', '{$date}')
+\end{code}
+%fine Database Quick Start: Example Code

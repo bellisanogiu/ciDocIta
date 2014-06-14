@@ -1,0 +1,168 @@
+%inizio Database Utility Class
+\section*{Classe Database Utility}
+Questa classe contiene numerose funzioni che aiutano a gestire il proprio database con cui si riesce ad ottimizzare, riparare le tabelle o lo stesso database.
+
+\section*{Inizializzare la Class Utility}
+Per inizializzare la classe Utility, i driver del proprio database devono essere precedentemente caricati, poiché la classe si basa su di essi. Per caricare la classe si usa la seguente istruzione:
+
+\begin{code}
+$this->load->dbutil()
+\end{code}
+
+Una volta inizializzata la classe si potrà accedere alle funzioni utilizzando l'oggetto \verb|$this->dbutil|:
+
+\begin{code}
+$this->dbutil->some_function()
+\end{code}
+
+\begin{itemize}
+\item \verb|$this->dbutil->list_databases()| restituisce un array di nomi di database:
+
+\begin{code}
+$dbs = $this->dbutil->list_databases();
+
+foreach ($dbs as $db)
+{
+    echo $db;
+}
+\end{code}
+
+\item \verb|$this->dbutil->database_exists()| alcune volte è necessario conoscere se un database esiste. Questa funzione, che è case sensitive restituisce un valore booleano TRUE/FALSE. Invece l'argomento della funzione, \verb|database_name| definisce la tabella che si sta cercando.
+
+\begin{code}
+if ($this->dbutil->database_exists('database_name'))
+{
+   // altro codice
+}
+\end{code}
+
+\item \verb|$this->dbutil->optimize_table('table_name')| questa funzione permette di ottimizzare una tabella usando come primo parametro il nome della tabella. Viene restituito TRUE/FALSE a seconda del successo o meno della funzione. \'E bene precisare che non tutte le piattaforme supportano questa ottimizzazione: questa funzione è disponibile infatti solo con i database MySQL/MySQLi.
+
+\begin{code}
+if ($this->dbutil->optimize_table('table_name'))
+{
+    echo 'L'operazione è stata effettuata!';
+}
+\end{code}
+
+\item \verb|$this->dbutil->repair_table('table_name')| permette di riparare una tabella utilizzando nella funzione, come primo parametro, il nome della tabella: viene restituito TRUE/FALSE a seconda del successo o meno della funzione. \'E bene precisare che non tutte le piattaforme supportano questa ottimizzazione: questa funzione è disponibile infatti solo con i database MySQL/MySQLi.
+
+\begin{code}
+if ($this->dbutil->repair_table('table_name'))
+{
+    echo 'L'operazione è stata effettuata!';
+}
+\end{code}
+
+\item \verb|$this->dbutil->optimize_database()| permette di ottimizzare il database quando si è connessi alla classe DB. Restituisce un array che contiene messaggi di stato DB oppure FALSE in caso di fallimento. \'E bene precisare che non tutte le piattaforme supportano questa ottimizzazione: questa funzione è disponibile infatti solo con i database MySQL/MySQLi.
+
+\begin{code}
+$result = $this->dbutil->optimize_database();
+
+if ($result !== FALSE)
+{
+    print_r($result);
+}
+\end{code}
+
+\item \verb|$this->dbutil->csv_from_result($db_result)| permette di generare un file \ac{CSV} da un risultato di query. Il primo parametro della funzione deve contenere l'oggetto della propria query:
+
+\begin{code}
+$this->load->dbutil();
+
+$query = $this->db->query("SELECT * FROM mytable");
+
+echo $this->dbutil->csv_from_result($query);
+\end{code}
+
+Il secondo e il terzo parametro permettono di impostare il delimitatore e il carattere di ritorno a capo (per default il tasto tab è il delimitatore, mentre ``\\n'' è usato come carattere di newline). Per esempio:
+
+\begin{code}
+$delimiter = ",";
+$newline = "\r\n";
+
+echo $this->dbutil->csv_from_result($query, $delimiter, $newline);
+\end{code}
+
+Si presti attenzione al fatto che questa funzione non scrive il file \ac{CSV} per noi: semplicemente definisce il layout; per scrivere il file è necessario utilizzare l'Helper File (si veda la sezione\vref{helper:file}).
+
+\item \verb|$this->dbutil->xml_from_result($db_result)| viene generato un file \ac{XML} dal risultato di una query. Il primo parametro si aspetta il risultato di una query, mentre il secondo può contenere un array opzionale di parametri di configurazione. Per esempio:
+
+\begin{code}
+$this->load->dbutil();
+
+$query = $this->db->query("SELECT * FROM mytable");
+
+$config = array (
+                  'root'    => 'root',
+                  'element' => 'element', 
+                  'newline' => "\n", 
+                  'tab'    => "\t"
+                );
+
+echo $this->dbutil->xml_from_result($query, $config);
+\end{code}
+
+Nota: questa funzione non scrive fisicamente il file \ac{XML}, ma si occupa di definirne semplicemente il layout. Se si ha bisogno di questa specifica funzionalità ci si dovrà riferire l'Helper file (si veda la sezione\vref{helper:file}).
+
+\item \verb|$this->dbutil->backup()| permette di effettuare un backup dell'intero database o di alcune tabelle. Il backup viene compresso in un formato a scelta tra Zip o Gzip ed è utilizzabile solo nel database MySQL.
+
+Nota: a causa del tempo di esecuzione limitato per le operazioni PHP, il backup di database di grandi dimensioni potrebbe non essere possibile. In questo caso è possibile effettuare una copia di sicurezza dal server SQL tramite riga di comando. Ecco alcuni esempi:
+
+\begin{code}
+// Caricamento della classe DB
+$this->load->dbutil();
+
+// Backup dell'intero database e assegnazione ad una variazione
+$backup =& $this->dbutil->backup(); 
+
+// Caricamento dell'Helper File e scrittura del file sul server
+$this->load->helper('file');
+write_file('/path/to/mybackup.gz', $backup); 
+
+// Caricamento dell'Helper Download e invio del file sul server
+$this->load->helper('download');
+force_download('mybackup.gz', $backup);
+\end{code}
+\end{itemize}
+
+\section*{Le preferenze del backup}
+\'E possibile definire le preferenze del backup inviando un array di valori come primo parametro alla funzione. Per esempio:
+
+\begin{code}
+$prefs = array(
+                'tables'      => array('table1', 'table2'),  // Array delle tabelle di cui fare una copia
+                'ignore'      => array(),           // Lista delle tabelle da omettere dal backup
+                'format'      => 'txt',             // gzip, zip, txt
+                'filename'    => 'mybackup.sql',    // Nome del file (solo per i file zip)
+                'add_drop'    => TRUE,              // Per aggiungere le istruzioni DROP TABLE al backup
+                'add_insert'  => TRUE,              // Per aggiungere i dati INSERT al backup
+                'newline'     => "\n"               // Specifica il carattere Newline usato nel backup
+              );
+
+$this->dbutil->backup($prefs);
+\end{code}
+
+\section*{Descrizione delle preferenze}
+\small
+\begin{tabx}{lXlX}
+\toprule
+Preferenze & Val.Default & Opzioni & Descrizione \\ 
+\midrule
+\verb|tables| & array vuoto & nessuno & un array di tabelle \\ 
+\midrule
+\verb|ignore| & array vuoto & nessuno & un array di tabelle \\ 
+\midrule
+\verb|format| & gzip & gzip, zip, txt & formato di esportazione \\ 
+\midrule
+\verb|filename| & data attuale & nessuno & nome del file di backup \\ 
+\midrule
+\verb|add_drop| & TRUE & TRUE/FALSE & include le dichiarazioni DROP TABLE nel file di esportazione SQL \\ 
+\midrule
+\verb|add_insert| & TRUE & TRUE/FALSE & include le dichiarazioni  INSERT TABLE nel file di esportazione SQL \\ 
+\midrule
+newline & \verb|\n| & \verb|'\n'|, \verb|'\r'|, \verb|'\r\n'| & carattere newline da utilizzare nel file di esportazione SQL \\
+\bottomrule 
+\end{tabx}
+\normalsize
+%fine Database Utility Class

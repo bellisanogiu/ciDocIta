@@ -1,0 +1,98 @@
+%inizio Transactions
+\section*{Transazioni}
+L'astrazione del database di CodeIgniter permette di utilizzare le transazioni con tutti quei database che supportano i tipi di tabelle transaction-safe (i)n MySQL, è necessario utilizzare le tabelle InnoDB o BDB piuttosto che il più comune MyISAM). La maggior parte delle altre piattaforme di database supportano invece le operazioni di transazione nativamente.
+
+Se non si ha familiarità con l'argomento trattato si consiglia di trovare una buona risorsa online per apprendere a sfruttarne le potenzialità. Le informazioni qui di seguito riportate, infatti presuppongono una conoscenza di base sull'argomento, comunque non complesso e molto utile in diversi contesti.
+
+CodeIgniter utilizza un approccio alle transazioni che è molto simile a quello della classe database ADODB. \'E stato scelto questo approccio perché semplifica notevolmente il processo di funzionamento delle transazioni: nella maggior parte dei casi tutto ciò che serve sono due righe di codice.
+
+Le transazioni hanno richiesto una buona dose di lavoro per essere implementate poiché tengono traccia delle query e determinano cosa debba essere sottoposto a commit o rollback in base al successo o il fallimento delle proprie query. Ciò è particolarmente difficile da gestire con le query nidificate: per questo CodeIgniter implementa un sistema di transazione intelligente che svolge automaticamente le operazioni senza l'intervento dello sviluppatore (è possibile anche gestire le transazioni manualmente se lo si preferisce, ma questo non comporterà alcun beneficio).
+
+\begin{deftabv}{Transazione}{
+\'E una sequenza di operazioni normalmente implementate da un DBMS o da un gestore di transazioni che ha il compito di processare una sequenza di operazioni. Queste possono generare un errore (per un bug, crash del server, operazioni illecite), oppure concludersi con successo. Nel primo caso verrà eseguita una istruzione di \textbf{rollback} che abortisce la transazione, mentre in caso di successo viene eseguita l'istruzione \textbf{commit} che conferma la transazione.
+}
+\end{deftabv}
+\normalsize
+
+\section*{Eseguire le transazioni}
+Per eseguire le proprie query usando le transazioni si utilizzeranno due funzioni di inizio e fine sequenza:
+\begin{itemize}
+\item  \verb|$this->db->trans_start()|
+\item \verb|$this->db->trans_complete()|
+\end{itemize}
+
+
+\begin{code}
+$this->db->trans_start();
+	$this->db->query('UNA QUERY SQL...');
+$this->db->query('ALTRA QUERY...');
+$this->db->query('E...ANCORA UNA QUERY...');
+$this->db->trans_complete();
+\end{code}
+
+\'E possibile eseguire diverse query tra le funzioni start/complete su cui si potrà avere un commit o un rollback in base al successo o meno di una determinata query.
+
+\section*{Modalit\'a Strict}
+CodeIgniter, per impostazione predefinita, esegue le transazioni in modalità Strict: se si eseguono più gruppi di transazioni, ed una di queste fallisce, allora tutti i gruppi subiscono un rollback. Se invece la modalità Strict è disabilitata, ogni gruppo viene gestito indipendentemente e il fallimento di uno non avrà conseguenze sugli altri gruppi.
+
+La modalità strict può essere disabilitata nel seguente modo:
+
+\begin{code}
+$this->db->trans_strict(FALSE);
+\end{code}
+
+\section*{Gestione degli Errori}
+Se si è impostato il file \fil{/config/database.php} per avere i report sugli errori, allora sarà possibile visualizzare i messaggi di errore quando un commit non viene correttamente eseguito. Se il debug invece è disabilitato, gli errori vengono gestiti nel seguente modo:
+
+\begin{code}
+$this->db->trans_start();
+$this->db->query('UNA QUERY...');
+$this->db->query('ALTRA QUERY...');
+$this->db->trans_complete();
+
+if ($this->db->trans_status() === FALSE)
+{
+    // genera un errore, oppure si usi la funzione log_message() per i log dei propri errori
+}
+\end{code}
+
+\section*{Abilitare le transazioni}
+Le transazioni sono abilitate automaticamente nel momento in cui di usa la funzione \verb|$this->db->trans_start()|. Se si desidera, invece disabilitarle, è necessario usare la funzione \verb|$this->db->trans_off()|. Quando le transazioni sono disabilitate, verrà eseguito un commit automatico delle query.
+
+\begin{code}
+$this->db->trans_off()
+
+$this->db->trans_start();
+$this->db->query('UNA QUERY SQL...');
+$this->db->trans_complete();
+\end{code}
+
+\section*{Modalit\'a Test}
+Il sistema delle transazioni si può opzionalmente impostare nella modalità test, con cui si avrà sempre un rollback delle query, anche nel caso in cui non si avrà alcun errore. Per utilizzare questa modalità, basta semplicemente impostare il primo parametro della funzione \verb|$this->db->trans_start()| su TRUE:
+
+\begin{code}
+$this->db->trans_start(TRUE); // Query will be rolled back
+$this->db->query('UNA QUERY SQL...');
+$this->db->trans_complete();
+\end{code}
+
+\section*{Eseguire le transazioni manualmente}
+Se si desidera eseguire le transazioni manualmente si possono utilizzare le seguenti funzioni, stando attenti ad adoperare correttamente \verb|$this->db->trans_begin()| invece della funzione \verb|$this->db->trans_start()|:
+
+\begin{code}
+$this->db->trans_begin();
+
+$this->db->query('UNA QUERY SQL...');
+$this->db->query('ALTRA QUERY SQL...');
+$this->db->query('E INFINE UNA QUERY SQL...');
+
+if ($this->db->trans_status() === FALSE)
+{
+    $this->db->trans_rollback();
+}
+else
+{
+    $this->db->trans_commit();
+}
+\end{code}
+%fine Transactions

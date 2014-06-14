@@ -1,0 +1,54 @@
+%************************************************
+\section{Helper Inflector}
+\label{helper:inflector}
+%************************************************
+
+L'Helper Inflector contiene diverse funzioni che permettono di cambiare le parole nel loro plurale, singolare,con notazione camel case, ecc. Il suo caricamento avviene come di consueto con l'istruzione:
+
+\begin{code}
+$this->load->helper('inflector');
+\end{code}
+
+Sono quindi disponibili le seguenti funzioni:
+
+\verb|singular()| modifica il plurale delle parole, trasformandola nella forma singolare. Per esempio:
+
+\begin{code}
+$word = "dogs";
+echo singular($word); // Restituisce "dog"
+\end{code}
+
+\verb|plural()| modifica il singolare di una parola, trasformandola nel plurale. Per esempio:
+
+\begin{code}
+$word = "dog";
+echo plural($word); // Restituisce "dogs"
+\end{code}
+
+Per fozare il plurale di una parola che termina con end si utilizzi un secondo argomento impostato sul valore booleano TRUE:
+
+\begin{code}
+$word = "pass";
+echo plural($word, TRUE); // Restituisce "passes"
+\end{code}
+
+\verb|camelize| modifica una stringa di parole separate da spazi o underscore in notazione camel case. Per esempio:
+
+\begin{code}
+$word = "my_dog_spot";
+echo camelize($word); // Restituisce "myDogSpot"
+\end{code}
+
+\verb|underscore()| trasforma più parole separate da spazi trasformando questi ultimi in underscore:
+
+\begin{code}
+$word = "my_dog_spot";
+echo humanize($word); // Restituisce "My Dog Spot"
+\end{code}
+
+\verb|humanize()| prende più parole separate dal carattere underscore e li sostituisce con degli spazi singoli. Inoltre ogni parola verrà formattata con l'iniziale maiuscola. Per esempio:
+
+\begin{code}
+$word = "my_dog_spot";
+echo humanize($word); // Restituisce "My Dog Spot"
+\end{code}
