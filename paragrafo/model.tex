@@ -1,0 +1,399 @@
+%************************************************
+\section{Il Model}
+\label{cap:model}
+%************************************************
+
+Questo capitolo è dedicato al Modello, l'elemento del pattern \ac{MVC}, demandato ad interfacciare quanto sviluppato con una base di dati. Ora, non solo si farà pratica con tale prezioso strumento, ma si esamineranno anche le funzioni messe a disposizione per l'aggiornamento, inserimento, cancellazione e selezione dei dati tramite query.
+
+\section*{Introduzione alla base di dati}
+\omissis
+
+\section*{Server locale}
+Daremo per scontata una certa dimestichezza con i database di tipo MySQL: la loro installazione e configurazione è ormai alla portata dei neofiti grazie a progetti come LAMP per Linux e per i maggiori sistemi operativi. Abbiamo già esaminato un tutorial per la loro installazione e la configurazione (si veda la sezione\vref{sec:installazione}): per maggiori informazioni si rimanda anche alla vasta documentazione reperibile in rete. Si consiglia anche l'utilizzo del tool ``phpMyAdmin''\url{http://www.phpmyadmin.net/} con cui è resa più agevole la gestione della propria base di dati grazie ad una intuitiva interfaccia grafica.
+
+\begin{img}{phpMyAdmin}{5}{016}
+\end{img}
+
+\begin{img}{Tabella test}{5}{017}
+\end{img}
+
+\section*{Configurazione della base di dati}
+Si crei un database che al momento chiameremo semplicemente ``test'': al suo interno definiamo una tabella ``news'' e quindi i suoi attributi (si veda \vpageref{fig:017}) nel capitolo\vref{sec:notizia} abbiamo già introdotto lo schema delle nostra tabella, una serie di record con un \emph{titolo}, un \emph{testo} e la relativa \emph{data di inserimento}. Realizziamo quanto appena esposto attraverso questa serie di istruzioni MySQL, che possono essere eseguite attraverso l'interprete SQL installato o tramite l'interfaccia di phpMyAdmin.
+
+\begin{code}
+CREATE TABLE news (
+	id int(11) NOT NULL AUTO_INCREMENT,
+	titolo varchar(128) NOT NULL,
+	slug varchar(128) NOT NULL,
+	testo text NOT NULL,
+	PRIMARY KEY (id),
+	KEY slug (slug)
+);
+\end{code}
+
+L'attributo \var{slug} è un indice con cui ``marcheremo'' ogni notizia pubblicata per poi richiamarla eventualmente in seguito. Una sorta di segnalibro, più o meno. Ora si inseriscano due notizie per popolare la tabella. Qui viene riportato il codice che può essere processato velocemente selezionando la voce SQL dal menu principale (vedi \vpageref{fig:018}).
+
+\begin{img}{Inserimento della query}{5}{018}
+\end{img}
+
+\begin{code}
+INSERT INTO `test`.`news` (`id`, `titolo`, `slug`, `testo`) 
+VALUES (NULL, 'Oggi piove', 'n1', 'o almeno si crede'), 
+	(NULL, 'Domani splende il sole', 'n2', 'quindi andiamo al mare');
+\end{code}
+
+\subsection{Anatomia del Modello}
+CodeIgniter, come visto per il Controller e le View, prevede una cartella apposita dove memorizzare i Model. Come è oramai intuibile, questa si trova al percorso \sys{/application/models/}.
+
+Il framework richiamerà da questa directory i Model necessari alla nostra applicazione; è comunque possibile organizzare la directory in più sottocartelle in modo da realizzare una struttura del progetto strutturata e ordinata.
+
+Creiamo quindi un nuovo file denominato \verb|news_model.php| nel percorso relativo ai Modelli con il seguente codice:
+
+\begin{code}
+<?php
+class News_model extends CI_Model {
+
+	public function __construct()
+	{
+		$this->load->database();
+	}
+	
+	public function get_news($slug = FALSE)
+	{
+		if ($slug === FALSE)
+		{
+			$query = $this->db->get('news');
+			return $query->result_array();
+		}
+	
+		$query = $this->db->get_where('news', array('slug' => $slug));
+		return $query->row_array();
+	}
+}
+\end{code}
+
+Il Model viene quindi richiamato tramite il Controller attraverso l'istruzione ormai facilmente intuibile:
+
+\begin{code}
+$this->load->model('nome_model');
+\end{code}
+
+Dove \verb|nome_model| è il nome del Model. Se questo si trova in una sottodirectory di sys{application/models/} basterà specificare il percorso prima del nome:
+
+\begin{code}
+$this->load->model('percorso/nome_model');
+\end{code}
+
+La struttura di un Model è sintatticamente molto semplice e rispecchia le convenzioni già viste nel Controller e nella View. Viene creato un nuovo Modello di nome \verb|News_model| che è una estensione del \verb|CI_Model|, il modello di base di Codeigniter. 
+
+La nuova istruzione introdotta è \verb|$this->load->database()| che si occupa di caricare il database grazie ai parametri memorizzati nel file \fil{database.php} nel percorso \sys{/application/config/} (si veda la sezione\vref{sec:accessodb}).
+
+La seconda parte del codice si occupa di recuperare le notizie dal database ``test'': d'altra parte è questo il compito del Model. All'interno del metodo \verb|get_news()| sono presenti due differenti query: una per ottenere tutte le notizie e la seconda per recuperarne una ben precisa, marcata dall'identificatore \var{slug}.
+
+Apriamo una piccola parentesi sulla sicurezza. Nella consueta programmazione ogni variabile usata come argomento per interfacciarsi con un database deve essere prima esaminata e ``messa in sicurezza'', come nel caso di \var{slug}. Utilizzando CodeIgniter non ci si dovra preoccupare di questi dettagli perché sarà lui stesso a curare questo aspetto per noi.
+
+Nota: una normale prassi nella programmazione ad oggetti e quella di chiamare i metodi che recuperano i dati con \var{get()}, mentre quelli che li modificano con \var{set()}. Il nostro metodo infatti si chiama infatti \verb|get_news()|) e rende subito chiara la sua funzione. Ci si abitui quindi a questa convenzione universalmente adottata.
+
+\subsection{Alias e auto-loading}
+\'E possibile specificare un nome che funga da alias per l'accesso alle funzioni del Model. Per esempio, le righe seguenti fanno si che venga definito un alias di nome \var{pippo} che sostituisca il vero nome del nostro Model quando se ne richiamano i metodi. Qui forniamo un esempio della definizione dell'alias \var{pippo} e l'istruzione per richiamarne una metodo.
+
+\begin{code}
+$this->load->model('nome_model', 'pippo');
+
+$this->pippo->function();
+\end{code}
+
+Altra possibilità offerta da CodeIgnition è che si preveda un Modello globale che si carichi automaticamente durante l'inizializzazione del sistema. \'E possibile definire il Modello in question configurando l'array \var{autolad} nel file \sys{/application/config/autoload.php}
+
+\subsection{Visualizzare le notizie}
+Ora che le query sono state realizzate, il Model deve essere collegato alle Viste: prepariamoci quindi a rappresentare su schermo le due notizie che abbiamo inserito nella tabella. Dovremo fare affidamento ad un Controller, ad una o più Viste e al layer di astrazione \emph{Active Record} incluso in CodeIgniter. Quest'ultimo è un potente strumento che interpreta le istruzioni per il database\footnote{Le query sono istruzioni per interfacciarsi con il database, per cancellare, memorizzare o richiedere i record} rendendole indipendenti dalla soluzione adottata per il progetto. Ritorneremo in seguito sull'argomento, ma Active Record permette in pratica di passare da un database mySQL ad uno completamente differente (che utilizza un altro set di istruzioni), senza che si verifichino incompatibilità o problemi di alcun tipo.
+
+Ritorniamo allo sviluppo del nostro progetto e precisamente alla definizione del Controller \var{News}:
+
+\begin{enumerate}
+\item Creiamo il file \fil{news.php} 
+\item Il file appena creato dovrà trovarsi nel percorso \sys{/application/controllers/}
+\item Inseriamo il codice del listato seguente
+\end{enumerate}
+
+\label{list:classnews}
+\begin{code}[Il controller News]
+<?php
+class News extends CI_Controller {
+
+	public function __construct()
+	{
+		parent::__construct();
+		$this->load->model('news_model');
+	}
+
+	public function index()
+	{
+	$data['news'] = $this->news_model->get_news();
+	}
+
+	public function view($slug)
+	{
+		$data['news'] = $this->news_model->get_news($slug);
+	}
+}
+\end{code}
+
+Il Controller non si limita a caricare ``solo'' il Modello con l'istruzione \\ \verb|$this->load->model('news_model')| ma in esso vengono definiti anche due metodi: \var{index()} e \var{view()}. Esaminiamoli.
+
+\begin{enumerate}
+\item index() è il metodo predefinito che caricherà tutte le notizie (al momento non è completo)
+\item view() ha un compito preciso: caricare solo una notizia tra tutte quelle memorizzate nel database. Questa sarà individuata dalla variabile \verb|$slug| che è l'indice con cui si è marcata ogni notizia
+\item I più attenti avranno notato che i due metodi descritti sono preceduti dal metodo costruttore \verb|__construct()|: il suo compito è richiamare il costruttore della classe padre \verb|CI_Controller| e caricare il modello, che potrà essere utilizzato per tutti i metodi definiti all'interno del Controller.
+\end{enumerate}
+
+Dopo aver definito lo ``scheletro'' della classe \var{News}, analizziamo meglio il metodo \var{index()} e definiamo la sua implementazione.
+
+\begin{code}[Completiamo il metodo index()]
+public function index()
+{
+	$data['news'] = $this->news_model->get_news();
+	$data['titolo'] = 'Lista delle notizie';
+
+	$this->load->view('header', $data);
+	$this->load->view('menu', $data);
+	$this->load->view('main', $data);
+	$this->load->view('footer');
+}
+\end{code}
+
+Il metodo contiene un array \var{data} con due indici \var{news} e \var{titolo}. Il primo assume tutti i valori delle notizie attraverso l'istruzione \verb|news_model->get_news()| di cui si occupa il Model, come abbiamo visto.
+
+Il \var{titolo} del medesimo array assume il valore di una stringa prefissata, ovvero il titolo della nostra pagina principale per cui abbiamo scelto un ben poco originale ``Lista delle notizie''.
+
+Le istruzioni successive caricano le Viste che compongono il nostro template (in alcune di esse viene passato anche l'array \verb|$data| per utilizzarne i dati memorizzati).
+
+\subsection{Visualizziamo tutte le notizie}
+Ora che abbiamo definito il Controller e il Modello \verb|News_model|, dobbiamo solo ridefinire le Viste per apprezzare il risultato di tutto questo duro lavoro. Apriamo il file della Vista creata in precedenza \fil{main.php} e inseriamo il codice:
+
+\begin{code}
+<?php foreach ($news as $news_item): ?>
+
+    <h2><?php echo $news_item['titolo'] ?></h2>
+    <div id="main">
+        <?php echo $news_item['testo'] ?>
+    </div>
+    <p><a href="news/<?php echo $news_item['slug'] ?>">
+    Visualizza la notizia</a></p>
+
+<?php endforeach ?>
+\end{code}
+
+Un primo risultato è visibile ricaricando la pagina
+\begin{code}
+http://127.0.0.1/codeignition/index.php/news/
+\end{code}
+
+Il Controller caricherà il metodo predefinito e visualizzerà tutta la lista delle notizie memorizzate nel database. 
+
+\subsection{Visualizziamo la notizia marcata}
+Per visualizzare solo una precisa notizia è stato previsto un indice definito dall'argomento \verb|$slug|. Definiamo la sua implementazione completando la funzione \verb|function view($slug)| nel Controller.
+
+\begin{code}
+public function view($slug)
+{
+	$data['news_item'] = $this->news_model->get_news($slug);
+
+	if (empty($data['news_item']))
+	{
+		show_404();
+	}
+
+	$data['titolo'] = $data['news_item']['titolo'];
+
+	$this->load->view('header', $data);
+	$this->load->view('menu', $data);
+	$this->load->view('unanews', $data);
+	$this->load->view('footer');
+}
+\end{code}
+
+Alcuni punti sono nuovi, vediamoli:
+
+\begin{enumerate}
+\item Viene effettuato un controllo preventivo. Se non esiste alcuna notizia con l'argomento passato \var{slug}, l'indice dell'array \verb|$data['news_item']| conterrà un valore nullo. La funzione \var{empty()} verifica proprio questo e nel caso la condizione non fosse soddisfatta, comparirà un messaggio di errore tramite \verb|show_404()|. 
+\item \verb|$data['titolo'] = $data['news_item']['titolo']| questa istruzione si riferisce ad un array bidimensionale. Viene caricato il titolo di ogni notizia identificata dall'indice \verb|news_item|
+\end{enumerate}
+
+Inoltre nella parte riguardante le Viste, si può osservare come ora venga richiamato un altro template, \var{unanews}. Creiamo quindi la vista \fil{unanews.php} e inseriamo le istruzioni per caricare la notizia identificata dal marcatore.
+
+\begin{code}
+<?php
+echo '<h2>'.$news_item['titolo'].'</h2>';
+echo $news_item['testo'];
+\end{code}
+
+In sintesi, se verrà fornito un argomento corrispondente ad un valore \verb|$slug| esistente, la notizia relativa verrà caricata. Se invece non viene fornito alcun argomento, verranno visualizzate tutte le notizie.
+
+\subsection{Routing}
+Per visualizzare anche le singole notizie è necessario apportare alcune modifiche al routing, creando un ``route'' extra per visualizzare il controller appena creato. Si apra il file \fil{route.php} nel percorso \sys{/application/config/} e nella sezione apposita si sostituiscano (o meglio si commentino) le righe esistenti con le seguenti:
+
+\begin{code}
+$route['news/(:any)'] = 'news/view/$1';
+$route['news'] = 'news';
+$route['(:any)'] = 'pages/view/$1';
+$route['default_controller'] = 'pages/view';
+\end{code}
+
+Si scriva nel browser l'indirizzo del controller e si ammiri il risultato ottenuto:
+
+\begin{code}
+http://127.0.0.1/codeigniter/index.php/news
+\end{code}
+
+\subsection{Inserire una notizia}
+Precedentemente le notizie sono state inserite tramite una istruzione SQL e anche se l'interfaccia di phpmyadmin è amichevole, esistono altri preferibili sistemi per memorizzare informazioni nel database. Uno di questi prevede l'uso di form, ovvero pagine con semplici interfacce per l'inserimento di input.
+Quindi se nella sezione precedente il nostro obiettivo è stato quello di ``leggere'' i record dalla base di dati, in questo nuovo capitolo dovremo ``scriverli''.
+
+\section{Creare un form}
+Innanzitutto creiamo una Vista con il codice per visualizzare il form, al percorso \sys{/application/views/} e chiamiamo il file \fil{creanews.php}. 
+
+Il form sarà composto da due campi, uno per il titolo ed uno per il testo. Rispetto a quanto visto prima, non si dovrà inserire il marcatore slug, in quanto svilupperemo un sistema per automatizzarne la creazione.
+
+Ecco il codice \ac{PHP}/\ac{HTML}
+
+\begin{code}
+<h2>Inserisci una notizia</h2>
+
+<?php echo validation_errors(); ?>
+
+<?php echo form_open('creanews') ?>
+
+	<label for="titolo">Titolo</label>
+	<input type="input" name="titolo" /><br />
+
+	<label for="testo">Testo</label>
+	<textarea name="testo"></textarea><br />
+
+	<input type="submit" name="invia" value="Crea una news" />
+
+</form>
+\end{code}
+
+Probabilmente sono due gli elementi che appaiono poco familiari. Il metodo \verb|form_open()| e \verb|validation_errors()|. Per il momento sappiate che il primo è un Helper che visualizza i campi del form e aggiunge funzionalità come un ``CSRF prevention field nascosto'' (si veda il capitolo\vref{sec:helperplugin}). Il secondo è utilizzato per visualizzare eventuali errori nell'inserimento di input anomali.
+
+\begin{deftab}{Validazione}{La validazione dei form è generalmente basato sulle Regex. Per esempio un form genererà un errore se si inserisce una email prima del caratteristico simbolo @}
+\end{deftab}
+
+Torniamo indietro al Controller \fil{news.php} e aggiungiamo il codice necessario a caricare gli Helper relativi al form (\verb|$this->load->helper('form');|) e la Libreria per la validazione dei form (\verb|$this->load->library('form_validation')|).
+
+\begin{code}
+public function creanews()
+{
+	$this->load->helper('form');
+	$this->load->library('form_validation');
+
+	$data['titolo'] = 'Inserisci una news';
+
+	$this->form_validation->set_rules('titolo', 'Titolo', 'required');
+	$this->form_validation->set_rules('testo', 'testo', 'required');
+
+	if ($this->form_validation->run() === FALSE)
+	{
+		$this->load->view('header', $data);
+		$this->load->view('creanews');
+		$this->load->view('footer');
+
+	}
+	else
+	{
+		$this->news_model->set_news();
+		$this->load->view('success');
+	}
+}
+\end{code}
+
+Le regole per la validazione del form vengono esplicitate tramite \verb|set_rules()| che prevede tre argomenti: il nome del campo dell'input, il nome da utilizzare nel messaggio di errore e la regola (nel nostro caso ``required'' significa ``obbligatorio'').
+
+\'E importante soffermarsi sull'istruzione condizionale: 
+
+\verb|if ($this->form_validation->run() === FALSE)|. 
+
+Che si può interpretare ``se la condizione per la validazione dell'input non verrà superata, il programma caricherà nuovamente la pagina'' (mediante le Viste che seguono). In caso contrario (istruzione condizionale \var{else}) verrà caricato il Modello, quindi sarà memorizzata la notizia (\verb|set_news()|) e una pagina confermerà il buon esito dell'operazione \var{view('success')}.
+
+Questo è solo un esempio della potenza messa a disposizione da CodeIgniter tramite la libreria di validazione. Maggiori informazioni sono disponibili al capitolo che tratta in dettaglio l'argomento (si veda la definizione di classe Form Validation\vpageref{class:formvalidation}).
+
+Creiamo una nuova Vista \fil{successo.php} nel percorso \sys{/application/view/news/} e scriviamo un confortante messaggio con il seguente codice:
+
+\begin{code}
+<h2><?php echo "Notizia creata correttamente" ?></h2>
+\end{code}
+
+\subsection{Infine il Modello}
+Ormai siamo ad un passo dal raggiungere l'obiettivo prefissato. L'unica cosa che manca è il metodo che memorizzi i dati inseriti nel database. Useremo la classe Active Record di CodeIgniter, per semplificare il procedimento. Si apra il Modello creato precedentemente e si aggiunga:
+
+\begin{code}
+public function set_news()
+{
+	$this->load->helper('url');
+
+	$slug = url_title($this->input->post('titolo'), 'dash', TRUE);
+
+	$data = array(
+		'titolo' => $this->input->post('titolo'),
+		'slug' => $slug,
+		'testo' => $this->input->post('testo')
+	);
+
+	return $this->db->insert('news', $data);
+}
+\end{code}
+
+Questo nuovo metodo provvede a memorizzare correttamente i dati nel database. Analizziamolo nel dettaglio. La terza linea contiene un nuova funzione \verb|url_title()| (fornita dall'Helper relativo agli URL) che sostituisce tutti gli spazi della stringa inserita come argomento, con dei simboli ``dash'' (-) e nel contempo, rende minuscolo ogni carattere della stringa. Questa è una funzione utilissima per creare degli \ac{URI} corretti da una stringa. Il risultato di questa funzione sarà assegnato alla variabile \verb|$slug|: ecco creato un indice automatizzato. Per evitare ambiguità ci si aspetta però che i titoli delle notizie siano tutti differenti.
+
+Attraverso l'istruzione \verb|$this->input->post| il titolo e il testo della notizia vengono memorizzati preventivamente nell'array \verb|$data|. Il metodo \var{post()} è fornito dalla Libreria input che svolge anche una funzione importante: rende sicuri i dati evitando che codice malevole possa essere memorizzato e richiamato come input di dati. La libreria input è, proprio per la sua importante funzione, caricata automaticamente dal framework. Alla fine tutti i campi dell'array \verb|$data| saranno inseriti correttamente nel database con l'istruzione \verb|db->insert();|
+
+\subsection{Routing}
+Prima di procedere, aggiungendo le notizie al database, è necessario modificare nuovamente il file \fil{routes.php} per prevedere appunto la rotta per la ``creazione di notizia'' (\var{creanews}). Riportiamo tutte le regole route per completezza:
+
+\begin{code}
+$route['news/creanews'] = 'news/creanews';
+$route['news/(:any)'] = 'news/view/$1';
+$route['news'] = 'news';
+$route['(:any)'] = 'pages/view/$1';
+$route['default_controller'] = 'pages/view';
+\end{code}
+
+Ora si punti il browser all'indirizzo:
+
+\begin{code}
+http://127.0.0.1/codeigniter/index.php/news/creanews
+\end{code}
+
+\label{sec:accessodb}
+\section{Connessione al database}
+Quando un Modello viene caricato, questo non permette una connessione automatica al proprio database, come già rimarcato in precedenza. Esistono tre possibili opzioni, che per completezza elenchiamo:
+
+\begin{enumerate}
+\item \'E possibile collegarsi usando i metodi standard forniti dalla classe del Controller o da quella del Modello (si veda i metodi standard\vref{sec:metodidb}).
+\item Si può richiamare il metodo che autocarica il modello con un argomento booleano TRUE. In questo modo, si recuperanno i dati di accesso al database da \sys{/application/config/config.php}
+
+\verb|$this->load->model('Nome_modello', '', TRUE);|
+
+\item \'E possibile passare manualmente i dati per l'accesso al database attraverso un terzo parametro, solitamente un array che contiene tutti i dati necessari:
+
+\begin{code}
+$config['hostname'] = "localhost";
+$config['username'] = "myusername";
+$config['password'] = "mypassword";
+$config['database'] = "mydatabase";
+$config['dbdriver'] = "mysql";
+$config['dbprefix'] = "";
+$config['pconnect'] = FALSE;
+$config['db_debug'] = TRUE;
+
+$this->load->model('Nome_modello', '', $config);
+\end{code}
+\end{enumerate}
+
+\subsection{Riepilogo}
+Congratulazioni, si è realizzata la prima applicazione con CodeIgniter sfruttando il patter \ac{MVC}, utilizzando il Controller, la View e interfacciandosi con un database grazie al Model. Nonostante l'utilizzo di un database sia opzionale, la semplicità di utilizzo e gli innumerevoli vantaggi che ne derivano dall'adozione lo rendono una scelta presente nella maggior parte dei progetti. Facilità di accesso ai dati, gestione semplificata e soprattutto la loro riusabilità in diversi contesti, fanno sì Model/database vengano utilizzati anche in semplici progetti. 
+
+Si è potuto dare un primo sguardo agli Helper e alle Librerie apprezzando la loro utilità e soprattutto la loro potenza in fatto di sicurezza e validazione dei dati. Anche la sintassi degli \ac{URI} utilizzata nel framework dovrebbe essere ormai più familiare.
+
+Abbiamo scalfito solo alcune potenzialità di CodeIgniter e non preoccupatevi se alcuni aspetti non sono ancora chiari. Nei prossimi capitoli ritorneremo con maggiori dettagli su molti aspetti sin qui introdotti.

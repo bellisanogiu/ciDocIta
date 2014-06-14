@@ -1,0 +1,47 @@
+%************************************************
+\chapter{Gestire le applicazioni}
+\label{cap:manage}
+%************************************************
+Per impostazione predefinita CodeIgniter gestisce solo un progetto alla volta, realizzato nel percorso \sys{/application/}. A volte però lo sviluppatore deve gestire diversi progetti contemporaneamente con una sola installazione del framework; in questo caso si può optare per rinominare o spostare la cartella \sys{/application/}.
+
+Se si intende rinominare la cartella \sys{/application/}, è necessario aprire il file \fil{index.php} e modificare il seguente parametro, specificando il nome desiderato.
+
+\begin{code}
+$application_folder = "application";
+\end{code}
+
+\'E possibile spostare la cartella in un differente percorso, agendo sempre sul \fil{index.php} e modificato il settaggio:
+
+\begin{code}
+$application_folder = "/Path/to/your/application";
+\end{code}
+
+\section{Pi\'u applicazioni alla volta}
+Se si desidera lavorare su più progetti utilizzando una sola installazione di CodeIgniter è necessario organizzare i propri progetti in sotto directory, ognuna delle quali conterrà un singolo progetto.
+
+Per esempio, nel caso si vogliano creare due applicazioni denominate ``foo'' e ``bar'', la struttura gerarchica delle proprie cartella sarà la seguente:
+
+\begin{code}
+applications/foo/
+applications/foo/config/
+applications/foo/controllers/
+applications/foo/errors/
+applications/foo/libraries/
+applications/foo/models/
+applications/foo/views/
+applications/bar/
+applications/bar/config/
+applications/bar/controllers/
+applications/bar/errors/
+applications/bar/libraries/
+applications/bar/models/
+applications/bar/views/
+\end{code}
+
+Per selezionare il progetto desiderato basterà, come spiegato precedentemente, agire sul file fil{index.php}. Per esempio, per selezionare l'applicazione ``foo'':
+
+\begin{code}
+$application_folder = "applications/foo";
+\end{code}
+
+Ogni applicazione ha bisogno del file \fil{index.php} che richiama il progetto associato.

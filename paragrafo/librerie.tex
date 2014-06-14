@@ -1,0 +1,328 @@
+%************************************************
+\chapter{Le Librerie}
+\label{cap:librerie}
+%************************************************
+
+Per gli anglofili le Libraries sono, come si evince dal nome stesso, delle ``raccolte'' di classi suddivise in categorie omogenee. Ogni Libreria viene in aiuto dello sviluppatore per lo svolgimento dei compiti più ripetitivi e meritevoli di grande attenzione come le classi per la gestione della posta elettronica l'upload e il download dei file, la criptazione o la validazione degli input nei form. Anche in questo caso, il vantaggio per lo sviluppatore, è che non si rende necessario conoscere l'implementazione delle classi, ma semplicemente la loro interfaccia pubblica.
+
+Le Librerie predefinite di CodeIgniter si trovano nel percorso \sys{/system/libraries/} mentre per caricarle nel nostro progetto sarà necessaria una funzione con la sintassi:
+
+\begin{code}
+$this->load->library('nome_classe');
+\end{code}
+
+La seguente istruzione per esempio carica la libreria con importanti classi per gestire la posta elettronica:
+
+\begin{code}
+$this->load->library('email');
+\end{code}
+
+Per caricare più raccolte di classi, si utilizza un array in cui si specificano le Librerie desiderate. Nell'esempio, verranno caricate nello stesso tempo, quelle dedicate alle \var{email} e alle \var{table} (tabelle).
+
+\begin{code}
+$this->load->library(array('email', 'table'));
+\end{code}
+
+Una volta caricata la Libreria, si potranno utilizzare le classi definite al suo interno per i più svariati compiti, secondo una sintassi comune del tipo:
+
+\begin{code}
+$this->nome_libreria->nome_funzione('argomento');
+\end{code}
+
+Quindi se si volesse inviare una email ad un preciso destinatario, si scriverà:
+
+\begin{code}
+$this->email->to('info@tuosito.com');
+\end{code}
+
+\begin{itemize}
+\item email. \'E il nome della Libreria precedentemente caricata
+\item to. \'E il nome della classe demandata ad individuare il destinatario dell'email
+\item info@tuosito.com. Ovviamente è l'argomento della nostra classe, ovvero colui che riceverà la missiva
+\end{itemize}
+
+Qui di seguito alcune delle classi più comuni della Libreria \var{email}, precedute dall'istruzione che, si tenga sempre a mente, deve precaricare tale Libreria.
+
+\begin{code}
+// Invio di una email con una Libreria di CodeIgniter
+
+// caricamento della Libreria per la gestione delle email
+$this->load->library('email');
+
+// mittente dell'email
+$this->email->from('mail@miosito.com', 'Giuseppe');
+
+// destinatario dell'email
+$this->email->to('info@tuosito.com');
+
+// indirizzi e-mail del destinatario in copia conoscenza
+$this->email->cc('posta@lorosito.com');
+
+// indirizzo e-mail del destinatario in copia conoscenza nascosta
+$this->email->bcc('max@boss.com');
+
+// oggetto dell'email
+$this->email->subject('Invio email con CodeIgniter');
+
+// testo del messaggio
+$this->email->message('Email inviata con la Library Email.');
+
+// invio del messaggio
+$this->email->send();
+\end{code}
+
+\section{Creare una Libreria}
+Il programmatore esperto, nonostante le numerose Librerie già presenti in CodeIgniter, potrebbe avere la necessità di crearne di nuove, o di estendere, sovrascrivere quelle esistenti. Chi lo desiderasse può sviluppare le proprie classi e riutilizzarle in futuri progetti.
+
+Per separare le Librerie del framework dalle proprie, si utilizzera il percorso \sys{/application/libraries/}, in cui verranno inserite quelle dell'utente. Esistono alcune convenzioni che è bene tenere presente nela sintassi delle Librerie:
+
+\begin{itemize}
+\item nomi dei file. Questa volta, contrariamente a quando avveniva con le View, Controller e Model, i file contenenti le classi devono avere l'iniziale maiuscola. Per esempio \fil{Nome-della-classe.php}
+\item le classi. Nel codice le classi saranno definite con la lettera iniziale maiuscola
+\item le estensioni. L'estensione del file sarà sempre ``.php''.
+\end{itemize}
+
+L'esempio seguente mostra un prototipo della sintassi utilizzata per la definizione di una classe:
+
+\begin{code}
+<?php 
+// controllo sul percorso della Library
+if (!defined('BASEPATH')) exit('No direct script access allowed');  
+
+// dichiarazione della classe
+class Nome_classe {
+  // funzione di classe
+  function funzione() {
+    // operazioni ed eventuale valore di ritorno
+    ...
+	}
+}
+?>
+\end{code}
+
+L'istruzione condizionale \emph{if} effettua una verifica sul percorso della Libreria e in caso di valore booleano ``FALSE'' interrompe l'accesso alle classi ivi definite.
+
+Ricordiamo che la propria Libreria andrà salvata in un percorso differente rispetto a quello previsto per le Librerie di CodeIgniter, ovvero:
+
+\sys{/application/libraries/}
+
+Le istruzioni per caricare la propria Libreria e invocare la relativa classe, rispettano la sintassi esaminata precedentemente:
+
+\begin{code}
+$this->load->library('nome_classe'); //carica la Libreria
+$this->nomeclasse->funzione(); //utilizza il metodo funzione()
+\end{code}
+
+Nota: il nome della Libreria, nel nostro caso \verb|nome_classe| può essere riportato tutto in minuscolo oppure con l'iniziale maiuscola: CodeIgniter non discrimina nessuno dei due sistemi. Quindi anche il seguente esempio è corretto.
+
+\begin{code}
+$this->load->library('Nome_classe'); // iniziale maiuscola
+\end{code}
+
+\section{Passaggio di parametri}
+Come ogni funzione/metodo che si rispetti, è possibile passare dei parametri\vref{sec:passaggio} al metodo della classe quando questa viene ``caricata'', come nell'esempio seguente:
+
+\begin{code}
+// Passaggio dinamico di variabili ad una Library personalizzata
+// definizione dei parametri sotto forma di array
+$parametri = array('tipo' => 'auto', 'colore' => 'giallo');
+
+$this->load->library('nome_classe', $parametri);
+\end{code}
+
+Dopo aver definito un array (nel nostro esempio con due indici e relativi valori), si carica la libreria \verb|nome_classe| a cui si passa l'array assegnato alla variabile \verb|$parametri|.
+
+Per utilizzare questo sistema, è però obbligatorio configurare la classe costruttore affinché questa possa ricevere i dati ``passati'':
+
+\begin{code}
+<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+
+class Nome_classe {
+
+    public function __construct($parametri)
+    {
+        // Qualcosa riferito ai $parametri
+    }
+}
+?>
+\end{code}
+
+Gli stessi parametri potranno comunque essere passati direttamente come argomento del metodo:
+
+\begin{code}
+// Passaggio dinamico di variabili alla funzione di classe
+function funzione($parametri) {
+  // operazioni ed eventuale valore di ritorno
+  ...
+}
+\end{code}
+
+Nota: è prevista anche un'ulteriore possibilità: passare i parametri attraverso un file di configurazione. Basta creare un file con lo stesso identico nome della classe contenuta all'interno e memorizzarlo nel percorso \sys{/application/config/}. Questo metodo non è utilizzabile per il passaggio dinamico di parametri.
+
+\section{Estensione e sovrascrittura}
+\'E possibile aggiungere delle nuove funzionalità alle Librerie di sistema, oppure sovrascriverle completamente, inserendo nel percorso \sys{/application/libraries/} la nostra implementazione con lo stesso ``identico'' nome.
+
+Se quindi creiamo una nostra personale Libreria per la gestione delle tabelle, basterà inserire il file \var{Table.php} con la definizione delle classi nel percorso \sys{/application/libraries}. In questo modo, sovrascriveremo la Libreria predefinita di CodeIgniter situata invece in \sys{/system/libraries/}.
+
+Riepilogando:
+
+\begin{itemize}
+\item \'E possibile creare una nuova, inedita Libreria
+\item \'E possibile estendere quelle native
+\item \'E possibile rimpiazzare quelle native
+\end{itemize}
+
+Nota: le classi del \emph{Database} sono la sola e unica eccezione tra le Librerie di CodeIgniter: esse non possono venire sovrascritte o estese.
+
+\section{Utilizzare le risorse di Codeigniter}
+Per accedere alle risorse native di CodeIgniter con le proprie librerie è necessario utilizzare il metodo \verb|get_instance()| che restituisce un super oggetto.
+
+Normalmente ogni funzione di CodeIgniter viene richiamata dal proprio Controller con il costrutto \verb|$this|. Per esempio:
+
+\begin{code}
+$this->load->helper('url');
+$this->load->library('session');
+$this->config->item('base_url');
+\end{code}
+
+Il costrutto \verb|$this|però, funziona solo all'interno dei propri Controller, Modelli, o Viste. Se invece si desiderano utilizzare le classi di CodeIgniter  dentro le proprie classi è necessario prima di tutto assegnare l'oggetto di CodeIgniter alla variabile:
+
+\begin{code}
+$CI =& get_instance();
+\end{code}
+
+Ora si utilizzerà \verb|$CI| al posto della variabile \verb|$this|.
+
+\begin{code}
+$CI =& get_instance();
+
+$CI->load->helper('url');
+$CI->load->library('session');
+$CI->config->item('base_url');
+\end{code}
+
+Nota: si noterà che la funzione di cui sopra \verb|get_instance()| viene passata per riferimento:
+
+\begin{code}
+$CI =& get_instance();
+\end{code}
+
+Questo è molto importante, perché utilizzando un'assegnazione per riferimento si può utilizzare l'originale oggetto di CodeIgniter piuttosto che una sua copia.
+
+\section{Sovrascrivere le Librerie native}
+Rinominando i nomi dei file delle proprie Librerie con quelle di CodeIgniter, si utilizzeranno le classi sviluppate al posto di quelle native del framework. Per esempio se si fosse sviluppata una propria Libreria per la gestione delle ``email'' basterà creare un file di nome \fil{Email.php}, inserirlo nel percorso \sys{/application/libraries/} e dichiararlo con la sintassi:
+
+\begin{code}
+class CI_Email {
+
+}
+\end{code}
+
+Nota: la maggior parte delle classi native hanno il prefisso \verb|CI_|.
+
+Per caricare le proprie Librerie basterà utilizzare la funzione consueta per il caricamento:
+
+\begin{code}
+$this->load->library('email');
+\end{code}
+
+Nota: come detto precedentemente la classe Database costituisce una eccezione: non può essere sostituita dalla propria versione.
+
+\section{Estendere le Librerie native}
+Per i più esigenti si possono introdurre nuove funzionalità non presenti in CodeIgniter, non sovrascrivendo l'intera Libreria, ma semplicemente estendendola. Vi sono solo due eccezioni:
+
+\begin{itemize}
+\item la dichiarazione della classe deve estendere quella del genitore
+\item  il nome della nuova classe e del file che la contiene devono avere il prefisso \verb|MY_| (questo aspetto è comunque configurabile)
+\end{itemize}
+
+Per esempio per estendere la Libreria \var{Email} è necessario creare il seguente file al percorso \verb|/application/libraries/MY_Email.php|
+
+\begin{code}
+class MY_Email extends CI_Email {
+
+}
+\end{code}
+
+Se si rende necessario l'uso di un costruttore, si può estendere quello genitore:
+
+\begin{code}
+class MY_Email extends CI_Email {
+
+    public function __construct()
+    {
+        parent::__construct();
+    }
+}
+\end{code}
+
+\section{Caricare una sottoclasse}
+Per caricare una propria sottoclasse, si dovrà usare una sintassi standard, senza utilizzare il proprio prefisso. Ad esempio, per caricare l'esempio precedente, che estende la classe Email, si utilizzerà:
+
+\begin{code}
+$this->load->library('email');
+\end{code}
+
+Una volta caricata, si utilizzerà la variabile di classe come si farebbe normalmente per la classe che si sta estendendo. Nel caso della classe email, per tutte le chiamate utilizzerà:
+
+\begin{code}
+$this->email->some_function();
+\end{code}
+
+\section{Configurare il prefisso}
+Se si desidera modificare il prefisso standard previsto da CodeIgniter, basta modificare il valore assegnato nel consueto file \fil{config.php} in \sys{/application/config/}
+
+\begin{code}
+$config['subclass_prefix'] = 'MY_';
+\end{code}
+
+\section{I Driver}
+I Driver sono delle ``speciali'' Librerie che possiedono una classe genitore e un, potenzialmente, infinito numero di classi figlie. La peculiarità di queste ultime è che possono accedere alla classe genitore, ma non a quelle dei ``fratelli''. I Driver, insomma, costituiscono una soluzione elegante per ripartire la gestione delle Librerie in classi discrete.
+
+I Driver si trovano in \sys{/system/libraries/}, all'interno di una Cartella il cui nome è identico alla classe della Libreria genitore. All'interno di questa cartella vi è una sottocartella denominata \sys{drivers}, che contiene tutte le sottoclassi figlio (si veda la struttura gerarchica\vpageref{lst:driver})
+
+Per utilizzare un Driver, è necessario inizializzarlo con un Controller, con la seguente funzione:
+
+\begin{code}
+// class_name è il nome della classe driver da invocare
+$this->load->driver('class_name'); 
+\end{code}
+
+Se si desidera caricare un Driver di nome "Alcuni genitori" si dovrà utilizzare la funzione:
+
+\begin{code}
+// alcuni_genitori è il nome della classe driver da invocare
+$this->load->driver('some_parent');
+\end{code}
+
+I metodi di una classe saranno invocati:
+
+\begin{code}
+$this->some_parent->alcuni_metodi();
+\end{code}
+
+Le classi figlio, possono richiamarli direttamente attraverso la classe genitore, senza iniziarli:
+
+\begin{code}
+$this->some_parent->child_one->alcuni_metodi();
+$this->some_parent->child_two->altro_metodo();
+\end{code}
+
+\label{lst:driver}
+\section{Creare un Driver}
+Qui di seguito si mostra un esempio della struttura gerarchica del Driver:
+
+
+\begin{code}[Driver: struttura gerarchica]
+/application/libraries/Nome_driver
+	Nome_driver.php
+	drivers
+		Nome_driver_sottoclasse_1.php
+		Nome_driver_sottoclasse_2.php
+		Nome_driver_sottoclasse_3.php
+\end{code}
+
+Nota: per mantenere la compatibilità nella struttura (i nomi sono case-sensitive) è consigliato utilizzare per \verb|Nome_driver| il metodo \var{ucfirst()} che rende l'iniziale maiuscola.
+
+\section{Riepilogo}
+Abbiamo esaminato le Librerie, potenti raccolte di funzioni messe a disposizione da CodeIgniter per gestire molti elementi del nostro progetto come le operazione di una email o la validazione dei campi di un forum, liberando da queste incombenze il programmatore. I Driver sono anch'esse delle Librerie con delle peculiarità importarti. \'E anche possibile sviluppare le proprie Librerie, aggiungere o ridefinire le classi in modo da personalizzare gli ``attrezzi di lavoro'' con una sola limitazione: la propria fantasia.

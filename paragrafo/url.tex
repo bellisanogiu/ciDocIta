@@ -1,0 +1,80 @@
+%************************************************
+\chapter{URL di CodeIgniter}
+\label{cap:urlr}
+%************************************************
+
+Nel capitolo in cui si è introdotto per la prima volta il Controller (vedi sezione\vref{sec:controller}) si è accennato alla gestione degli \ac{URL} in CodeIgniter e a come essi vengono rappresentati.
+
+Lo schema generale adottato da CodeIgniter può essere scomposto nei seguenti elementi:
+
+\sys{miosito.com/[controller]/[metodo]/[argomenti]}
+
+\begin{description}
+\item [miosito.com] è l'indirizzo della nostra macchina remota o server locale
+\item [controller] è la classe principale che viene invocata per instradare la nostra richiesta
+\item [metodo] rappresenta la funzione svolta dal Controller 
+\item [argomenti] (facoltativi) sono le variabili che vengono passati al metodo
+\end{description}
+
+\section{Gestione degli URL}
+Un aspetto peculiare dei moderni framework, a cui CodeIgniter non fa eccezione, è la gestione semplificata degli \ac{URL}, ovvero degli indirizzi che caratterizzano il proprio progetto e che vengono visualizzati nella barra del browser web. Chi ha un po' di dimestichezza con la programmazione \ac{PHP} e la gestione dei parametri, sa bene che molti indirizzi verranno visualizzati nel formato:
+
+\begin{code}
+http://www.miosito.com/cartella/val1=pippo&val2=pluto
+\end{code}
+
+Dove  ``val1'' e ``val2'' rappresentano due variabili dal valore, rispettivamente di ``pippo'' e ``pluto''. Indirizzi di questo tipo, sono consuetudine nel web, sopratutto nei siti commerciali o nei motori di ricerca (si osservi a tal proposito la barra del browser dopo aver effettuato una ricerca su Amazon o Google ). Gli indirizzi di questo tipo, definiti ``query string'' sono però suscettibili di qualche critica.
+
+\begin{itemize}
+\item non sono mnemonici: questo è un dato di fatto
+\item vengono visualizzati i nomi delle variabili e i loro valori: questo rende il sito meno impenetrabile. Anche se le comuni regole di sicurezza risolvono questo genere di lacune, sul web è sempre meglio precludere ai malintenzionati il maggior numero di informazioni sensibili
+\end{itemize}
+
+In virtù di quanto esposto sopra, CodeIgniter utilizza un sistema di gestione degli \ac{URL} che è nel contempo sia \emph{search-engine friendly} (ottimizzato per l'indicizzazione e il posizionamento delle pagine nei motori di ricerca), sia \emph{human friendly} (semplice da ricordare e digitare per gli utenti). Come funziona questo sistema? Semplice, gli \ac{URL} basati sul sistema querystring vengono riscritti basandosi sulla loro ``segmentazione''. In parole povere, le variabili e i loro parametri diventano meno espliciti all'utente, e ogni \ac{URL} è suddiviso in ``\'' (slash). Questa prassi rende ogni indirizzo più contenuto, facile da ricordare e soprattutto renderà meno gravoso il lavoro SEO per l'indicizzazione del sito nei principali motori di ricerca.
+
+\section{Abilitare le Query String}
+Se quanto detto sinora non vi convincesse, potete abilitare la gestione degli \ac{URL} mediante query string, disabilitando quella che CodeIgniter vi propone di default.
+
+\begin{codef}[Esempio di URL basato su query string]
+index.php?c=prodottis&m=view&id=345
+\end{codef}
+
+\'E sufficiente modificare il file \fil{config.php} e modificare alcune variabili all'interno:
+
+\begin{code}[Esempio di URL basato su query string]
+$config['enable_query_strings'] = TRUE; // per abilitare le query string
+$config['controller_trigger'] = 'c';
+$config['function_trigger'] = 'm';
+\end{code}
+
+Nota: utilizzando gli url sotto forma di query string si dovrà prestare attenzione all'utilizzo degli Helper per la generazione degli \ac{URI}, tenendo conto della soluzione adottata.
+
+\section{Aggiungere un suffisso URL}
+\'E possibile aggiungere un suffisso alla parte terminale degli \ac{URL} generati, modificando la sezione \var{URL suffix} del file \fil{config.php} che, ricordiamo si trova al percorso \sys{/application/config/} . 
+
+La stringa vuota \verb|$config['url_suffix'] = '';| può essere valorizzata, per esempio, con ``.html'' in modo da cambiare un indirizzo da: 
+
+\verb|tramutare http://mioSito.com/index.php/pages/news/1| 
+
+in:
+
+\verb|http://mioSito.com/index.php/pages/news/1.html|
+
+
+\section{Un file index di troppo}
+Trattando un altro aspetto degli indirizzi, è possibile notare come CodeIgniter inserisca all'interno del path, la stringa \sys{index.php}. Nel caso si desideri eliminare questa informazione dal percorso, si renderà necessario modificare il file \fil{.htaccess}. 
+
+Nell'esempio seguente si utilizza un metodo ``negativo'' con cui ogni cosa viene reindirizzata eccetto gli elementi specificati: index.php, immages e robot.txt.
+\begin{code}
+RewriteEngine on
+RewriteCond $1 !^(index\.php|images|robots\.txt)
+RewriteRule ^(.*)$ /index.php/$1 [L]
+\end{code}
+%
+%Successivamente, bisognerà editare nuovamente il file \fil{config.php} in questo modo:
+%
+%\begin{code}
+%$config['index_page'] = "";
+%\end{code}
+%
+%Queste piccole modifiche permettono di nascondere nella barra degli indirizzi, la stringa \sys{index.php}, sempre che questa sia tra le vostre priorità, si intende.

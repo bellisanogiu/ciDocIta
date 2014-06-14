@@ -1,0 +1,140 @@
+\chapter{Il framework}
+In questo capitolo vengono presentate le idee di fondo e le peculiarità che sono alla base di ogni framework, con particolare attenzione al tool CodeIgniter, che verrà utilizzato in tutti gli esempi di questa guida, e nella realizzazione dei progetti presentati.
+
+\section{Un framework non serve}
+Questa titolo può apparire fuori luogo, ma anche doveroso: è necessario comprendere che ogni strumento offre dei vantaggi se usato nell'appropriato contesto. I tool di sviluppo sono spesso complessi, articolati in sottoprogrammi (plugin) e nonostante siano di aiuto in innumerevole situazioni, risultano onerosi per la realizzazione di un piccolo sito web che magari non si interfaccia neppure con un database. Certo, nessuno ci vieta di utilizzarlo comunque, così come nessuno ci proibisce di sollevare un barattolo di marmellata con un carrello elevatore. 
+
+Elenchiamo pertanto i motivi per cui un framework è ``eccessivo'':
+
+\label{sec:svantaggi}
+\begin{itemize}
+\item progetto composto da poche pagine
+\item mancanza di un database integrato
+\item sito statico con codice che non verrà utilizzato in seguito
+\end{itemize}
+
+Queste sono alcune linee di massima, e certamente ogni progetto è un caso a se stante su cui è sempre arduo generalizzare. In tutti i casi, padroneggiare un framework non risulterà mai un'esperienza negativa, anzi arricchirà le proprie conoscenze informatiche, consentendovi di fare gli sbruffoni con i vostri colleghi, e ovviamente rimorchiare più facilmente il gentil sesso. Forse qui, abbiamo esagerato.
+
+\label{sec:vantaggi}
+\section*{Perch\'e usare un framework}
+Originalità a parte nella scelta dei titoli, l'uso di un tool di sviluppo ha indubbi vantaggi come quello di potersi dedicare ad un progetto non banale, senza rischiare di affogare sotto una miriade di problematiche comuni: ``come si chiama quella funzione che ho creato tempo addietro? perché il metodo sviluppato ieri, ora non funziona più? Eppure non ho toccato nulla (o quasi).'' Queste sono alcune delle frasi che, chi ha scritto anche poche righe di codice, si è ritrovato prima o poi a pronunciare, magari con gli occhi levati al cielo. L'utilizzo di un framework è di notevole aiuto in questi frangenti, senza contare un'ampia scelta di moduli esterni già pronti per la validazione dei dati, la creazione di form o la gestione di un database: insomma, si eviterà di reinventare la ruota, ad ogni nuovo prodotto sviluppato. L'utilizzo di un framework non è certamente la panacea di tutti i mali, ma una volta che si padroneggerà la filosofia che vi è alla base, unita alla necessaria pratica, sarà impossibile tornare indietro: questa è una promessa.
+
+\section*{Un'ampia scelta}
+Anche se in questa guida analizzeremo le funzionalità del prodotto di EllisLab, sappiate, che non esiste un solo prodotto per lo sviluppo e ciò è sempre un bene. Anche se le differenze tra i framework possono essere più o meno marcate, non si deve mai dimenticare lo scopo per cui vengono utilizzati: semplificare l'architettura e lo sviluppo di un progetto complesso. Detto questo, ogni framework adatto allo scopo è consigliato. Nel panorama attuale la scelta è molto vasta per funzionalità, complessità di apprendimento e performance. Ovviamente non esiste un prodotto migliore di un altro in senso assoluto, così come non esiste quello peggiore. \'E pressoché impossibile racchiudere in un solo prodotto tutti i pregi possibili: basta immaginare che quello più ricco di funzioni, è solitamente più complesso da apprendere, meno veloce e spesso sovrastimato alle proprie reali esigenze. Comunque non spaventatevi, una volta appresa la filosofia alla base dello sviluppo moderno e fatto pratica con CodeIgniter sarà quasi indolore utilizzare, se lo vorrete, un altro tool di sviluppo: molti aspetti sono infatti ampiamente condivisi:
+
+\begin{itemize}
+\item paradigma ad oggetti
+\item pattern architetturale \ac{MVC}
+\item utilizzo dei sistemi di \ac{ORM}
+\item supporto all'i18n (ovvero multilingua)
+\end{itemize}
+
+Qui di seguito si illustreranno, senza la pretesa di essere esaustivi, le principali proposte sul mercato. Si rimarca nuovamente che la definizione di framework migliore o peggiore  è errata: esiste il framework adatto al proprio progetto.
+
+\begin{itemize}
+\item CodeIgniter v2. \'E il framework preso come riferimento in questa guida. Non è il più completo o il più utilizzato, ma nel suo arco ha molte frecce. Prima di tutto è leggero e veloce e, aspetto importante per chi muove i primi passi, è molto più amichevole rispetto ai suoi concorrenti. 
+\item Symfony v2. \'E utilizzato per progetti di grandi dimensioni e risulta complesso da installare, configurare e apprendere nelle sue più piccole sfaccettature. Si tratta comunque di uno dei principali tool di sviluppo utilizzati nelle grandi aziende.
+\item Yii Framework v.1. La sua popolarità è in continuo crescendo per via di una curva di apprendimento meno ripida rispetto a Symfony e Zend. Incorpora il meglio dei punti chiave di Rails.
+\item Zend Framework v1. Può essere definito come il framework di sviluppo accademico. Insieme a Symfony risulta essere il tool più complesso da apprendere, ma anche quello più utilizzato in ambito commerciale. Richiede una conoscenza ottima del \ac{PHP} e \ac{OOP}. 
+\item CakePHP. Utilizzato in progetti dalle piccole-medie dimensioni è attualmente uno dei framework più apprezzati dagli sviluppatori.
+\end{itemize}
+
+\section*{CodeIgniter: l'obiettivo}
+CodeIgniter è un Application Development Framework ovvero un toolkit per ``persone che costruiscono siti web utilizzando \ac{PHP}''. Il suo scopo è consentire lo sviluppo di progetti più velocemente rispetto a quello che si potrebbe fare scrivendo il codice da zero. Questo grazie ad una ricca dotazione di librerie già pronte per gli usi più comuni, tra l'altro facilmente accessibili grazie ad una semplice interfaccia e ad una struttura logica che permette l'accesso a queste librerie. CodeIgniter consente di concentrarsi sul proprio progetto, minimizzando il codice necessario al suo sviluppo ed evitando di reinventare ``la ruota''.
+
+\section*{A chi si rivolge}
+CodeIgniter è consigliato a quelle persone che:
+
+\begin{itemize}
+\item desiderano un framework dalle piccole dimensioni
+\item necessitano di performance eccezionali
+\item hanno bisogno di compatibilità con gli account di host che utilizzano varie configurazioni di \ac{PHP}
+\item desiderano utilizzare un framework che richiede una configurazione minima
+\item desiderano un tool che non necessita di comandi impartiti da linea di comando
+\item vogliono utilizzare un framework che non utilizza codice dalle regole restrittive
+\item non desiderano imparare un linguaggio di template, anche se uno di questi è utilizzabile opzionalmente
+\item desiderano evitare soluzioni complesse a favore di quelle più immediate
+\item necessitano di una documentazione chiara ed esaustiva
+\end{itemize}
+
+\section*{I punti di forza}
+Le caratteristiche salienti di CodeIgniter sono anche i suoi punti di forza che lo distinguono dalle altre proposte sul mercato.
+
+\begin{itemize}
+\item CodeIgniter è gratuito
+\item CodeIgniter possiede una licenza Apache/BSD-style open source che lo rende fruibile da chiunque. Per maggiori informazioni si visioni il contratto di licenza
+\item CodeIgniter è leggero. Il suo core system richiede solo poche piccole librerie. Ciò è in netto contrasto con molti altri framework che richiedono molte più risorse. Librerie aggiuntive possono essere caricate dinamicamente, su richiesta, in base alle proprie esigenze
+\item CodeIgniter è veloce. Probabilmente in questo campo non ha rivali
+\item CodeIgniter usa \ac{MVC}. Questo pattern architetturale consente la separazione tra logica e presentazione, aspetto fondamentale per i progetti in cui più persone dalle differenti competenze lavorano sulle stesse porzioni di codice
+\item CodeIgniter genera \ac{URL} puliti e rivolti alla facile indicizzazione da parte dei motori di ricerca. Invece di utilizzare il metodo standard ``query string'' per gli \ac{URL} che è sinonimo di sistemi dinamici, CodeIgniter utilizza un approccio basato sui segmenti come nell'indirizzo qui riportato (si veda il capitolo\vref{cap:uri}):
+
+\begin{code}
+esempio.com/news/articolo/345
+\end{code}
+
+Nota: Per impostazione predefinita, il file \fil{index.php} è incluso nell'\ac{URL}, ma può essere rimosso utilizzando semplicemente un file \fil{.htaccess} (vedi capitolo\vref{cap:sicurezza}).
+
+\item CodeIgniter è ricco di librerie. Esso viene fornito con una gamma completa di strumenti che consentono le attività di sviluppo web più comuni, come l'accesso a un database, l'invio di email, la convalida dei dati di un form, la gestione delle sessioni, la manipolazione delle immagini, l'utilizzo dei dati \ac{XML-RPC} e molto altro. Conseguenza di ciò, CodeIgniter evita la necessità di dover utilizzare librerie esterne per l'integrazione di funzioni addizionali come per esempio \ac{PEAR}
+\item CodeIgniter è estendibile. Il sistema può essere facilmente esteso mediante l'uso delle proprie librerie, helper, o attraverso le estensioni di classe o gli Hook
+\item CodeIgniter non richiede un engine di template. Sebbene un apposito engine sia presente, quest'ultimo può essere utilizzato opzionalmente (si veda il capitolo\vref{cap:script})
+\item CodeIgniter è ben documentato. I programmatori amano scrivere il codice ma odiano preparare la documentazione. CodeIgniter è caratterizzato da un codice sorgente estremamente pulito e ben commentato oltre che da una documentazione chiara e agevole
+\item CodeIgniter ha una comunità amichevole. Il forum presente sul sito ufficiale costituisce il punto di ritrovo di appassionati che amano confrontarsi e aiutarsi nella risoluzione delle problematiche più comuni
+\end{itemize}
+
+\section*{Peculariet\'a tecniche}
+L'elenco delle caratteristiche di un software è ritenuto da alcuni come un modo molto superficiale per giudicare un'applicazione in quanto non fornisce alcuna informazione sull'esperienza d'uso, sull'intuitività con cui è stata progettato oppure sulla qualità del codice, le performance, l'attenzione per i dettagli e le metodologie utilizzate per la sicurezza. L'unica strada per giudicare realmente una applicazione è utilizzarla. Installare CodeIgniter è un gioco da ragazzi, quindi si incoraggia a fare proprio questo. Per i più impazienti, ecco un elenco delle caratteristiche principali del framework:
+
+\begin{itemize}
+\item Sistema basato sul pattern \ac{MVC}
+\item Estremamente leggero
+\item Ricco di classi di database con il supporto per diverse piattaforme
+\item Supporto per gli Active Record
+\item Validazione dei form e dei dati
+\item Filtri per la sicurezza e \ac{XSS}
+\item Gestione delle sessioni
+\item Classe per l'invio delle email. Supporto per gli allegati, email \ac{HTML}/testuali, protocolli multipli (sendmail, \ac{SMTP}, Mail) e altro
+\item Librerie per la manipolazione delle immagini (taglio, ridimensionamento, rotazione, ecc) Supporto per \ac{GD}, ImageMagick e NetPBM
+\item Classe per l'upload dei file
+\item Classe per l'\ac{FTP}
+\item Localizzazione
+\item Paginazione
+\item Crittografia dei dati
+\item Benchmarking
+\item Full page caching
+\item Registrazione degli errori
+\item Profilazione
+\item Classe Calendario
+\item Classe User Agent
+\item Classe Zip Encoding
+\item Classe Engine dei template
+\item Classe Trackback
+\item Libreria \ac{XML-RPC}
+\item Classe Unit Testing
+\item \ac{URL} amichevoli per i motori di ricerca
+\item Supporto flessibile per il routing \ac{URI}
+\item Supporto per gli Hook e le Estensioni delle classi
+\item Vasta libreria di funzioni Helper
+\end{itemize}
+
+\section{Design e architettura}
+L'obiettivo di CodeIgniter è quello di massimizzare le performance, la qualità e la flessibilità, pur impegnando il minor numero di risorse possibile lato server. Per raggiungere questo obiettivo ci si è impegnati nel benchmark, re-fatoring e nella semplificazione di ogni fase del processo di sviluppo, tralasciando ogni aspetto non è utile a tale scopo. Dal punto di vista tecnico, CodeIgniter è stato sviluppato con i seguenti obiettivi:
+
+\begin{itemize}
+\item Istanze dinamiche. I componenti sono caricati e le routine vengono eseguite solo quando richieste, piuttosto che globalmente. Nessuna risorsa viene allocata in anticipo, se non quando effettivamente necessaria. Per questo, il sistema è molto leggero. Gli eventi sono innescati dalle richieste \ac{HTTP} mentre i Controller e le Viste, determineranno ciò che verrà prodotto e visualizzato.
+\item Loose Coupling. Questo termine, che si può tradurre in ``legami deboli'', viene usato per indicare il grado con cui i componenti di un sistema sono legati l'uno all'altro. Minore è il numero di componenti che dipendono da altri, maggiore sarà la riusabilità e la flessibilità del sistema. L'obiettivo è quello di avere un sistema con un grado di Coupling minimo.
+\item Component Singularity. La Singularity è il grado con cui i componenti hanno uno scopo ben preciso. In CodeIgniter ogni classe e ogni sua funzione sono altamente indipendenti per consentire la massima utilità.
+\end{itemize}
+
+In definitiva si può affermare che CodeIgniter è un sistema istanziato dinamicamente, con un grado di coupling basso e un alto grado di specificità. Esso si sforza di essere semplice, flessibile e potente in un package dalle minime dimensioni.
+
+\section*{Licenza}
+CodeIgniter è gratuito, o meglio open source, ciò significa che potrà essere utilizzato e modificato liberamente sulla base delle esigenze delle diverse applicazioni che si desidera realizzare; i soli vincoli da rispettare sono quelli relativi alla \copyl{licenza Apache/BSD-style} che protegge il prodotto.
+
+\subsection*{Autori}
+CodeIgniter è stato sviluppato originariamente da \copyl{Rick Ellis} (CEO di EllisLab, Inc). Il framework è stato scritto per ottenere le migliori prestazioni con diverse classi di librerie, helper, e sottosistemi presi in prestito dal codice base delle ExpressionEngine. Il suo attuale sviluppo e mantenimento avviene grazie al team di \copyl{ExpressionEngine} e a tutti i volontari selezionati con cura dal \copyl{Team Reactor}, che contribuiscono direttamente alla sua evoluzione. Gli autori ci tengono a ringraziare \copyl{Ruby on Rails} per averli ispirati nella realizzazione di un tool di sviluppo \ac{PHP}, e aver contribuito a diffondere nella comunità web la coscienza del framework.
+
+\begin{deftab}{Ruby on Rails}{Spesso chiamato RoR o semplicemente Rails, è un framework open source per applicazioni web scritto in Ruby da David Heinemeier Hansson per conto della 37signals la cui architettura è ispirata al paradigma Model-View-Controller: \url{http://rubyonrails.org/}}
+\end{deftab}
+
+\section{Riepilogo}
+\'E stata fornita una panoramica sulle peculiarità  di un framework e sui vantaggi che la sua adozione fornisce. Per progetti che non prevedono connessioni ad una base di dati, e che sono costituiti da poche pagine, magari statiche, l'utilizzo di CodeIgniter, ma anche di un qualsiasi altro framework, risulta inutilmente dispendioso. Imparare a padroneggiare un tool di sviluppo però, espande notevolmente le proprie conoscenze in materia di sviluppo, sicurezza e pianificazione del proprio lavoro.

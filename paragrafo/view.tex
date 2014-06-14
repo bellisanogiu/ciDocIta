@@ -1,0 +1,285 @@
+%************************************************
+\section{La View}
+\label{cap:view}
+%************************************************
+
+La View, o comunemente chiamata Vista, costituisce l'informazione finale che viene mostrata all'utente. Essa solitamente si identifica con una pagina web, ma il concetto è decisamente più ampio: in CodeIgniter una Vista può anche essere solo un frammento di una pagina come un header o un footer. Anche i formati possono essere i più disparati, \ac{HTML}, \ac{PHP}, \ac{RSS} o ogni altro formato di pagina.
+
+\section*{Introduzione}
+La Vista costituisce il tassello ``visuale'' del pattern \ac{MVC}. La sua funzione è quella di rappresentare il nostro progetto in un formato testuale come \ac{HTML} o un altro linguaggio di markup. Ovviamente tra i vantaggi nell'utilizzo della Vista, valgono le considerazioni esposte in precedenza come la ``separazione'' della logica dalla presentazione. Questo permette di massimizzare l'efficienza nello sviluppo di un progetto web, minimizzando gli inconvenienti dovuti ad una sovrapposizione delle competenze tra programmatori e designer. L'utilizzo del pattern \ac{MVC}, e nel caso specifico delle View fa sì che i designer possano concentrarsi su specifici file, su cui sviluppare le proprie competenze.
+
+La creazione delle View è estremamente semplice, modulare, e flessibile. \'E importate però tenere a mente alcuni concetti:
+
+\begin{itemize}
+\item una View non può essere chiamata direttamente tramite un \ac{URL}: la loro gestione è demandata ai Controller
+\item la View si trova nel percorso \sys{/application/views/}
+\item è possibile prevedere un ordinamento gerarchico articolato con View che richiamano altre View
+\item molti framework consentono l'utilizzo di ulteriori linguaggi di scripting per ridurre l'impatto dell'eventuale codice di programmazione
+\end{itemize}
+
+\section*{Semplificare tramite scripting}
+I template, anche quando sono prodotti tramite una View, contengono spesso all'interno codice in \ac{PHP}, o altri linguaggi, che rendono meno netta la separazione tra presentazione e logica. Proprio per questo è possibile adottare degli ulteriori linguaggi che interpretano, per esempio, il \ac{PHP} e producono un codice dello stesso valore semantico ma più chiaro e conciso: in questo modo si realizza il sogno del designer che si ritroverà l'eventuale codice \ac{PHP}, Javascript, ecc, circoscritto in blocchi a se stanti, incapaci di generare confusione.
+
+Ci sono però anche risvolti negativi. \'E necessario apprendere un nuovo linguaggio di scripting, che per quanto chiaro e semplice, va comunque padroneggiato. Ogni framework ha un diverso approccio allo scripting delle View e questo perché manca uno standard comune. Inoltre le performance del progetto risentono della natura interpretata di questo codice. Insomma, l'adozione o meno di un codice di scripting ha numerosi vantaggi, ma anche degli aspetti da ponderare. Per fortuna il suo utilizzo è opzionale, per questo lo introdurremo in uno dei capitoli successivi (si veda la sezione\vref{cap:script}).
+
+La prima View verrà realizzata creando nel percorso \sys{/application/view/} il file \fil{lista.php}. Il codice utilizzato è un elementare \ac{HTML} e dovrebbe risultare facilmente comprensibile:
+
+\label{list:template}
+\begin{html}
+<html>
+<head>
+<title>Primo progetto con CodeIgniter</title>
+</head>
+<body>
+<h1>Lista delle notizie principali</h1>
+realizzata da TizioCaio 2014
+</body>
+</html>
+\end{html}
+
+Questa Vista, quando richiamata da un Controller tramite il browser, produrrà una pagina dal titolo ``Primo progetto con CodeIgniter'' e un testo principale ``Lista delle notizie principali''.
+
+\section*{Siamo pronti a visualizzare}
+La View, come precedentemente detto, non può essere processata autonomamente, ma deve essere richiamata da uno specifico Controller (se volete sincerarvene voi stessi, provate a caricare dalla barra degli indirizzi la Vista \fil{lista.php}). Si apra nuovamente il file \fil{pages.php} in \sys{/application/controller} creato precedentemente e si aggiunga il codice per richiamare questa View:
+
+\begin{code}
+$this->load->view('lista'); // senza estensione .php
+\end{code}
+
+Riportiamo il codice di tutto il Controller \fil{pages.php} precedentemente sviluppato e apportiamo la modifica.
+
+\begin{code}
+<?php
+class Pages extends CI_Controller {
+	public function index()
+	{
+		$this->load->view('lista');
+	}
+
+	public function view($page = 'home')
+	{
+		echo "Ciao! Ti trovi nella sezione $page";
+	}
+}
+\end{code}
+
+L'istruzione che abbiamo introdotto, carica (\var{load}) la Vista denominata ``lista'' attraverso il metodo \var{view()}(il file effettivo comprenderà anche l'estensione ``.php'', ma nel codice questa si omette.
+
+\section*{La potenza della View}
+La nostra classe \var{Pages} ora è costituita da due metodi. Il primo (index) è quello che viene richiamato automaticamente, se non si specifica alcuna funzione: carica la Vista \var{lista} che si trova in un file separato. Il secondo metodo, invece, è l'esempio riportato\vpageref{list:primocontroller} che visualizza sempre un testo, ma senza alcun rimando ad una Vista, e quindi ad un file esterno. Anche se questa pratica è consentita e spesso utilizzata, si consiglia di abituarsi all'utilizzo delle View che permettono di sfruttare appieno le potenzialità del pattern \ac{MVC}.
+
+Le pagine di un sito sono suddivide generalmente in poche componenti principali, che soventemente si ripetono. Sarebbe quindi molto comodo, poter ``riciclare'' parte del codice, velocizzando lo sviluppo. Le parti di un sito sono generalmente:
+
+\begin{itemize}
+\item header. La testata di un sito, che comprende il logo aziendale e il richiamo a librerie javascript, file \ac{CSS}, ecc. Generalmente rimane immutata in tutto il sito, ed è quindi un elemento che sarebbe consigliato riutilizzare
+\item menu. Il menu di navigazione. Anche questo template rimane inalterato in tutto il sito
+\item main. \'E la parte principale che contiene le informazioni da proporre al visitatore. Questa pagina risulterà, per ovvie ragioni, sempre differente a seconda della sezione visitata
+\item footer. La parte finale di ogni pagina, ovvero quella sezione che contiene il copyright, la data, ed eventuali informazioni sull'indirizzo dell'azienda o i contatti. Anche questo template non è soggetto a variazioni ed è altamente riciclabile
+\end{itemize}
+
+\section*{Suddividiamo il template}
+Ora che abbiamo dimestichezza con i Controller e le View, suddividiamo la nostra pagina precedentemente preparata (vedi\vpageref{list:template}) in elementi distinti e riutilizzabili. Realizziamo quindi le View nel percorso \sys{/application/view/} con il seguente codice:
+
+\textbf{Header}. Il codice \ac{HTML} della nostra testata.
+
+\begin{html}
+<html>
+<head>
+<title>Primo progetto con CodeIgniter</title>
+</head>
+<body>
+\end{html}
+
+\textbf{Menu}. Un menu contestuale per accedere agevolmente alle sezioni del progetto. Al momento ne abbiamo previsto tre: la prima visualizzerà tutte le notizie, la seconda permetterà di inserire nuove informazioni e l'ultima pagina visualizzerà i contatti aziendali.
+
+\begin{html}
+<nav>
+	<a href="#">Notizie</a>
+	<a href="#">Inserimento</a>
+	<a href="#">Contattaci</a>
+</nav>
+\end{html}
+
+\textbf{Main}. Il piccolo testo della nostra pagina. Non preoccupatevi, con il tempo si amplierà
+
+\begin{html}
+<h1>Lista delle notizie principali</h1>
+\end{html}
+
+\textbf{Footer}. L'ultima sezione della nostra pagina
+
+\begin{code}
+realizzata da TizioCaio 2014
+</body>
+</html>
+\end{code}
+
+Nota. Il codice riferito alle sezioni, come precedentemente detto, dovrà essere inserito in file differenti dotati di estensione ``.php'', mentre nel codice del Controller ogni riferimento a questa estensione verrà omesso. Ma dedichiamoci subito ad esso, aprendo nuovamente il file \fil{pages.php}.
+
+\begin{code}
+<?php
+class Pages extends CI_Controller {
+	public function index()
+	{
+		$this->load->view('header'); // carica la vista header
+		$this->load->view('menu'); // carica il menu
+		$this->load->view('main'); // carica la sezione centrale
+		$this->load->view('footer'); // carica la parte finale
+	}
+
+	public function view($page = 'home')
+	{
+		echo "Ciao! Ti trovi nella sezione $page";
+	}
+}
+\end{code}
+
+All'interno del metodo \var{index()} abbiamo inserito quattro istruzioni per caricare le relative Viste. In questo modo è possibile sviluppare agevolmente ogni pagina del nostro sito, senza dover riscrivere per esempio l'header e il footer che rimarranno identici. Questo metodo non solo apporta vantaggi per quanto riguarda la rapidità di sviluppo, ma facilità anche la manutenibilità del codice. Se un domani si volesse modificare per esempio il footer, inserendo anche l'indirizzo dell'azienda, basterà aprire la View relativa al \fil{footer.php} e apportare la modifica per vederla propagata sull'intero sito. Molto comodo non trovate?
+
+\label{sec:passaggio}
+\section*{Introduzione alle variabili}
+Si vuole ora riprendere un discorso introdotto con i metodi del Controller. Le variabili, come dice il nome stesso, sono degli elementi ``non immutabili'' che possono assumere valori differenti a seconda del contesto, grazie a delle istruzioni definite ``condizionali''. Nel linguaggio umano, quanto detto si potrebbe esplicitare con un esempio del tipo ``\emph{se piove} (istruzione condizionale)  \emph{io} (variabile) \emph{prenderò un ombrello} (valore assumibile),\emph{ altrimenti} (istruzione condizionale) \emph{no} (altro valore assumibile)''.
+
+Non staremo qui a teorizzare sull'importanza rivestita dalle variabili nella programmazione: la loro utilità è disarmante in ogni ambito. Qui ci preoccuperemo del loro ruolo nella realizzazione di un sito dinamico.
+
+\begin{deftab}{Dinamico}{In contrapposizione con statico, si indicano tutti quei siti in cui le informazioni proposte al visitatore tengono conto della sua identità, delle sue scelte o di particolari contesti}
+\end{deftab}
+
+Abbiamo già incontrato alcune variabili nel codice del nostro Controller: abbiamo assegnato loro un valore e, a vostra insaputa si è anche effettuato un ``passaggio di variabili''. Per i meno attenti, riproponiamo il secondo metodo del Controller \var{Pages} (si veda la sezione\vref{list:primocontroller}).
+
+\begin{code}
+public function view($page = 'home') {
+	echo "Ciao! Ti trovi nella sezione $page";
+}
+\end{code}
+
+Ricordate? Il metodo \var{view()} è composto dalla variabile \verb|$page| racchiusa tra parentesi, la cui definizione più corretta è ``argomento'' del metodo. \verb|$page| assume il valore preimpostato ``home'', ma nulla ci vieta di modificarla a piacimento.
+
+Digitiamo:
+
+\begin{code}
+http://127.0.0.1/codeigniter/index.php/pages/view/segretissima
+\end{code}
+
+Bene, ora il testo è cambiato tenendo conto dell'argomento \sys{segretissima} fornito nell'\ac{URI}. Ricapitoliamo: il metodo \var{view()} visualizza un semplice testo su schermo, quindi se si scrive semplicemente:
+
+\begin{code}
+http://127.0.0.1/codeigniter/index.php/pages/view/
+\end{code}
+
+non effettuiamo alcun passaggio di valori, e la variabile \var{pages} assumerà il valore di default ``home'', altrimenti verrà valorizzata con l'argomento fornito, che modificherà di conseguenza il testo che comparirà sullo schermo. Si digitino altri \ac{URL} per apprezzarne la flessibilità:
+
+\begin{itemize}
+\item http://127.0.0.1/codeigniter/index.php/pages/view/listati
+\item http://127.0.0.1/codeigniter/index.php/pages/view/contattaci
+\item http://127.0.0.1/codeigniter/index.php/pages/view/immagini
+\end{itemize}
+
+Questo esempio scalfisce in minima parte le potenzialità del passaggio delle variabili, ma ritorniamo al nostro progetto e vediamo di mettere a frutto ciò che abbiamo appena appreso.
+
+\section{Restituire una View come un dato}
+\'E possibile fare in modo che il metodo restituisca i dati sotto forma di una stringa piuttosto che come inviarli direttamente al browser. Questo può tornare utile se si desidera elaborare i dati in qualche altro modo. 
+
+Per modificare il comportamento della View, introduciamo un terzo parametro opzionale  che accetta un valore booleano: se si imposta il parametro su ``true'' (boolean), ricordarsi di assegnare il metodo View ad una variabile per memorizzare i dati restituiti. Il comportamento predefinito assunto da CodeIgniter è ``false''. Ecco un esempio:
+
+\begin{code}
+$string = $this->load->view('miofile', '', true);
+\end{code}
+
+\section{Personalizziamo l'header}
+Utilizziamo quanto appreso per personalizzare le Viste create nel nostro progetto. Lo scopo sarà quello di modificare il testo visualizzato per renderlo dinamico. Si apra la View \fil{header.php} e si modifichi il codice per far sì che il titolo della pagina non sia più statico.
+
+\begin{code}
+<html>
+<head>
+<title><?php echo $title; ?></title>
+</head>
+\end{code}
+
+Si è utilizzata la funzione \var{echo} del \ac{PHP} che abbiamo già incontrato: essa stamperà la variabile \verb|$title|. Bene, abbiamo la nostra variabile pronta per essere rappresentata su schermo: ora assegniamogli un valore.
+
+Modifichiamo il Controller \var{Pages} nell'omonimo file \fil{pages.php}:
+
+\begin{code}
+<?php
+class Pages extends CI_Controller {
+
+	public function index()
+	{	$data['title'] = "sito creato con CodeIgniter";
+		$this->load->view('header', $data);
+		$this->load->view('main');
+		$this->load->view('footer');
+	}
+
+	public function view($page = 'home')
+	{
+		echo "Ciao! Ti trovi nella sezione $page";
+	}
+}
+\end{code}
+
+\'E stata introdotto l'array \verb|$data| che contiene al suo interno l'indice ``title'' valorizzato con una stringa di testo. La riga successiva caricherà la Vista attraverso il metodo \var{load->view}. Si faccia attenzione all'argomento inserito tra parentesi: non solo viene specificato di caricare la Vista \var{header}, ma viene passato anche l'array \verb|$data| con tutti i suoi indici.
+
+\section*{Modifichiamo le altre viste}
+Seguendo quanto appreso sinora, modifichiamo anche la Vista \fil{main.php} e il \fil{footer.php} nel seguente modo:
+
+\begin{code}
+<body>
+<h1><?php echo "$text"; ?></h1>
+\end{code}
+
+\begin{code}
+<?php echo "realizzato da $azienda"; ?>
+<?php echo "copyright " .date("Y"); ?>
+</body>
+</html>
+\end{code}
+
+Per vedere gli effetti, modifichiamo nuovamente il Controller ampliando il nostro array di dati.
+
+\begin{code}
+<?php
+class Pages extends CI_Controller {
+
+	public function index()
+	{	$data['title'] = "sito creato con CodeIgniter";
+		$data['text'] = "Lista delle notizie principali";
+		$data['azienda'] = "realizzata da TizioCaio ";
+		
+		$this->load->view('header', $data);
+		$this->load->view('main', $data);
+		$this->load->view('footer', $data);
+	}
+
+	public function view($page = 'home')
+	{
+		echo "Ciao! Ti trovi nella sezione $page";
+	}
+}
+\end{code}
+
+Nota: è possibile definire il nostro array anche con una sintassi differente che comunque non apporta alcuna modifica al risultato prodotto. Qui di seguito lo riportiamo per completezza, ridefinendo il solo metodo \var{index()}:
+
+\begin{code}
+public function index()
+{	$data = array(
+		'title' = "sito creato con CodeIgniter",
+		'text' = "Lista delle notizie principali",
+		'azienda' = "realizzata da TizioCaio"
+	);
+		
+	$this->load->view('header', $data);
+	$this->load->view('main', $data);
+	$this->load->view('footer', $data);
+}
+\end{code}
+
+Se tutto funziona correttamente verrà visualizzata una pagina identica a quella statica realizzata inizialmente (si veda la sezione\vref{list:template}). A questo punto ci si potrebbe chiedere perché complicarsi la vita per ottenere un risultato simile a quello originale. I vantaggi di un framework, lo ripetiamo, non si valutano nella realizzazione di queste poche pagine, ma nella creazione e gestione di un medio-grosso progetto software (si veda la sezione\vref{sec:svantaggi}). 
+
+Esaminiamo quanto prodotto sinora per rendercene conto.
+
+\begin{description}
+\item[Codice meglio organizzato] La nostra iniziale, unica pagina in \ac{HTML} è stata scomposta in quattro parti distinte. Questo modo di operare ci porterà alla realizzazione di tutte le pagine del nostro progetto, intervenendo solo sulla Vista che contiene le informazioni da visualizzare, ovvero \fil{main.php}. Le altre Viste non subiranno modifiche, e questo si traduce in un codice snello, facile da gestire e riutilizzare
+\item[Testo dinamico] Le informazioni rappresentate su schermo non sono più statiche, ma cambiano a seconda del valore assegnato alle variabili all'interno del Controller. Certo per il momento si obietterà che la sostanza non è cambiata, ma nei prossimi capitoli si comprenderanno maggiormente i vantaggi
+\item[Informazioni adattive] Quello che appare su schermo, si adatta automaticamente al contesto. Un esempio è dato dal codice del \fil{footer.php}: nonostante non sia stato inserito esplicitamente l'anno corrente, questo viene correttamente visualizzato. Questo piccolo ``prodigio'', è reso grazie ad una apposita funzione del \ac{PHP} che esamina la data del nostro sistema e la riporta su schermo. Il prossimo anno, non dovrete toccare alcuna pagina, perché la data del copyright si aggiornerà automaticamente.
+\end{description}

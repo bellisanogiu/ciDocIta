@@ -1,0 +1,148 @@
+%************************************************
+\chapter{Helper e Plugin}
+\label{cap:helper}
+%************************************************
+
+Chi mastica un po' di inglese, avrà già compreso la funzione di questi preziosi strumenti di CodeIgniter. Gli Helper sono degli ``aiutanti'', ovvero delle librerie di funzioni che rendono più agevoli le operazioni più ripetitive e comuni nello sviluppo. Divisi in categorie, gli Helper sono ideati per la gestione degli array, dei file, delle date, delle sessioni, dei form, della posta elettronica e molto altro.
+
+Nonostante sia necessario un po' di tempo per apprendere le loro funzionalità (niente che con la pratica e la curiosità non si possa risolvere), la loro adozione presenta indiscutibili vantaggi, anche perché lo sviluppatore deve concentrarsi sulla interfaccia degli Helper e non sulla loro implementazione, ovvero il ``codice interno'' che gli permette di svolgere il proprio compito.
+
+\section{Interfaccia e implementazione}
+Questi due concetti sono spesso presenti nella programmazione, soprattutto quando si parla di ``quella orientata agli oggetti''. Senza approfondire troppo l'argomento, riteniamo utile presentarli. I termini ``interfaccia e implementazione'' non sono comuni solo alla programmazione di qualche oscuro codice, ma sono degli aspetti che caratterizzano l'interazione di ognuno di noi con il mondo esterno. Immaginatevi al volante della vostra automobile che guidate beatamente in mezzo al traffico. Siete a conoscenza che ruotando lo sterzo a destra o a sinistra, la macchina si sposta nella relativa direzione, vero? E sapete anche a cosa servono i pedali, il freno a mano e i vari pulsanti presenti sul cruscotto. Bene, ma avete mai smontato il volante per comprendere i meccanismi, o esaminato l'elettronica che rende possibili tutte queste funzionalità? Immagino che la risposta più gettonata sia: ``No! E non ci penso neppure!''. Comunque non preoccupatevi, non intendiamo aprire un corso sul come smontare da soli la propria fuoriserie: i risultati sarebbe nefasti.
+
+Questo esempio ci è servito per porre l'accento sulle differenze tra i concetti cardine di questa sezione. L'interfaccia, in una macchina, è costituita dal volante, dai pedali e da tutti i pulsanti che la caratterizzano. Non dobbiamo essere degli ingegneri meccanici per guidare un'auto, basta aver studiato il codice della strada e aver acquisito un po' di dimestichezza con il veicolo. Insomma, se per noi l'automobile è un mezzo per andare dal punto A a quello B, concorderemo tutti che di meccanica e di elettronica siano altri ad occuparsene. Bene, tutto quello che si trova ``all'interno'' dell'auto che permette alla macchina di sterzare quando si gira il volante, o di arrestarsi quando si preme l'apposito pedale costituisce l'implementazione. Riassumendo: possiamo guidare un'auto conoscendo la sua interfaccia, pur rimanendo all'oscuro dei dettagli interni, che rappresentano l'implementazione.
+
+Questo è un discorso che ci aiuta a comprendere meglio l'utilità degli Helper. Perché questi aiutanti forniscono numerose funzioni già pronte, senza che sia necessario conoscere il codice che lo compone e lo fa funzionare correttamente. Anche chi non conosce a menadito il \ac{PHP}, \ac{SQL}, o altri linguaggi, potrà sviluppare o modificare un Helper esistente, riutilizzando quando necessario. La separazione tra interfaccia e implementazione presenta però altri vantaggi:
+
+\begin{description}
+\item[minori conoscenze tecniche] \'E faticoso conoscere tanti linguaggi di programmazione, senza tener conto che ad ogni loro nuova release molte funzioni vengono introdotte o deprecate (sconsigliate).
+\item[reinventare la ruota] Anche se siamo degli ottimi programmatori e potremmo voler sviluppare da soli le funzioni, e ogni più piccolo aspetto del progetto, si tenga conto che questo ci porterà via molto tempo. Non c'è niente di più dispendioso che reinventare la ruota ad ogni nuovo progetto.
+\item[il codice altrui \'e sempre pi\'u verde] Il codice degli Helper, ma come di altri progetti condivisi viene esaminato, sviluppato e corretto da più utenti. \'E quindi una buona cosa approfittare dell'impegno profuso da una community ampia. Senza contare che il codice degli Helper può in ogni momento essere esaminato per apprendere nuove tecniche o magari per proporre noi stessi dei miglioramenti.
+\end{description}
+
+\section{Gli Helper nel dettaglio}
+CodeIgniter a differenza di altri framework non realizza l'implementazione dei propri Helper sulla base del paradigma OOP\footnote{Object Orienter Programming o Programmazione Orientata agli Oggetti} ma secondo l'approccio procedurale, ovvero come comuni funzioni se questo è un bene o un male, sta a voi deciderlo. Inoltre, ogni aiutante costituisce una funzione a se stante, senza dipendenze da altre funzioni: questo, unito all'utilizzo di un codice procedurale, le rende estremamente comprensibili. 
+
+Un Helper può essere caricato da un Controller, ma anche da una View (anche se questa pratica è sconsigliata dagli stessi sviluppatori di CodeIgniter). Inoltre, è possibile caricare glii aiutanti nel costruttore del Controller, in modo che diventino automaticamente disponibili in qualsiasi metodo, oppure si possono caricare in uno specifico metodo che ne ha bisogno.
+
+Un altro aspetto importante è dal fatto che CodeIgniter non precarica automaticamente gli Helper, fornendo così un sistema decisamente più snello e meno avaro di risorse. Sarà lo sviluppatore che, se necessario, invocherà l'Helper desiderato. In tutti i casi, una volta caricato l'Helper questo sarà disponibile per qualsiasi Controller e Vista.
+
+Esistono due percorsi in cui sono presenti gli Helper: \sys{application/helpers} (il percorso predefinito in cui inizialmente viene ricercato) e \sys{system/helpers}.
+
+Un Helper viene richiamato attraverso una sintassi che dovrebbe essere ormai familiare:
+
+\begin{code}
+$this->load->helper('nome_helper');
+\end{code}
+
+Nota: l'Helper non restituisce alcun valore, quindi non è mai possibile assegnarlo ad una variabile. 
+
+Quindi se si desidera caricare l'Helper per la gestione degli array, il comando appropriato sarà:
+
+\begin{code}
+$this->load->helper('array');
+\end{code}
+
+Per caricare più Helper con un solo comando, basta specificarne i nomi, separandoli con una virgola. Con questa istruzioni abbiamo caricato gli aiutanti per array, le date e i file.
+
+\begin{code}
+$this->load->helper('array', 'date', 'file');
+\end{code}
+
+\section{Utilizzo}
+Abbiamo appreso i vantaggi di un Helper, sappiamo come caricarli, ma come si gestiscono esattamente? Ogni aiutante possiede una specifica documentazione, che illustra la sua funzione e come utilizzarlo nel dettaglio. Esaminiamo questo esempio:
+
+\begin{code}
+// caricamento dell'Helper per la gestione degli array
+$this->load->helper('array');
+
+// definizione di un array
+$mioarray = array('nome' => 'giuseppe', 
+	'cognome' => 'bellisano', 
+	'citta' => 'cagliari'
+	);
+
+// restituzione di un valore tramite funzione messa a disposizione dall'Helper
+echo element('nome', $mioarray);
+\end{code}
+
+Analizziamo il codice suddividendolo per punti:
+
+\begin{itemize}
+\item Viene caricato l'Helper demandato alla gestione degli array.
+\item L'array è composto da tre indici (nome, cognome, citta) a cui rispettivamente si assegnano tre valori (giuseppe, bellisano, cagliari) secondo la sintassi propria del linguaggio \ac{PHP}.
+\item la funzione element() svolge il compito di visualizzare un elemento dell'array. Nel nostro caso il primo argomento è l'indice, mentre il secondo è l'array da prendere in considerazione). Il risultato sarà ``giuseppe''.
+\end{itemize}
+
+Un altro esempio è dato dall'Helper \var{anchor()} che si può utilizzare in una delle Viste: esso permette di creare un link molto facilmente. Il nome del link è definito dalla stringa \var{Clicca qui}, mentre \var{blog/commenti} costituisce l'\ac{URI} del controller/metodo che intendiamo linkare.
+
+\begin{code}
+<?php echo anchor('blog/commenti', 'Clicca qui');?>
+\end{code}
+
+\section{Autoload}
+Anche se non consigliato, gli Helper possono essere caricati in anticipo in modo da fruire delle loro caratteristiche. Si ricorda che l'autoload degli Helper influisce negativamente sulle prestazioni dell'applicazione in fase di produzione. L'autoload avviene specificando il nome dell'aiutante desiderato nel file \fil{autoload.php} che si trova nel percorso \sys{/application/config/}.
+
+Editando il file \fil{autoload.php} con il seguente codice, si effettuerà il precaricamento degli Helper che gestiscono gli array e le date:
+
+\begin{code}
+$autoload['helper'] = array('array', 'date');
+\end{code}
+
+\section{Estendere gli Helper}
+Gli aiutanti predefiniti in CodeIgniter possono essere estesi creando un file in \sys{/application/helpers/} con il medesimo nome, ma con il prefisso \verb|MY_|. Nell'Helper così creato potrà contenere nuove funzioni o sovrascrivere quelle esistenti con le proprie (pratica caldamente sconsigliata). Si presti attenzione che il termine \emph{estendere} è proprio della programmazione \ac{OOP} mentre gli Helper sono sviluppati secondo un approccio procedurale: riscrivere una funzione esistente, in questo caso, la sovrascriverebbe, eliminandola.
+
+Come esempio citiamo l'Helper nativo di CodeIgniter \var{Array} le cui funzioni potranno essere estese o sovrascritte creando \verb|MY_array_helper.php| al percorso \sys{/application/helpers/}
+
+\begin{code}
+// any_in_array() è una nuova funzione da noi realizzata
+function any_in_array($needle, $haystack)
+{
+    $needle = (is_array($needle)) ? $needle : array($needle);
+
+    foreach ($needle as $item)
+    {
+        if (in_array($item, $haystack))
+        {
+            return TRUE;
+        }
+        }
+
+    return FALSE;
+}
+
+// random_element() è inclusa nell'Helper originale
+// quindi verrà sovrascritta dalla funzione da noi definita
+function random_element($array)
+{
+    shuffle($array);
+    return array_pop($array);
+}
+\end{code}
+
+\section{Un prefisso personalizzato}
+Se non vi aggrada, è possibile personalizzare il prefisso \verb|MY_| utilizzato per estendere gli Helper. Il sistema illustrato si applica anche alle estensioni delle Librerie e delle Classi core. Si apra quindi il file \sys{application/config/config.php} e si cerchi la seguente riga:
+
+\begin{code}
+$config['subclass_prefix'] = 'MY_';
+\end{code}
+
+Ora potete sostituire il prefisso con tutti quelli che vi passano per la testa. Quasi tutti, perché il prefisso \verb|CI_| è riservato al core di CodeIgniter. Non usatelo!
+
+\label{cap:plugin}
+\section{Plugin}
+
+Per molti aspetti i Plugin possono essere identificati con gli Helper esaminati nel precedente capitolo. Infatti condividono molti elementi in comune, come il fatto di essere delle funzioni che aiutano lo sviluppatore in compiti precisi, senza per questo essere costretti a conoscere la loro implementazione. Se sono identici, perché chiamarli in modo differente? 
+
+Mentre gli Helper sono integrati nel core del framework e realizzati direttamente dal team di CodeIgniter, i Plugin appaiono più come moduli esterni, evoluti, solitamente  prodotti da sviluppatori esterni, indicati con il termine di ``vendor''.
+
+I Plugin rispetto agli Helper, inoltre non mettono a disposizione una serie di tool per svolgere i più disparati compiti, ma si concentrano unicamente su una funzione estremamente specialistica. Un esempio è dato dalla funzione per il \ac{CAPTCHA}, che implementa l'odiato sistema per scovare i bot attraverso il riconoscimento difficoltoso di caratteri presentati sullo schermo (cosa è quel simbolo? Dove si trova nella tastiera il tasto ``zampa di coniglio''?).
+
+Nonostante queste premesse, loro distinzione non è parsa così netta neppure al team di CodeIgniter, che a partire dalla versione 2.0.0 ha deciso la loro rimozione, accorpandoli con gli Helper. Se quindi utilizzate una versione precedente del framework, troverete i plugin al percorso \sys{application/plugins}.
+
+\'E consigliabile utilizzare sempre l'ultima versione del framework, reperibile sul sito ufficiale: si beneficerà sempre di maggiori funzionalità, oltre che di un codice maggiormente ottimizzato ed esente da bug. Le funzionalità dei Plugin non sono comunque andate perse: semplicemente ora si trovano (compreso quello per il CAPTCHA) nella cartella degli Helper \sys{application/helpers}.
+
+\section{Riepilogo}
+Ora abbiamo imparato a gestire un nuovo tassello del framework. Gli Helper sono delle funzionalità interne a CodeIgniter che permettono di gestire facilmente molti aspetti del nostro progetto conoscendo semplicemente la loro interfaccia, senza preoccuparci del codice all'interno (implementazione). Si tratta di un grosso vantaggio per snellire le parti più ripetitive e noiose di un progetto in via di sviluppo.
+
+CodeIgniter mette a disposizione anche delle funzioni estremamente specifiche che svolgono importanti compiti per la sicurezza o l'autenticazione dell'utente nel nostro progetto. Il termine Plugin, a partire dalla versione 2.0 del framework, scompare a favore di una integrazione con gli Helper.

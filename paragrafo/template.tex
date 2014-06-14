@@ -1,0 +1,72 @@
+%************************************************
+\chapter{Template Engine}
+\label{cap:template}
+%************************************************
+
+\section{Introduzione}
+La rappresentazione del proprio progetto avviene attraverso le Viste, in cui viene riportato solitamente il codice \ac{PHP}. Questa però non è l'unica e la migliore strada. L'utilizzo di codice di markup per la presentazione, misto a quello demandato a definire la logica, può rendere l'interpretazione delle Viste, caotica e non facilmente gestibile da più sviluppatori contemporaneamente.
+
+CodeIgniter permette di risolvere agevolmente questo problema grazie ad un template engine che rende le Viste più comprensibili, senza pregiudicarne le funzionalità. Ma cosa si intende con esattamente con ``template engine''? Con questo termine si intende un sistema che preso in ingresso il linguaggio \ac{PHP} restituendo un metalinguaggio più semplice da individuare, formattare e scrivere. In pratica viene utilizzata una nuova, più efficiente sintassi per descrivere le funzioni del \ac{PHP} che elimina per esempio tutti gli stati ``echo'' e le parentesi dal codice. Questo rende più semplice i lavoro a tutte le persone che, contemporaneamente devono mettere mano sulle stesse funzioni: con un linguaggio messo a disposizione dal template engine, si distingue a colpo d'occhio la parte riguardante la presentazione da quella logica.
+
+Ci sono però degli inconvenienti nell'utilizzo di un nuovo linguaggio: ovvero imparare un nuovo linguaggio per interpretare quello che magari si è già appreso con fatica, il \ac{PHP}. Se si intende padroneggiare ogni aspetto di CodeIgniter per utilizzarlo costantemente nei propri progetti futuri, dedicare un po' di tempo alla comprensione del template engine, si rivelerà un investimento redditizio. Bisogna comunque anche tenere conto anche di un altro aspetto, sì purtroppo anch'esso negativo: l'uso di un metalinguaggio penalizza le prestazioni del framework poiché parte del calcolo viene speso per ``interpretare'' il codice da trasformare, in fase di esecuzione, in \ac{PHP}. Quale sia l'impatto di questa scelta sulla reattività del progetto è difficile da quantificare a priori, ma solitamente si tratta di un aspetto decisamente trascurabile. In tutti i casi la stima dell'efficienza del progetto con o senza template engine può essere facilmente stimato con l'uso della ``profilazione'' (si veda \vref{cap:profilazione}).
+
+
+
+\section{Sintassi alternativa}
+Il PHP permette di abbreviare molti comandi, soprattutto quelli condizionali e interattivi rendendoli più compatti. Non si tratta di una funzione di CodeIgniter, ma solo di una sintassi alternativa, che non pregiudica le prestazioni del progetto. Per esempio, il comando ``echo'' per stampare una variabile su schermo ha una sintassi del tipo:
+
+\begin{code}
+<?php echo $variable; ?>
+\end{code}
+
+Dove ``\verb|<?php|'' e ``\verb|?>|'' racchiudono ogni codice PHP, mentre \verb|$variabile| è la variabile, il cui contenuto sarà stampato su schermo.
+
+Ecco una sintassi alternative per ottenere lo stesso risultato:
+
+\begin{code}
+<?=$variable?>
+\end{code}
+
+Forse è un po' più ermetica rispetto alla prima, con l'istruzione echo, ma indiscutibilmente è più veloce da scrivere e anche più compatta.
+
+Anche le funzioni di controllo come `if`'', ``for'', ``foreach'', ``while'' possono essere semplificate facilmente. Si prenda per esempio il ciclo foreach in un generico codice:
+
+\begin{code}
+\omissis
+\end{code}
+
+Questa piccola porzione di codice, contiene al suo interno una parte in HTML e un'altra in PHP: se già queste poche righe risultano poco esplicite, immaginatevi cosa debba essere esaminare centinaia di righe di codice, per comprendere l'esatto punto in cui apportare delle modifiche.
+
+La sintassi alternativa utilizzando gli short tag non prevede parentesi, ma utilizza un sistema che delimita il codice in ``blocchi'' ben definiti e facilmente distinguibili. Ogni funzione di controllo prevede una corrispettivo ``tag di chiusura'': endif, endfor, endforeach, e endwhile. Inoltre ognuna di queste struttura, eccetto l'ultima, prevedono nel tag i ``:'' (due punti). Vediamo come si può riscrivere il ciclo foreach:
+
+\begin{code}
+<ul>
+
+<?php foreach ($todo as $item): ?>
+
+<li><?=$item?></li>
+
+<?php endforeach; ?>
+
+</ul>
+\end{code}
+
+Mentre qui si mostrano degli esempi, basati rispettivamente su if/elseif/else.
+
+\begin{code}
+<?php if ($username == 'pippo'): ?>
+
+   <h3>Ciao Pippo</h3>
+
+<?php elseif ($username == 'pluto'): ?>
+
+   <h3>Ciao Pluto</h3>
+
+<?php else: ?>
+
+   <h3>Ciao sconosciuto</h3>
+
+<?php endif; ?>
+\end{code}
+
+Se la sintassi si qui definita non funziona come dovrebbe, questo potrebbe essere dovuto ad una impostazione presente nel file fil{php.ini} che disabilita gli ``short tag''. In questo caso, il problema è facilmente aggirabile, modificando nel framework in il file \fil{/config/config.php}.

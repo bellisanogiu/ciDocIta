@@ -1,0 +1,101 @@
+%************************************************
+\chapter{Classe Core}
+\label{cap:classecore}
+%************************************************
+
+\section{Creazione delle Classi di sistema}
+
+Ogni volta che CodeIgniter è in azione, diverse classi di base, vengono inizializzate automaticamente come parte del core del framework. \'E possibile, spesso, sostituire le classi del core system con quelle personali oppure estenderle. Solitamente si tratta di un argomento che interessa marginalmente gli sviluppatori che utilizzano CodeIgniter, anche perché modifiche non corrette minano la stabilità dell'intero framework. La possibilità comunque di personalizzare il funzionamento delle Librerie Core è un esempio della flessibilità di CodeIgniter.
+
+\section{Lista delle Classi di sistema}
+
+Qui di seguito una lista della Classi del core system che vengono eseguite ogni volta che CodeIgniter è in azione.
+
+\begin{itemize}
+\item Benchmark
+\item Config
+\item Controller
+\item Exceptions
+\item Hooks
+\item Input
+\item Language
+\item Loader
+\item Log
+\item Output
+\item Router
+\item URI
+\item Utf8
+\end{itemize}
+
+\section{Sostituire le Classi di sistema}
+
+Per utilizzare una delle proprie classi invece di quelle predefinite, è consigliabile inserire la propria versione all'interno del percorso \sys{/application/core/} come per esempio:
+
+\begin{code}
+application/core/alcune_classi.php
+\end{code}
+
+Nota: se la directory non esiste, è necessario crearla. La classe che si desidererà sostituire dovrà essere chiamata nello stesso identico modo di quelle definite nel core system, con l'aggiunto del prefisso \verb|CI_|. Per esempio, nel codice seguente la classe di sistema \var{Input.php} viene sovrascritta con una propria versione:
+
+\begin{code}
+class CI_Input {
+
+}
+\end{code}
+
+
+
+
+\section{Estendere le Classi di sistema}
+
+Se invece si preferisce estendere le funzionalità di una Libreria di sistema, aggiungendo una, o due funzionalità, allora è meglio operare in un altro modo, meno invasivo per il framework. Non ci sono controindicazione nell'estendere una classe, tranne che per due punti:
+
+\begin{itemize}
+\item la dichiarazione della classe deve estendere quella del genitore
+\item la nuova classe deve contenere il prefisso \verb|MY_| (comunque configurabile)
+\end{itemize}
+
+Per esempio per estendere la classe nativa \var{Input} è sufficiente creare un file \verb|MY_Input.php| nella directory \sys{/application/core/} e dichiarare la propria classe come:
+
+\begin{code}
+class MY_Input extends CI_Input {
+
+}
+\end{code}
+
+Nota: se si utilizza nella propria classe un costruttore, è necessario estendere anche il metodo costruttore genitore:
+
+\begin{code}
+class MY_Input extends CI_Input {
+
+	function __construct() {
+		parent::__construct();
+    }
+}
+\end{code}
+
+
+Nota: ogni funzione definita nella propria classe deve essere chiamata nello stesso identico modo della classe genitore che sarà usata al posto di quella nativa: questo sistema è chiamato ``sovrascrittura del metodo''. In questo modo ci si assicura che non si verifichino modifiche al core di CodeIgniter.
+
+Se si desidera estendere la classe del core Controller, ci si assicuri di estendere la propria, nuova classe nel costruttore del proprio Controller.
+
+\begin{code}
+class Welcome extends MY_Controller {
+
+    function __construct() {
+
+        parent::__construct();
+	}
+
+    function index() {
+    	$this->load->view('welcome_message');
+    }
+}
+\end{code}
+
+\section{Configurazione del prefisso}
+Come accennato precedentemente anche il prefisso \verb|MY_| può essere modificato: è necessario aprire il file fil{/application/config/config.php}, e settare il prefisso preferito, con l'accortezza di utilizzare qualsiasi stringa, tranne quella riservata \verb|CI_|.
+
+\begin{code}
+$config['subclass_prefix'] = 'MY_';
+\end{code}

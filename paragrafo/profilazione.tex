@@ -1,0 +1,61 @@
+%************************************************
+\chapter{Profiling}
+\label{cap:profilazione}
+%************************************************
+
+\section{Profilare le applicazioni}
+Con questo termine si intende la misurazione delle prestazioni\footnote{Definito anche benchmark} delle query eseguite nel sistema; il risultato viene visualizzato in una variabile \verb|$_POST| alla fine della proprie pagine. Questa informazione può essere utile durante lo sviluppo per fornire preziosi aiuti nella fase di debugging e nell'ottimizzazione del progetto.
+
+Per abilitare la profilazione è sufficiente inserire in qualsiasi punto del proprio Controller la seguente funzione:
+
+\begin{code}
+$this->output->enable_profiler(TRUE);
+\end{code}
+
+Quando è abilitata verrà generato un report che sarà inserito nella parte inferiore delle pagina. 
+
+Per disattivare la profilazione si dovrà invece specificare:
+
+\begin{code}
+$this->output->enable_profiler(FALSE);
+\end{code}
+
+
+La classe non ha bisogno di essere inizializzata. Essa è caricata automaticamente dalla \var{Classe Output} se la profilazione è abilitata.
+
+
+\section{Punti di profilazione}
+Per visualizzare il report con le prestazioni si devono definire dei punti di ``profilazione'' affinché si possano utilizzare come punti di riferimento per la misurazione delle prestazioni. Si deve utilizzare la sintassi seguente (dopo aver letto le informazioni sulla Classe Benchmark/vref{sec:bench}):
+
+Ogni sezione dei dati del Profiler può essere abilitata o disabilitata impostando una variabile di configurazione corrispondente al valore booleano TRUE o FALSE. Questo può essere fatto in due modi. Il primo metodo prevede la modifica dei valori di default che si trovano nel file di configurazione \sys{application/config/profiler.php}.
+
+\begin{code}
+$config['config'] = FALSE;
+$config['queries'] = FALSE;
+\end{code}
+
+L'altro metodo, più flessibile, si basa sullo sovrascrivere le impostazioni predefinite e i valori del file di configurazione chiamando i metodi \verb|set_profiler_sections()| della \var{Classe Output}:
+
+\begin{code}
+$section = array(
+    'config'  => TRUE,
+    'queries' => TRUE
+    );
+
+$this->output->set_profiler_sections($section);
+\end{code}
+
+La personalizzazione della profilazione potrà essere effettuata  tramite il codice appena riportato, inserendolo nei propri Controller.
+
+\begin{tabular}{|c|c|c|}
+benchmarks & Tempo trascorso dei punti di benchmark e il tempo totale di esecuzione & TRUE  \\ 
+config & CodeIgniter variabili Config &  TRUE \\ 
+\verb|controller_info|	& La classe del Controller e il metodo richiesto & TRUE  \\ 
+get & Ogni dato GET passato nel request & TRUE  \\ 
+\verb|http_headers| & Gli header HTTP per il request corrente & TRUE  \\ 
+\verb|memory_usage| & Quantità di memoria consumata dalla richiesta corrente in byte & TRUE \\ 
+post & Ogni dato POST passato nel request & TRUE \\ 
+queries & Elenco di tutte le query di database eseguite, tra cui il tempo di esecuzione & TRUE \\ 
+\verb|uri_string| & l'URI della corrente richiesta  & TRUE \\ 
+\verb|query_toggle_count| & Il numero di query dopo le quali, il blocco di query seguente verrà nascosto. & 25 \\ 
+\end{tabular} 

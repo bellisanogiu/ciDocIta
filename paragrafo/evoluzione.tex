@@ -1,0 +1,112 @@
+%************************************************
+\section{Evoluzione del progetto}
+\label{cap:evoluzione}
+%************************************************
+
+In questo capitolo miglioreremo alcuni aspetti del nostro software basandoci su quanto già appreso. Svilupperemo nuovi metodi e renderemo i Controller più articolati e flessibili.
+
+\section*{Metodi multipli in un Controller}
+Il nostro Controller \var{Pages} è stato definito, inizialmente con un solo metodo \var{view()} a cui si è aggiunto quello di default \var{index()}. Questo ci fa comprendere che è possibile, anzi generalmente è la prassi, definire più metodi. Esaminiamo lo schema generale di un Controller:
+
+\begin{code}
+// Schema generale di un Controller
+class Sito extends CI_Controller {
+  // definizione della funzione predefinita
+  function index() {
+    // output della funzione di default 
+    echo 'Messaggio stampato dalla funzione predefinita';
+  }
+  // definizione di una seconda funzione di classe
+  function secondafunzione() {
+    // output della seconda funzione 
+    echo 'Secondo messaggio';
+  }
+  // definizione di una terza funzione di classe
+  function terzafunzione() {
+    // output della terza funzione 
+    echo 'Terzo messaggio';
+  }
+}
+?>
+\end{code}
+
+In questo Controller \var{Sito}, vengono definiti tre metodi, ma nessuno ci vieta di implementarne un numero maggiore. Il primo metodo è \var{index()}: questo è solitamente il nome che viene dato al primo metodo di default. il suo scopo è quello di stampare la stringa \emph{Messaggio stampato dalla funzione predefinita}. Di seguito, i due metodi si occupano di stampare altre stringhe.
+
+Ora creiamo qualcosa che abbia un fine se non nobile, almeno utile per il nostro progetto. Realizziamo un metodo per visualizzare la pagina dei contatti del nostro sito. A questo punto si hanno tutte le conoscenze necessarie per realizzare una pagina statica senza alcun tipo di aiuto: provate a scriverla da soli come pratico esercizio cercando di non sbirciare la prossima sezione.
+
+\section*{La pagina dei contatti}
+
+\begin{code}
+<?php
+
+class Pages extends CI_Controller {
+
+	public function index()
+	{	$data['title'] = "sito creato con CodeIgniter";
+		$data['text'] = "Lista delle notizie principali";
+		$data['azienda'] = "realizzata da TizioCaio ";
+		
+		$this->load->view('header', $data);
+		$this->load->view('main', $data);
+		$this->load->view('footer', $data);
+	}
+
+	public function view($page)
+		if ($page!=)
+	{
+		echo "Ciao! Ti trovi nella sezione $page";
+	}
+	
+	else (se e' uguale a contattaci)
+	{
+		$data['title'] = "sito creato con CodeIgniter";
+		$data['text'] = "Pagina dei contatti";
+		$data['azienda'] = "realizzata da TizioCaio ";
+			
+		$this->load->view('header', $data);
+		$this->load->view('contatti', $data);
+		$this->load->view('footer', $data);
+	}
+}
+\end{code}
+
+\section*{Aggiungere la logica al controller}
+\'E possibile aggiungere facilmente una istruzione condizionale per verificare se una Vista, che intendiamo caricare esiste, o meno. Se la Vista in questione è presente e funzionante, verrà visualizzata, altrimenti si visualizzerà un messaggio di ``avvertimento''.
+
+\begin{code}
+public function view($page = 'home')
+{
+
+	if ( ! file_exists('application/views/pages/'.$page.'.php'))
+	{
+		// Ehm, Questa pagina non esiste
+		show_404();
+	}
+
+	$data['title'] = ucfirst($page); // La prima lettera è resa maiuscola
+
+	$this->load->view('templates/header', $data);
+	$this->load->view('pages/'.$page, $data);
+	$this->load->view('templates/footer', $data);
+}
+\end{code}
+
+Il codice si riferisce al Controller \fil{Pages} e al metodo \var{view()} che è stato modificato per effettuare un controllo sul caricamento delle Viste.
+
+\begin{enumerate}
+\item \verb|if ( ! file_exists())| \'E una istruzione condizionale del \ac{PHP} che restituisce un valore booleano. Il punto esclamativo trasforma la frase in ``\emph{se non esiste} l'argomento interno
+\item \verb|show_404()| Se la View non esiste, questo metodo viene eseguito: si occuperà di visualizzare un messaggio di errore (404 Page not found)
+\item \var{ucfirst()} è un metodo che trasforma la prima lettera del valore dato a \verb|$page| (ovvero il titolo) in maiuscolo e lo assegna a \verb|$data['title']|
+\item Gli ultimi tre metodi si occupano di caricare le Viste predefinite
+\end{enumerate}
+
+In questo modo si sono raggiunti alcuni importanti obiettivi. Si è appreso come verificare l'esistenza o meno di una Vista, e come visualizzare un messaggio di errore automatizzato. Inoltre è lecito aspettarsi che il nome della Vista, sia così esplicativo da poter essere utilizzato anche come titolo della pagina: per questo lo abbiamo assegnato all'indice \var{title} dell'array \var{data}, dopo aver reso maiuscola l'iniziale. Le precedenti Viste create si chiamano \fil{contatti.php}, \fil{main.php} e quindi si prestano bene ad essere utilizzate come titolo.
+
+Con questi piccoli accorgimenti anche la realizzazione delle prossime pagina sarà più rapida.
+
+\section*{Riepilogo}
+In questo capitolo abbiamo finalmente aperto il nostro editor per scrivere un po' di codice. Abbiamo migliorato il nostro primo Controller per visualizzare, prima un testo interno e successivamente uno richiamato tramite le View. Questo ci ha fatto apprezzare alcuni degli aspetti del pattern \ac{MVC}: la velocità di sviluppo, il riutilizzo del codice, e la sua manutenibilità elevata. 
+
+La View è quella componente del framework demandata alla visualizzazione delle informazioni. Essa non può essere richiamata direttamente tramite il browser, ma dipende dal Controller. L'utilizzo di questo aspetto cardine del pattern \ac{MVC} fa sì che si realizzi un codice dove la presentazione è separata dalla logica.
+
+\'E stato introdotto anche il passaggio di variabili, ma l'importanza che queste rivestono in un sito dinamico è stata appena messa in evidenza. Chi ha nozioni di programmazione si troverà a suo agio con questi concetti; in fondo, il Controller è una classe che contiene a sua volta uno, o più metodi, mentre il loro argomento rappresenta l'insieme di variabili che andremo ad utilizzare. Il nostro progetto è solo agli inizi, ma già mostra un template suddiviso in header, menu, main e footer, che possono essere modificati indipendentemente. Impareremo nei prossimi capitoli a migliorare quanto abbiamo sviluppato e a introdurre nuovi concetti.
