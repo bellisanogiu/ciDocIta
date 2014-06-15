@@ -1,9 +1,9 @@
 %************************************************
-\chapter{Profiling}
+\section{Profiling}
 \label{cap:profilazione}
 %************************************************
 
-\section{Profilare le applicazioni}
+\section*{Profilare le applicazioni}
 Con questo termine si intende la misurazione delle prestazioni\footnote{Definito anche benchmark} delle query eseguite nel sistema; il risultato viene visualizzato in una variabile \verb|$_POST| alla fine della proprie pagine. Questa informazione può essere utile durante lo sviluppo per fornire preziosi aiuti nella fase di debugging e nell'ottimizzazione del progetto.
 
 Per abilitare la profilazione è sufficiente inserire in qualsiasi punto del proprio Controller la seguente funzione:
@@ -20,11 +20,9 @@ Per disattivare la profilazione si dovrà invece specificare:
 $this->output->enable_profiler(FALSE);
 \end{code}
 
-
 La classe non ha bisogno di essere inizializzata. Essa è caricata automaticamente dalla \var{Classe Output} se la profilazione è abilitata.
 
-
-\section{Punti di profilazione}
+\section*{Punti di profilazione}
 Per visualizzare il report con le prestazioni si devono definire dei punti di ``profilazione'' affinché si possano utilizzare come punti di riferimento per la misurazione delle prestazioni. Si deve utilizzare la sintassi seguente (dopo aver letto le informazioni sulla Classe Benchmark/vref{sec:bench}):
 
 Ogni sezione dei dati del Profiler può essere abilitata o disabilitata impostando una variabile di configurazione corrispondente al valore booleano TRUE o FALSE. Questo può essere fatto in due modi. Il primo metodo prevede la modifica dei valori di default che si trovano nel file di configurazione \sys{application/config/profiler.php}.

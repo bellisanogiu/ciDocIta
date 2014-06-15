@@ -1,18 +1,16 @@
 %************************************************
-\chapter{Template Engine}
+\section{Template Engine}
 \label{cap:template}
 %************************************************
 
-\section{Introduzione}
+\section*{Introduzione}
 La rappresentazione del proprio progetto avviene attraverso le Viste, in cui viene riportato solitamente il codice \ac{PHP}. Questa però non è l'unica e la migliore strada. L'utilizzo di codice di markup per la presentazione, misto a quello demandato a definire la logica, può rendere l'interpretazione delle Viste, caotica e non facilmente gestibile da più sviluppatori contemporaneamente.
 
 CodeIgniter permette di risolvere agevolmente questo problema grazie ad un template engine che rende le Viste più comprensibili, senza pregiudicarne le funzionalità. Ma cosa si intende con esattamente con ``template engine''? Con questo termine si intende un sistema che preso in ingresso il linguaggio \ac{PHP} restituendo un metalinguaggio più semplice da individuare, formattare e scrivere. In pratica viene utilizzata una nuova, più efficiente sintassi per descrivere le funzioni del \ac{PHP} che elimina per esempio tutti gli stati ``echo'' e le parentesi dal codice. Questo rende più semplice i lavoro a tutte le persone che, contemporaneamente devono mettere mano sulle stesse funzioni: con un linguaggio messo a disposizione dal template engine, si distingue a colpo d'occhio la parte riguardante la presentazione da quella logica.
 
 Ci sono però degli inconvenienti nell'utilizzo di un nuovo linguaggio: ovvero imparare un nuovo linguaggio per interpretare quello che magari si è già appreso con fatica, il \ac{PHP}. Se si intende padroneggiare ogni aspetto di CodeIgniter per utilizzarlo costantemente nei propri progetti futuri, dedicare un po' di tempo alla comprensione del template engine, si rivelerà un investimento redditizio. Bisogna comunque anche tenere conto anche di un altro aspetto, sì purtroppo anch'esso negativo: l'uso di un metalinguaggio penalizza le prestazioni del framework poiché parte del calcolo viene speso per ``interpretare'' il codice da trasformare, in fase di esecuzione, in \ac{PHP}. Quale sia l'impatto di questa scelta sulla reattività del progetto è difficile da quantificare a priori, ma solitamente si tratta di un aspetto decisamente trascurabile. In tutti i casi la stima dell'efficienza del progetto con o senza template engine può essere facilmente stimato con l'uso della ``profilazione'' (si veda \vref{cap:profilazione}).
 
-
-
-\section{Sintassi alternativa}
+\section*{Sintassi alternativa}
 Il PHP permette di abbreviare molti comandi, soprattutto quelli condizionali e interattivi rendendoli più compatti. Non si tratta di una funzione di CodeIgniter, ma solo di una sintassi alternativa, che non pregiudica le prestazioni del progetto. Per esempio, il comando ``echo'' per stampare una variabile su schermo ha una sintassi del tipo:
 
 \begin{code}

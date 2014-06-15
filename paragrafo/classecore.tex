@@ -1,14 +1,12 @@
 %************************************************
-\chapter{Classe Core}
+\section{Classe Core}
 \label{cap:classecore}
 %************************************************
 
-\section{Creazione delle Classi di sistema}
+\section*{Creazione delle Classi di sistema}
+Ogni volta che CodeIgniter è in azione, diverse classi di base, vengono inizializzate automaticamente come parte del core del framework. \'E possibile spesso sostituire le classi del core system con quelle personali oppure estenderle. Solitamente si tratta di un argomento che interessa marginalmente gli sviluppatori che utilizzano CodeIgniter, anche perché modifiche non corrette minano la stabilità dell'intero framework. La possibilità comunque di personalizzare il funzionamento delle Librerie Core è un esempio della flessibilità di CodeIgniter.
 
-Ogni volta che CodeIgniter è in azione, diverse classi di base, vengono inizializzate automaticamente come parte del core del framework. \'E possibile, spesso, sostituire le classi del core system con quelle personali oppure estenderle. Solitamente si tratta di un argomento che interessa marginalmente gli sviluppatori che utilizzano CodeIgniter, anche perché modifiche non corrette minano la stabilità dell'intero framework. La possibilità comunque di personalizzare il funzionamento delle Librerie Core è un esempio della flessibilità di CodeIgniter.
-
-\section{Lista delle Classi di sistema}
-
+\section*{Lista delle Classi di sistema}
 Qui di seguito una lista della Classi del core system che vengono eseguite ogni volta che CodeIgniter è in azione.
 
 \begin{itemize}
@@ -27,8 +25,7 @@ Qui di seguito una lista della Classi del core system che vengono eseguite ogni 
 \item Utf8
 \end{itemize}
 
-\section{Sostituire le Classi di sistema}
-
+\section*{Sostituire le Classi di sistema}
 Per utilizzare una delle proprie classi invece di quelle predefinite, è consigliabile inserire la propria versione all'interno del percorso \sys{/application/core/} come per esempio:
 
 \begin{code}
@@ -43,11 +40,7 @@ class CI_Input {
 }
 \end{code}
 
-
-
-
-\section{Estendere le Classi di sistema}
-
+\section*{Estendere le Classi di sistema}
 Se invece si preferisce estendere le funzionalità di una Libreria di sistema, aggiungendo una, o due funzionalità, allora è meglio operare in un altro modo, meno invasivo per il framework. Non ci sono controindicazione nell'estendere una classe, tranne che per due punti:
 
 \begin{itemize}
@@ -93,7 +86,7 @@ class Welcome extends MY_Controller {
 }
 \end{code}
 
-\section{Configurazione del prefisso}
+\section*{Configurazione del prefisso}
 Come accennato precedentemente anche il prefisso \verb|MY_| può essere modificato: è necessario aprire il file fil{/application/config/config.php}, e settare il prefisso preferito, con l'accortezza di utilizzare qualsiasi stringa, tranne quella riservata \verb|CI_|.
 
 \begin{code}
