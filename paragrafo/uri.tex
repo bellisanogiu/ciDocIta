@@ -3,35 +3,27 @@
 \label{cap:uri}
 %************************************************
 
-Abbiamo già introdotto l'argomento del routing, ovvero dell'instradamento collegato agli \ac{URI} nel capitolo \vref{sec:controller}. Abbiamo spiegato come il Controller, analizzando un indirizzo possa instradarci verso una sezione del sito, visualizzare un messaggio o interfacciarsi con una base di dati. In tale contesto abbiamo anche visto come CodeIgniter (ma anche tanti altri framework) adottino una struttura degli \ac{URL} segmentata, ovvero separata da slash secondo una sintassi ben definita:
+Abbiamo già introdotto l'argomento del routing, ovvero dell'instradamento collegato agli \ac{URI} nel capitolo \vref{cap:controller}. In quella occasione abbiamo spiegato come il Controller, analizzando un indirizzo possa poi instradarci verso una sezione del sito, visualizzare un messaggio o interfacciarsi con una base di dati. In tale contesto abbiamo anche visto come CodeIgniter (ma anche tanti altri framework) adottino una struttura degli \ac{URL} segmentata, ovvero separata da slash secondo una sintassi ben definita:
 
 \begin{code}
 http://miosito.com/classeController/metodo/argomento
 \end{code}
 
-Questa struttura non è obbligatoria e può lasciare spazio alla struttura classica basata sulla visualizzazione delle variabili e dei loro valori, oppure può essere ridefinita a proprio piacimento tramite una procedura chiamata ``rimappatura delle \ac{URI}''. In questo capitolo introdurremo le potenzialità dell'URI Routing, ovvero della relazione che intercorre tra la composizione di un \ac{URI} e le corrispondenti classi e metodi di un Controller.
+Questa struttura non è obbligatoria e può lasciare spazio alla struttura classica basata sulla visualizzazione delle variabili e dei loro valori, oppure può essere ridefinita a proprio piacimento tramite una procedura chiamata ``rimappatura delle \ac{URI}''. In questo capitolo introdurremo le potenzialità dell'URI Routing, ovvero la relazione che intercorre tra la composizione di un \ac{URI} e le corrispondenti classi e metodi di un Controller.
 
-\section{Il cuore del Route}
-Come CodeIgniter ci ha abituato, esiste un file all'interno della sua struttura in cui è possibile analizzare e definire le regole del routing. Questo file è denominato \fil{routes.php} e si trova al percorso:
+\section*{Il cuore del Route}
+Come CodeIgniter ci ha abituato, esiste un file all'interno della sua struttura in cui è possibile analizzare e definire le regole del routing. Questo file è denominato \fil{routes.php} e si trova al percorso \sys{/application/config/}. All'interno vi è un vettore denominato \verb|$route| che consente di specificare delle regole (routes) personalizzate per l'instradamento attraverso metacaratteri (wildcard) ed espressioni regolari. Insomma, configurando adeguatamente questo file è possibile sfruttare appieno le potenzialità di un framework. Analizziamo alcune delle possibilità offerte dall'opportuno settaggio del file \fil{routes.php}.
 
-\sys{application/config/}
-
-All'interno vi è un vettore denominato \verb|$route| che consente di specificare delle regole (routes) personalizzate per l'instradamento utilizzando anche strumenti per abbreviare la digitazione come per esempio metacaratteri (wildcard) ed espressioni regolari. 
-
-Insomma, configurando adeguatamente questo file sarà possibile sfruttare appieno le potenzialità di un framework. Analizziamo alcune delle possibilità offerteci dall'opportuno settaggio del file \fil{routes.php}
-
-\section{Definire un controller di default}
-Quando si sviluppa un progetto consistente, questo probabilmente conterrà anche diversi Controller. \'E importante quindi definire il ``controller di default'', quello che verrà caricato quando un \ac{URI} non è definito, o quando si inserisce l'\ac{URL} radice del proprio sito (miosito.com).
-
-Il Controller di default di CodeIgniter è:
+\section*{Definire un controller di default}
+Quando si sviluppa un progetto consistente, questo probabilmente conterrà anche diversi Controller. \'E importante quindi definire il ``controller di default'', quello che verrà caricato quando un \ac{URI} non è definito, o quando si inserisce l'\ac{URL} radice del proprio sito (miosito.com). Il Controller di default di CodeIgniter è:
 
 \begin{code}
 $route['default_controller'] = 'welcome';
 \end{code}
 
-Ebbene sì è lui il ``responsabile'' del caloroso messaggio di benvenuto. Possiamo modificare questo parametro inserendo il nome di qualsiasi Controller creato, per caricarlo con la priorità massima.
+Ebbene sì è lui il ``responsabile'' del caloroso messaggio di benvenuto. Possiamo modificare questo parametro inserendo il nome di qualsiasi Controller creato in precedenza, per caricarlo con la priorità massima.
 
-\section{Rimappare la chiamata dei metodi}
+\section*{Rimappare la chiamata dei metodi}
 Un'altra possibilità offerta è il rimappamento dei metodi tramite la funzione \verb|_remap()| che si presenta con la sintassi:
 
 \begin{code}
@@ -41,25 +33,23 @@ public function _remap()
 }
 \end{code}
 
-Il compito di questa funzione è sovrascrivere la chiamata di un metodo, caricandone un altro. Un po' come redirigere tutto il traffico diretto al punto A, verso un nuovo punto B. Spero l'esempio sia chirificatore.
+Il compito di questa funzione è sovrascrivere la chiamata di un metodo, caricandone un altro. Un po' come redirigere tutto il traffico diretto al punto A, verso un nuovo punto B.
 
 \begin{code}
-public function _remap($metodoarg)
+public function _remap($metodo)
 {
-    if ($method == 'alcunimetodi')
+    if ($metodo == 'alcunimetodi')
     {
         $this->$metodo2();
     }
     else
     {
-        $this->defaultmetodo();
+        $this->default_metodo();
     }
 }
 \end{code}
 
-L'esempio appena mostrato contiene il metodo \verb|_remap()| che accetta come argomento \var{metodoarg}. L'istruzione condizione \emph{if} effettua una verifica: se il metodo \var{metodoarg} è uguale a quelli elencati in \var{alcunimetodi} allora verrà caricato \var{metodo2} (sovrascrittura, o ovveride del metodo), altrimenti \emph{else} verrà caricato il Controller di default \var{defaultmetodo}.
-
-Questo sistema, se padroneggiato, permette di redirigere le rotte generate da determinati \ac{URI} alla destinazione desiderata, in situazioni particolari o di emergenza.
+L'esempio appena mostrato contiene il metodo \verb|_remap()| che accetta come argomento \var{\$metodo}. L'istruzione condizione \emph{if} effettua una verifica: se il metodo in questione è uguale a quelli elencati in \var{alcunimetodi} allora verrà caricato \var{metodo2} (sovrascrittura, o ovveride del metodo), altrimenti \emph{else} verrà caricato il \var{default_metodo}. Questo sistema, se padroneggiato, permette di redirigere le rotte generate da determinati \ac{URI} alla destinazione desiderata, in situazioni particolari o di emergenza.
 
 \'E possibile passare un secondo parametro opzionale al metodo \verb|_remap()|. Nell'esempio che segue, l'array può infatti essere utilizzato in combinazione con la funzione del \ac{PHP} \verb| call_user_func_array| per emulare il funzionamento predefinito di CodeIgniter.
 
@@ -75,8 +65,8 @@ public function _remap($method, $params = array())
 }
 \end{code}
 
-\section{Processare l'output}
-CodeIgniter possiede una classe di output che permette di inviare i dati da visualizzare automaticamente ad un browser web. Questa funzione chiamata \verb|_output()| mostra automaticamente l'output renderizzato. Ecco la sintassi:
+\section*{Processare l'output}
+CodeIgniter possiede una classe di output che permette di inviare i dati da visualizzare automaticamente ad un browser web. Questa funzione chiamata \verb|_output()| mostra automaticamente l'output finale. Ecco la sintassi:
 
 \begin{code}
 public function _output($output)
@@ -94,8 +84,8 @@ public function _output($output)
 %}
 %If you are using this feature the page execution timer and memory usage stats might not be perfectly accurate since they will not take into acccount any further processing you do. For an alternate way to control output before any of the final processing is done, please see the available methods in the Output Class.
 
-\section{Funzioni private}
-In alcune occasioni è necessario che certi metodi siano nascosti all'accesso pubblico, definendo per l'appunto un metodo ``privato''. La sintassi necessaria per rendere un metodo inacessibile mediante l'\ac{URI} è utilizzare il simbolo \emph{underscore} (\verb|_|) davanti al nome del metodo:
+\section*{Funzioni private}
+In alcune occasioni è necessario che certi metodi siano nascosti all'accesso pubblico, definendo per l'appunto un metodo ``privato''. La sintassi necessaria per rendere un metodo inaccessibile mediante l'\ac{URI} è utilizzare il simbolo \emph{underscore} (\verb|_|) davanti al nome del metodo:
 
 \begin{code}
 private function _utility()
@@ -110,16 +100,16 @@ Se ora si prova a digitare direttamente l'\ac{URI} del metodo, questo non sarà 
 miosito.com/index.php/blog/_utility/
 \end{code}
 
-\section{Organizzare un grande progetto}
+\section*{Organizzare un grande progetto}
 Quando si realizza un progetto di grandi dimensioni, è problematico inserire tutti i Controller, le Viste e i Modelli nelle loro directory principali, senza creare una gerarchia che metta ordine.
-\'E possibile, anzi è caldamente consigliato, organizzare il prodotto da sviluppare in sottodirectory omogenee e coerenti, ricordando che nella sintassi dell'\ac{URI} la prima parte di questo, indica la sottodirectory. Per esempio, se inseriamo i Controller per la gestione delle scarpe di un magazzino, in una directory chiamata \emph{prodotti}, il percorso per richiamare il Controller \var{scarpe} sarà per esempio:
+\'E possibile, anzi è caldamente consigliato, organizzare il prodotto da sviluppare in sottodirectory omogenee e coerenti, ricordando che nella sintassi dell'\ac{URI} si dovrà tenere conto della eventuale gerarchia, indicando anche le sottodirectory. Per esempio, se si inseriscono i Controller per la gestione delle scarpe di un magazzino, in una directory chiamata \emph{prodotti}, il percorso per richiamare il Controller \var{scarpe} sarà:
 
 \begin{code}
 application/controllers/prodotti/scarpe.php
 \end{code}
 
-\section{Classe Costruttore}
-Se si intende utilizzare un costruttore\footnote{Per maggiori informazioni si veda come creare un oggetto nella programmazione OOP} nel proprio Controller, è assolutamente necessario inserire al suo interno il codice:
+\section*{Classe Costruttore}
+Se si intende utilizzare un costruttore nel proprio Controller, è assolutamente necessario inserire al suo interno il codice:
 
 \begin{code}
 parent::__construct();
@@ -140,10 +130,65 @@ class Blog extends CI_Controller {
 ?>
 \end{code}
 
-I Costruttori sono utili se si ha la necessita di configurare alcuni valori di default, o eseguire un processo predefinito quando la propria classe viene istanziata. I Costruttori non restituiscono un valore, ma sono utilizzati per svolgere dei lavori predefiniti.
+I Costruttori sono utili se si ha la necessità di configurare alcuni valori di default, o eseguire un processo predefinito quando la propria classe viene istanziata. I Costruttori non restituiscono un valore, ma sono utilizzati per svolgere dei lavori predefiniti.
 
-\subsection{Controller: i nomi riservati}
-Ebbene sì, se programmate da più di qualche settimana saprete che non tutti i nomi sono utilizzabili nel vostro codice; alcuni di essi sono ``riservati'' al sistema, in questo caso a CodeIgniter e per questo motivo vi proponiamo una lista di nomi da cui dovete stare alla larga!
+\section{I nomi riservati}
+Ebbene sì, se programmate da più di qualche settimana saprete che non tutti i nomi sono utilizzabili per definire variabili, costanti e funzioni nel proprio codice: essi sono riservati a CodeIgniter per definire alcuni elementi chiave del framework. \'E importante non utilizzare i seguenti nomi altrimenti le proprie funzioni sovrascriveranno quelle di default di CodeIgniter, con conseguente difficilmente prevedibili. Qui di seguito proponiamo una lista dei nomi riservati da cui dovrete stare alla larga!
+
+\begin{code}
+-------------
+| CONTROLLER |
+-------------
+CI_Base
+_ci_initialize
+Default
+index
+
+----------
+| METODI |
+----------
+is_really_writable()
+load_class()
+get_config()
+config_item()
+show_error()
+show_404()
+log_message()
+_exception_handler()
+get_instance()
+
+-------------
+| VARIABILI |
+-------------
+$config
+$mimes
+$lang
+
+------------
+| COSTANTI |
+------------
+ENVIRONMENT
+EXT
+FCPATH
+SELF
+BASEPATH
+APPPATH
+CI_VERSION
+FILE_READ_MODE
+FILE_WRITE_MODE
+DIR_READ_MODE
+DIR_WRITE_MODE
+FOPEN_READ
+FOPEN_READ_WRITE
+FOPEN_WRITE_CREATE_DESTRUCTIVE
+FOPEN_READ_WRITE_CREATE_DESTRUCTIVE
+FOPEN_WRITE_CREATE
+FOPEN_READ_WRITE_CREATE
+FOPEN_WRITE_CREATE_STRICT
+FOPEN_READ_WRITE_CREATE_STRICT
+\end{code}
+
+% ?????
 
 A tal proposito, si analizzino i valori predefiniti presenti nel file:
 
@@ -175,7 +220,7 @@ Solitamente vi è una corrispondenza uno-a-uno tra la stringa \ac{URL} e la corr
 
 Per apportare le modifiche alle regole di routing si deve modificare il file \fil{config} in \sys{/application/config/} e utilizzare le Regex o le wildcard\footnote{Definito anche metacarattere o carattere jolly o wild character o wildcard character, è un carattere che, all'interno di una stringa, non rappresenta sé stesso bensì un insieme di altri caratteri o sequenze di caratteri.}
 
-\subsection{Wildcard}
+\section{Wildcard}
 Solitamente un rotta in cui è presente una wildcard ha una forma del tipo:
 
 \begin{code}
@@ -224,7 +269,7 @@ In questo modo se specichiamo un \ac{URI} come prodotto/33 CodeIgniter eseguirà
 
 I più attenti si saranno posti maggiori domande sulla sintassi dell'argomento variabile \verb|$1|. Come è facilmente intuibile, esso si riferisce al primo wildcard, ma nulla ci vieta di specificare \verb|$2| per indicare il secondo wildcard e così via.
 
-\subsection{Regular Expression}
+\section{Regular Expression}
 Comunemente chiamate Regex, o espressioni regolari, in italiano, sono un metodo potente e altamente personalizzabile per definire le regole di routing. Di contro imparare a gestirle pienamente non è facile. \'E possibile utilizzare anche le back-reference, ma in questo caso si deve utilizzare il simbolo del dollaro piuttosto che la sintassi con la doppia barra rovesciata.
 
 \begin{code}
