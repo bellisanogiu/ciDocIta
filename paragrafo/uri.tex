@@ -49,7 +49,7 @@ public function _remap($metodo)
 }
 \end{code}
 
-L'esempio appena mostrato contiene il metodo \verb|_remap()| che accetta come argomento \var{\$metodo}. L'istruzione condizione \emph{if} effettua una verifica: se il metodo in questione è uguale a quelli elencati in \var{alcunimetodi} allora verrà caricato \var{metodo2} (sovrascrittura, o ovveride del metodo), altrimenti \emph{else} verrà caricato il \var{default_metodo}. Questo sistema, se padroneggiato, permette di redirigere le rotte generate da determinati \ac{URI} alla destinazione desiderata, in situazioni particolari o di emergenza.
+L'esempio appena mostrato contiene il metodo \verb|_remap()| che accetta come argomento \var{\$metodo}. L'istruzione condizione \emph{if} effettua una verifica: se il metodo in questione è uguale a quelli elencati in \var{alcunimetodi} allora verrà caricato \var{metodo2} (sovrascrittura, o override del metodo), altrimenti \emph{else} verrà caricato il \verb|default_metodo|. Questo sistema, se padroneggiato, permette di redirigere le rotte generate da determinati \ac{URI} alla destinazione desiderata, in situazioni particolari o di emergenza.
 
 \'E possibile passare un secondo parametro opzionale al metodo \verb|_remap()|. Nell'esempio che segue, l'array può infatti essere utilizzato in combinazione con la funzione del \ac{PHP} \verb| call_user_func_array| per emulare il funzionamento predefinito di CodeIgniter.
 
