@@ -1,5 +1,5 @@
 %************************************************
-\chapter{URI routing e caching}
+\section{URI routing e caching}
 \label{cap:uri}
 %************************************************
 
@@ -132,61 +132,6 @@ class Blog extends CI_Controller {
 
 I Costruttori sono utili se si ha la necessità di configurare alcuni valori di default, o eseguire un processo predefinito quando la propria classe viene istanziata. I Costruttori non restituiscono un valore, ma sono utilizzati per svolgere dei lavori predefiniti.
 
-\section{I nomi riservati}
-Ebbene sì, se programmate da più di qualche settimana saprete che non tutti i nomi sono utilizzabili per definire variabili, costanti e funzioni nel proprio codice: essi sono riservati a CodeIgniter per definire alcuni elementi chiave del framework. \'E importante non utilizzare i seguenti nomi altrimenti le proprie funzioni sovrascriveranno quelle di default di CodeIgniter, con conseguente difficilmente prevedibili. Qui di seguito proponiamo una lista dei nomi riservati da cui dovrete stare alla larga!
-
-\begin{code}
--------------
-| CONTROLLER |
--------------
-CI_Base
-_ci_initialize
-Default
-index
-
-----------
-| METODI |
-----------
-is_really_writable()
-load_class()
-get_config()
-config_item()
-show_error()
-show_404()
-log_message()
-_exception_handler()
-get_instance()
-
--------------
-| VARIABILI |
--------------
-$config
-$mimes
-$lang
-
-------------
-| COSTANTI |
-------------
-ENVIRONMENT
-EXT
-FCPATH
-SELF
-BASEPATH
-APPPATH
-CI_VERSION
-FILE_READ_MODE
-FILE_WRITE_MODE
-DIR_READ_MODE
-DIR_WRITE_MODE
-FOPEN_READ
-FOPEN_READ_WRITE
-FOPEN_WRITE_CREATE_DESTRUCTIVE
-FOPEN_READ_WRITE_CREATE_DESTRUCTIVE
-FOPEN_WRITE_CREATE
-FOPEN_READ_WRITE_CREATE
-FOPEN_WRITE_CREATE_STRICT
-FOPEN_READ_WRITE_CREATE_STRICT
-\end{code}
 
 % ?????
 
@@ -216,7 +161,7 @@ In questo caso la regola di routing impone che il termine``pagina'' sia rimappat
 In questo secondo caso un'URI che contiene i segmenti ``pagina/viaggi'' sarà rimappata dalla classe ``sito'' e dal metodo ``news'', mentre l'identificatore sarà impostato su ``10''.
 
 \section{Utilizzo di wildcard ed regex}
-Solitamente vi è una corrispondenza uno-a-uno tra la stringa \ac{URL} e la corrispondente classe/metodo che fa capo ad un Controller. \'E possibile in tutti i casi modificare la struttura con cui CodeIgniter mappa ogni \ac{URI}, magari perché si proviene da un altro framework, o solo per il gusto di sperimentare. 
+Solitamente vi è una corrispondenza uno-a-uno tra la stringa \ac{URL} e la classe/metodo che fa capo ad un Controller. \'E possibile in tutti i casi modificare la struttura con cui CodeIgniter mappa ogni \ac{URI}, magari perché si proviene da un altro framework, o solo per il gusto di sperimentare. 
 
 Per apportare le modifiche alle regole di routing si deve modificare il file \fil{config} in \sys{/application/config/} e utilizzare le Regex o le wildcard\footnote{Definito anche metacarattere o carattere jolly o wild character o wildcard character, è un carattere che, all'interno di una stringa, non rappresenta sé stesso bensì un insieme di altri caratteri o sequenze di caratteri.}
 
@@ -265,7 +210,7 @@ Questo esempio è un po' più complesso, ma mostra la flessibilità di CodeIgnit
 $route['prodotti/(:num)'] = "catalogo/cerca_prodotto_id/$1";
 \end{code}
 
-In questo modo se specichiamo un \ac{URI} come prodotto/33 CodeIgniter eseguirà il Controller-metodo \verb|catalogo/cerca_prodotto_con_id/33|. In pratica abbiamo definito l'instradamento che si utilizza per cercare/visualizzare un prodotto in un archivio, senza dover specificare il prodotto manualmente! Una bella comodità non credete? 
+In questo modo se specifichiamo un \ac{URI} come prodotto/33 CodeIgniter eseguirà il Controller-metodo \verb|catalogo/cerca_prodotto_con_id/33|. In pratica abbiamo definito l'instradamento che si utilizza per cercare/visualizzare un prodotto in un archivio, senza dover specificare il prodotto manualmente! Una bella comodità non credete? 
 
 I più attenti si saranno posti maggiori domande sulla sintassi dell'argomento variabile \verb|$1|. Come è facilmente intuibile, esso si riferisce al primo wildcard, ma nulla ci vieta di specificare \verb|$2| per indicare il secondo wildcard e così via.
 

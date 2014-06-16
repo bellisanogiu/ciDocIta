@@ -1,58 +1,79 @@
 %************************************************
-\chapter{Nomi riservati}
+\section{Nomi riservati}
 \label{cap:nomiriservati}
 %************************************************
-Alcuni nomi riguardanti Controller, metodi, variabili e costanti non possono essere utilizzati liberamente dall'utente: essi sono riservati da CodeIgniter per definire alcuni elementi chiave del framework. \'E importante non utilizzare i seguenti nomi altrimenti le proprie funzioni sovrascriveranno quelle di default di CodeIgniter, con conseguente difficilmente prevedibili. Qui di seguito proponiamo una lista dei nomi riservati:
+Alcuni nomi riguardanti Controller, metodi, variabili e costanti non possono essere utilizzati liberamente dall'utente: essi sono riservati da CodeIgniter per definire alcuni elementi chiave del framework. \'E importante non utilizzare i seguenti nomi altrimenti le proprie funzioni sovrascriveranno quelle di default, con conseguenze difficilmente prevedibili. Qui di seguito proponiamo una lista dei nomi riservati:
 
-\begin{code}
--------------
-| CONTROLLER |
--------------
-CI_Base
-_ci_initialize
-Default
-index
+\section*{Controller}
+\verb|CI_Base|
 
-----------
-| METODI |
-----------
-is_really_writable()
-load_class()
-get_config()
-config_item()
-show_error()
-show_404()
-log_message()
-_exception_handler()
-get_instance()
+\verb|_ci_initialize|
 
--------------
-| VARIABILI |
--------------
-$config
-$mimes
-$lang
+\verb|Default|
 
-------------
-| COSTANTI |
-------------
-ENVIRONMENT
-EXT
-FCPATH
-SELF
-BASEPATH
-APPPATH
-CI_VERSION
-FILE_READ_MODE
-FILE_WRITE_MODE
-DIR_READ_MODE
-DIR_WRITE_MODE
-FOPEN_READ
-FOPEN_READ_WRITE
-FOPEN_WRITE_CREATE_DESTRUCTIVE
-FOPEN_READ_WRITE_CREATE_DESTRUCTIVE
-FOPEN_WRITE_CREATE
-FOPEN_READ_WRITE_CREATE
-FOPEN_WRITE_CREATE_STRICT
-FOPEN_READ_WRITE_CREATE_STRICT
-\end{code}
+\verb|index|
+
+\section*{Metodi}
+\verb|is_really_writable()|
+
+\verb|load_class()|
+
+\verb|get_config()|
+
+\verb|config_item()|
+
+\verb|show_error()|
+
+\verb|show_404()|
+
+\verb|log_message()|
+
+\verb|_exception_handler()|
+
+\verb|get_instance()|
+
+\section*{Variabili}
+\verb|$config|
+
+\verb|$mimes|
+
+\verb|$lang|
+
+\section*{Costanti}
+\verb|ENVIRONMENT|
+
+\verb|EXT|
+
+\verb|FCPATH|
+
+\verb|SELF|
+
+\verb|BASEPATH|
+
+\verb|APPPATH|
+
+\verb|CI_VERSION|
+
+\verb|FILE_READ_MODE|
+
+\verb|FILE_WRITE_MODE|
+
+\verb|DIR_READ_MODE|
+
+\verb|DIR_WRITE_MODE|
+
+\verb|FOPEN_READ|
+
+\verb|FOPEN_READ_WRITE|
+
+\verb|FOPEN_WRITE_CREATE_DESTRUCTIVE|
+
+\verb|FOPEN_READ_WRITE_CREATE_DESTRUCTIVE|
+
+\verb|FOPEN_WRITE_CREATE|
+
+\verb|FOPEN_READ_WRITE_CREATE|
+
+\verb|FOPEN_WRITE_CREATE_STRICT|
+
+\verb|FOPEN_READ_WRITE_CREATE_STRICT|

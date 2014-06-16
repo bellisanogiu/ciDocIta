@@ -1,11 +1,12 @@
 %************************************************
-\chapter{Stile e sintassi del PHP}
+\chapter{Argomento avanzato III}
 \label{cap:stile}
 %************************************************
 
-Qui di seguito verranno descritte le regole generali nello sviluppo del codice con CodeIgniter:
+\section{Stile e sintassi del PHP}
+Qui di seguito verranno descritte le regole generali nello sviluppo del codice con CodeIgniter.
 
-\section{Formato dei file}
+\section*{Formato dei file}
 I file dovrebbero essere salvati con l'encoding Unicode UTF-8. Il formato BOM, molto comune negli editor di default di Windows, non dovrebbe mai essere utilizzato: questo formato inserisce dei caratteri nel file che può apportare degli effetti negativi sul codice PHP. \'E importante anche selezionare come terminatore di riga\footnote{In inglese line ending} l'encoding Unix LF.
 
 Qui di seguito vengono descritti i parametri per configurare due editor testuali molto utilizzati:
@@ -25,7 +26,7 @@ In "Default text encoding for new documents", si selezioni "Unicode (UTF-8, no B
 Si selezioni "Text Files" sulla sinistra
 In "Default line breaks", l'opzione corretta da utilizzare è "Mac OS X and Unix (LF)"
 
-\section{Tag di chiusura PHP}
+\section*{Tag di chiusura PHP}
 Nel PHP il tag di chiusura utilizzato è \verb|?>| anche se spesso non viene riportato, poiché per il parser del linguaggio questo tag è opzionale. Se quindi contrariamente ad altri linguaggi non lo vedete a fine pagina, non ci si preoccupi, per gli sviluppatori professionisti del PHP è normale.
 
 Il problema che può verificarsi è che vengano introdotti dopo il tag di chiusura, eventuali spazi vuoti che possono causare errori PHP, pagine vuote, o problemi nelle applicazioni \ac{FTP}. Per questo motivo, è consigliato omettere sempre il tag di chiusura PHP, e utilizzare invece un blocco di commento per segnare la fine del file e la sua posizione rispetto alla radice dell'applicazione. Ciò consente di marcare il file come completo.
@@ -47,7 +48,7 @@ echo "Questo è il mio codice!";
 // percorso ./system/modules/mymodule/myfile.php
 \end{code}
 
-\section{Nomi delle Classi e dei Metodi}
+\section*{Nomi delle Classi e dei Metodi}
 I nomi delle classi devono incominciare sempre con la prima lettera maiuscola, mentre le parole all'interno del file devono essere separate tramite il carattere underscore, senza utilizzare la convenzione polacca\footnote{Conosciuta anche come CamelCase, è una convenzione con cui i nomi composti da più parole vengono scritti senza spazi, con l'iniziale maiuscola come per esempio ``nomeDelFile''.}
 
 I nomi dei metodi invece devono essere autoesplicativi, chiari e preferibilmente includere un verbo; inoltre devono essere scritti interamente in minuscolo. Cercate di evitare nomi troppo lunghi e dettagliati.
@@ -85,7 +86,7 @@ function get_the_file_properties_from_the_file()	// wordy
 function get_file_properties()	// descriptive, underscore separator, and all lowercase letters
 \end{code}
 
-\section{Commenti}
+\section*{Commenti}
 In generale, il codice dovrebbe essere commentato con cura. Questo perché aiuta i programmatori meno esperti che devono comprendere il nostro lavoro, e può rivelarsi prezioso per noi stessi quando si deve ritornare sul codice a distanza di mesi. Non c'è un formato richiesto per i commenti, ma si raccomanda quanto segue.
 
 I commenti in stile DocBlock\url{http://manual.phpdoc.org/HTMLSmartyConverter/HandS/phpDocumentor/tutorial_phpDocumentor.howto.pkg.html#basics.docblock} precedono la dichiarazione delle classe e dei metodi che possono essere raccolti dagli \ac{IDE}
@@ -131,7 +132,7 @@ $parts = explode("\n", $str);
 $parts = $this->foo($parts);
 \end{code}
 
-\section{Le costanti}
+\section*{Le costanti}
 Le costanti non differiscono dalla regole di stile definite per le variabili, tranne che per il fatto, che esse vanno indicate completamente in maiuscolo.
 
 \begin{code}
@@ -148,7 +149,7 @@ SUPER_CLASS_VERSION
 $str = str_replace(LD.'foo'.RD, 'bar', $str);
 \end{code}
 
-\section{TRUE, FALSE, e NULL}
+\section*{TRUE, FALSE, e NULL}
 Si tratta di parole chiave che dovrebbero essere sempre riportate in maiuscolo.
 
 \begin{code}
@@ -163,7 +164,7 @@ $bar = FALSE;
 function foo($bar = NULL)
 \end{code}
 
-\section{Operatori Logici}
+\section*{Operatori Logici}
 L'utilizzo di \verb|||| è sconsigliato sia perché rende il codice meno intuitivo, sia perché si può facilmente interpretare come il numero 11 per esempio. \verb|&&| è preferibile a AND, ma ambedue sono corretti. Nell'utilizzo dell'operatore di negazione \verb|!|, è consigliato farlo seguire da uno spazio.
 
 \begin{code}
@@ -180,7 +181,7 @@ if ( ! $foo)
 if ( ! is_array($foo))
 \end{code}
 
-\section{Typecasting}
+\section*{Typecasting}
 Alcune funzioni PHP restituiscono FALSE in caso di errore, ma possono anche avere un valore di ritorno come "" oppure 0, che sono valutati come FALSE in molti confronti con operatori logici. Per evitare incongruenze è necessario essere espliciti quando si utilizzano valori di ritorno\footnote{Sono dati resi dall'istruzione return.} in modo che il loro successivo utilizzo all'interno di operatori come AND oppure OR, per esempio non fornisca ambiguità e in definita un risultato non corretto.
 
 \'E quindi consigliato utilizzare delle verifiche rigorose sul tipo di dati delle proprie variabili, utilizzando === e !== quando necessario . La differenza rispetto ai consueti operatori di confronto è esplicitata nella tabella\vref{tab:oplogici}
@@ -237,19 +238,19 @@ $str = (string) $str; // cast $str come una stringa
 \end{code}
 
 \section{Codice di debug}
-Nessuna istruzione utilizzata per il debug può essere lasciato nel codice, senza essere opportunamente commentata. Istruzioni come per esempio \verb|var_dump()|, \verb|print_r()|, \verb|die()|, e \verb|exit()| devono essere sempre commentate alla fine del loro utilizzo o direttamente rimosse.
+Nessuna istruzione utilizzata per il debug può essere lasciata nel codice, senza essere opportunamente commentata. Istruzioni come per esempio \verb|var_dump()|, \verb|print_r()|, \verb|die()|, e \verb|exit()| devono essere sempre commentate alla fine del loro utilizzo o direttamente rimosse.
 
 \begin{code}
 // print_r($foo);
 \end{code}
 
-\section{Spazi vuoti nei file}
+\section*{Spazi vuoti nei file}
 Nessun spazio dovrebbe precedere il tag di apertura del PHP, così come non dovrebbero essercene dopo il tag di chiusura (che in questo linguaggio si può omettere). L'output viene memorizzato e CodeIgniter può interpretarlo erroneamente proprio a causa di queste informazioni (lo spazio è un dato) fuorvianti.
 
-\section{Compatibilit\'a}
+\section*{Compatibilit\'a}
 Tutto il codice del proprio progetto deve essere scritto tenendo come punto di riferimento la versione 5.1 o superiore del PHP, a meno che questo non sia espressamente indicato nei commenti esplicativi del codice. \'E anche consigliato non utilizzare librerie non-standard\footnote{Le librerie standard sono quelle previste nell'installazione base del PHP.} a meno che non sia fornita una alternativa quando esse non sono disponibili.
 
-\section{Nomi comuni dei file e delle classi}
+\section*{Nomi comuni dei file e delle classi}
 Quando la classe o il nome del file è una parola di uso comune, o potrebbe molto probabilmente essere già stata utilizzata in un altro script PHP, il rischio che ci siano più variabili con lo stesso nome è molto alta. Fornire un prefisso univoco può  aiutare a prevenire questo genere di problemi definiti anche collisioni. Siccome gli utenti finali potrebbero utilizzare altri add-on o script PHP di terze parti che potrebbero introdurre a loro volta delle collisioni, è consigliabile scegliere un prefisso che sia univoco con la propria identità come sviluppatore o società.
 
 \begin{code}
@@ -264,7 +265,7 @@ class Pre_xml		ext.pre_xml.php
 class Pre_import	mod.pre_import.php
 \end{code}
 
-\section{Nome delle tabelle di un database}
+\section*{Nome delle tabelle di un database}
 Anche nella definizione dello schema di una base di dati può presentarsi il problema delle collisioni. Per questo motivo ogni nome di tabella dovrebbe contenere il prefisso \verb|exp_| seguito da un identificativo univoco legato alla propria identità o società
 
 \begin{code}
@@ -283,17 +284,17 @@ Nota: \'E importante essere consapevoli che MySQL ha un limite di 64 caratteri p
 exp_pre_email_addresses_of_registered_users_in_seattle_washington
 \end{code}
 
-\section{Un file per classe}
+\section*{Un file per classe}
 Utilizzare file separati per ciascuna classe utilizzata nel proprio progetto, a meno che le classi non siano strettamente correlati. In CodeIgniter per esempio, il file di classe Database contiene a sua volta più classi, ovvero la classe DB, la classe \verb|DB_Cache|, e il plugin Magpie (a sua volta Magpie, contiene le classi Magpie e Snoopy).
 
-\section{Spazi nel codice}
+\section*{Spazi nel codice}
 Per lasciare degli spazi nel codice, è sempre consigliato utilizzare il tasto di tabulazione (tabs). Questa scelta è sempre preferibile al singolo spazio, ottenuto con la barra spaziatrice, perchè permette di formattare meglio il codice e di rendere evidenti gli spazi al primo colpo d'occhio. L'uso del tabs inoltre permette di avere un codice più compatto: lo spazio in byte per memorizzare un tabs è uguale a quattro singoli caratteri spazio.
 
-\section{Interruzione di linea}
+\section*{Interruzione di linea}
 I file devono essere salvati utilizzando l'interruzione di linea di Unix\footnote{Definito anche come ritorno a capo, o nuova riga o a capo (in inglese, newline, line break o carattere end-of-line / EOL)} che ricordiamo  è un carattere speciale usato per gestire la fine di una riga di testo (e quindi non un vero e proprio carattere visibile sullo schermo). Il nome deriva dal fatto che il carattere successivo dopo di esso viene visualizzato su una nuova riga.
 Solitamente sono gli editor predefiniti di Windows o quelli più elementari (sempre per Windows) a non supportare il sistema LF.
 
-\section{Indentazione del codice}
+\section*{Indentazione del codice}
 Sull'indentazione delle righe del proprio codice di programmazione esistono molte correnti di pensiero, tutte più o meno valide. Ognuno di noi, ha poi un proprio pensiero riguardo alla formattazione del codice: chi preferisce lasciare molti spazi, chi invece ama un testo compatto. In tutti i casi, il codice deve essere scritto non solo per essere efficiente, ma anche facile da leggere per chiunque.
 
 \begin{deftab}{Indentazione}{Rappresenta le regole che disciplinano la formattazione dei blocchi di codice: lo scopo prefissato è rendere chiaro e organizzato il codice sorgente allo sviluppatore che lo ha prodotto e a chi lo consulta per la prima volta.}
@@ -365,7 +366,7 @@ for ($i = 0; $i < 10; $i++)
 }
 \end{code}
 
-\section{Spazi tra parentesi}
+\section*{Spazi tra parentesi}
 in generale non si dovrebbero utilizzare degli spazi tra le parentesi tonde e quadre. Una eccezione è ammissibile solo in presenza di strutture di controllo \ac{PHP} (dichiarazioni, do-while, elseif, for, foreach, if, switch, while), in modo da distinguerle più facilmente dalle funzioni.
 
 \begin{code}
@@ -396,7 +397,7 @@ foreach( $query->result() as $row )
 foreach ($query->result() as $row) // single space following PHP control structures, but not in interior parenthesis
 \end{code}
 
-\section{Testo localizzato}
+\section*{Testo localizzato}
 Qualsiasi testo in uscita nel pannello di controllo deve utilizzare i metodi messi a disposizione da CodeIgniter in modo da permettere agevolmente la localizzazione del testo nella propria lingua.
 
 \begin{code}
@@ -407,7 +408,7 @@ return "Invalid Selection";
 return $this->lang->line('invalid_selection');
 \end{code}
 
-\section{Metodi privati e variabili}
+\section*{Metodi privati e variabili}
 Metodi e variabili che sono unicamente accessibili tramite la propria classe come utility ed helper dovrebbero utilizzare un prefisso con il simbolo underscore:
 
 \begin{code}
@@ -415,7 +416,7 @@ convert_text() // public method
 _convert_text()	// private method
 \end{code}
 
-\section{Errori PHP}
+\section*{Errori PHP}
 Codice deve essere eseguito senza errori e senza fornire messaggi che segnalano malfunzionamenti (warning). Ad esempio, è una buona pratica non accedere mai ad una variabile che non avete impostato voi stessi (come \verb|$ _POST|) senza prima controllato che esista con isset().
 
 Assicurarsi che durante lo sviluppo del proprio progetto, la segnalazione degli errori sia attivata per tutti gli utenti (ALL users), e che \verb|display_errors| sia abilitata nell'ambiente \ac{PHP} utilizzato. È possibile controllare questa impostazione con:
@@ -435,7 +436,7 @@ ini_set('display_errors', 1);
 
 Nota: Impostare  \verb|display_errors| con \verb|ini_set()| in fase di esecuzione non è identico ad averlo abilitato in ambiente PHP. Vale a dire, non avrà alcun effetto se lo script contiene errori fatali.
 
-\section{Short Open Tag}
+\section*{Short Open Tag}
 Utilizzare sempre gli open tag full, nel caso in server non abbia abilitato il supporto ai tag short: \verb|short_open_tag enabled|.
 
 \begin{code}
@@ -448,7 +449,7 @@ Utilizzare sempre gli open tag full, nel caso in server non abbia abilitato il s
 <?php echo $foo; ?>
 \end{code}
 
-\section{Una istruzione per linea}
+\section*{Una istruzione per linea}
 Abituarsi a sviluppare un codice pulito e chiaro, quindi mai combinare più istruzioni in una sola linea.
 
 \begin{code}
@@ -461,7 +462,7 @@ $bar = 'that';
 $bat = str_replace($foo, $bar, $bag);
 \end{code}
 
-\section{Stringhe}
+\section*{Stringhe}
 Per racchiudere le stringhe si dovrebbero utilizzare sempre i singoli apici, invece delle virgolette (doppi apici). L'unica eccezione in cui sono ammissibili è quando all'interno della stringa si utilizza il singolo apice, altrimenti si dovranno utilizzare simboli di escape.
 
 \begin{code}
@@ -495,12 +496,12 @@ $query = $this->db->query("SELECT foo, bar, baz, foofoo, foobar AS raboof, fooba
 				LIMIT 5, 100");
 \end{code}
 
-\section{Argomenti di default della funzione}
+\section*{Argomenti di default della funzione}
 Quando è possibile, fornire sempre un argomento predefinito nelle funzioni. Questo aiuta a prevenire errori di \ac{PHP} dovuti a chiamate sbagliate e fornisce valori predefiniti definiti. Esempio:
 
 \begin{code}
 function foo($bar = '', $baz = FALSE)
 \end{code}
 
-\section{Riepilogo}
+\section*{Riepilogo}
 \omissis
