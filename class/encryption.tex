@@ -3,9 +3,12 @@
 \label{class:encryption}
 %************************************************
 
-La classe Encryption fornisce una crittografia dei dati a due vie: viene utilizzato uno schema di encoding random basato su ``hashed bitwise XOR'', oppure la libreria Mcrypt per la criptazione. Se Mcrypt non è disponibile sul proprio server il messaggio codificato continuerà a fornire un ragionevole grado di sicurezza per le sessioni crittografate o altri scopi ``leggeri''. Se invece Mcrypt è disponibile, verrà fornito un alto grado di sicurezza adeguato per la memorizzazione persistente delle informazioni per esempio di un database.
+La classe Encryption fornisce una crittografia dei dati a due vie basata sulla libreria Mcrypt che, a partire dalla versione 2.2.0 di CodeIgniter, deve essere necessariamente installata; in caso contrario la classe Encrypt non sarà utilizzabile.
 
-\begin{deftab}{Crittografia}{\'E la branca della crittologia che tratta delle ``scritture nascoste'', ovvero dei metodi per rendere un messaggio ``offuscato'' in modo da non essere comprensibile/intelligibile a persone non autorizzate a leggerlo.}
+\begin{deftabv}{Mcrypt}{\'E una libreria che fornisce un alto grado di sicurezza adeguato per la memorizzazione persistente delle informazioni per esempio di un database. La sua implementazione supporta diversi algoritmi e cifrari come DES, TripleDES, Blowfish (default), 3-WAY, SAFER-SK64, SAFER-SK128, TWOFISH, TEA, RC2 e GOST in CBC, OFB, CFB e ECB. Inoltre, sono supporti RC6 e IDEA che però sono considerate ``non-free''. CFB/OFB per impostazione predefinita sono a 8 bit.}
+\end{deftabv}
+
+\begin{deftab}{Crittografia}{\'E la branca della crittologia che tratta delle ``scritture nascoste'', ovvero dei metodi per rendere un messaggio ``offuscato'' in modo da non essere comprensibile/intelligibile a persone non autorizzate a leggerlo. Maggiori informazioni: \url{http://www.php.net/manual/en/book.mcrypt.php}}
 \end{deftab}
 
 \section*{Impostare la propria chiave}
@@ -120,7 +123,6 @@ $new_data = $this->encrypt->encode_from_legacy($old_encrypted_string);
 \end{itemize}
 
 \small
-%\footnotesize
 \begin{tabx}{XXX}
 \toprule
 Parametro & Val.Default & Descrizione \\ 

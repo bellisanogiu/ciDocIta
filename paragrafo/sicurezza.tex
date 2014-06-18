@@ -17,11 +17,9 @@ La sicurezza è uno degli argomenti più importanti e spesso sottovalutati nello
 \item dash (\verb|-|)
 \end{itemize}
 
-\item \verb|Register_globals|
-Durante l'inizializzazione del sistema tutte le variabili globali non sono impostate, eccetto quello contenute negli array \verb|$_GET|, \verb|$_POST| e \verb|$_COOKIE|. Le routine non impostate sono le stesse di \verb|register_globals = off|
+\item \verb|Register_globals| durante l'inizializzazione del sistema tutte le variabili globali non sono impostate, eccetto quelle contenute negli array \verb|$_GET|, \verb|$_POST| e \verb|$_COOKIE|. Le routine non impostate sono le stesse di \verb|register_globals = off|
 
-\item \verb|error_reporting|
-Nell'ambiente di produzione, è consigliato disabilitare la visualizzazione di qualsiasi tipo di errore o avviso \ac{PHP}, impostando su 0 il flag interno  \verb|error_reporting|. \'E importante limitare la visualizzazione di informazioni sensibili, in quanto queste potrebbero essere sfruttate per minare la sicurezza del progetto. Questo aspetto può essere gestito tramite CodeIgniter modificando il file fil{index.php} nella sezione ``application enviroment'' e inserendo uno dei tre valori:
+\item \verb|error_reporting| nell'ambiente di produzione, è consigliato disabilitare la visualizzazione di qualsiasi tipo di errore o avviso \ac{PHP}, impostando su 0 il flag interno  \verb|error_reporting|. \'E importante limitare la visualizzazione di informazioni sensibili, in quanto queste potrebbero essere sfruttate per minare la sicurezza del progetto. Questo aspetto può essere gestito tramite CodeIgniter modificando il file fil{index.php} nella sezione ``application enviroment'' e inserendo uno dei tre valori:
 
 \begin{description}
 \item [development] Ambiente di sviluppo. Tutti gli errori e avvisi sono abilitati
@@ -44,7 +42,7 @@ Una raccolta di buone abitudine condivise dagli sviluppatori prende il nome di `
 CodeIgniter fornisce le seguenti funzioni per assistere lo sviluppatore nella sicurezza del proprio software:
 
 \begin{description}
-\item[Filtro XSS] CodeIgniter è dotato di un filtro Cross Site Scripting. Questo filtro esamina le tecniche comunemente utilizzate per inserire codice Javascript dannoso o altri tipi di codice che tentano di dirottare i cookie 
+\item[Filtro XSS] CodeIgniter è dotato di un filtro Cross Site Scripting che esamina le tecniche comunemente utilizzate per inserire codice Javascript dannoso o simili che tentano di dirottare i cookie 
 \item[Validazione dei dati] Il framework fornisce diversi strumenti che analizzano la conformità dei dati inseriti agli standard attesi
 \item[Escape dei dati] Prima di inviare i dati ottenuti dall'esterno, per esempio tramite un form, è sempre una buona prassi effettuare l'escape dei caratteri nelle query
 \end{description}
@@ -52,9 +50,7 @@ CodeIgniter fornisce le seguenti funzioni per assistere lo sviluppatore nella si
 \section*{Gestione degli errori}
 Il framework CodeIgniter è ricco di funzioni native per la gestione gli errori nella fase di sviluppo. Gran parte del tempo nella realizzazione di prodotti complessi viene infatti speso nella fase di debug e poter contare su strumenti efficienti per trovare, visualizzare e gestire ogni possibile ``inconveniente'' è uno dei punti di successo di un buon framework. 
 
-CodeIgniter mette a disposizione una classe per il logging degli errori per salvare le notifiche di errore e i messaggi prodotti dal debugging all'interno di un comodo file di testo. Per impostazione predefinita, gli errori prodotti dalle applicazioni vengono sempre mostrati: questa scelta può essere modificata passando il valore ``0'' (zero) alla funzione \verb|error_reporting()| posizionata all'inizio del file \fil{index.php}. In tutti i casi, disabilitare la visualizzazione degli errori non impedirà la scrittura degli stessi all'interno dei file di log.
-
-Le funzioni disponibili per la gestione degli errori sono le seguenti:
+CodeIgniter mette a disposizione una classe per il logging degli errori che consente il salvataggio delle notifiche di errore e i messaggi prodotti dal debugging all'interno di un comodo file di testo. Per impostazione predefinita, gli errori prodotti dalle applicazioni vengono sempre mostrati: questa scelta può essere modificata passando il valore ``0'' (zero) alla funzione \verb|error_reporting()| posizionata all'inizio del file \fil{index.php}. In tutti i casi, disabilitare la visualizzazione degli errori non impedirà la scrittura degli stessi all'interno dei file di log. Le funzioni disponibili per la gestione degli errori sono le seguenti:
 
 \begin{itemize}
 \item \verb|show_error('messaggio' [, int $status_code= 500 ])| si tratta di una funzione che ha il compito di permettere la visualizzazione degli errori attraverso un template che si trova al percorso:
@@ -179,7 +175,7 @@ Se il proprio sito è stato aggiornato per un restyling o è stato effettuata un
 Redirect 301 /vecchia-pagina.htm http://www.miosito.it/nuova-pagina.htm
 \end{code}
 
-Una soluzione migliore, anche se leggermente più complicata, prevede l'utilizzo del \verb|mod_rewrite| di Apache: attraverso l'utilizzo di espressioni regolari è possibile creare o modificare gli indirizzi di un progetto per adattarli dinamicamente alle proprie esigenze. Il seguente esempio definisce una serie di regole che intercettano tutte le pagine con estensione ``.html'' ridefinendole con estensione ``.php''. Si tratta di una esigenza comune tra chi trasforma un sito statico in uno dinamico.
+Una soluzione migliore, anche se leggermente più complicata, prevede l'utilizzo del \verb|mod_rewrite| di Apache: attraverso le espressioni regolari è possibile creare o modificare gli indirizzi di un progetto per adattarli dinamicamente alle proprie esigenze. Il seguente esempio definisce una serie di regole che intercettano tutte le pagine con estensione ``.html'' ridefinendole con estensione ``.php''. Si tratta di una esigenza comune tra chi trasforma un sito statico in uno dinamico.
 
 \begin{code}
 <ifModule mod_rewrite.c>

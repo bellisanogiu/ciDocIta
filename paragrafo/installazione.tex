@@ -77,7 +77,6 @@ Successivamente si apra il programma dotato di interfaccia grafica e si selezion
 \begin{img}{Synaptic - installazione LAMP}{5}{012}
 \end{img}
 
-
 \begin{img}{MySQL ha bisogno di una password}{5}{013}
 \end{img}
 
@@ -259,11 +258,15 @@ Qui di seguito prendiamo alcuni dei problemi più comuni nell'installazione e co
 \begin{description}
 \item[Pagine non caricate] se si scopre che nonostante ciò che inseriamo nel nostro \ac{URL}, solo la pagina di default viene caricata, questo potrebbe significare che il server non supporta la variabile \verb|PATH_INFO| necessaria per mostrare \ac{URL} amichevoli ai motori di ricerca. Come primo passo, si apra il file \fil{config.php} al percorso \sys{/application/config/} quindi si cerchino le informazioni sul protocollo \ac{URI}. \'E consigliabile provare un paio di impostazioni alternative. Se ancora non funziona dopo aver provato questo metodo, si dovrà forzare CodeIgniter per aggiungere un punto interrogativo agli \ac{URL}. Per fare questo, si apra il \fil{config.php} al percorso \sys{/application/config/}, e si modifichi:
 
-\verb|$config['index_page'] = "index.php";|
+\begin{code}
+$config['index_page'] = "index.php";
+\end{code}
 
 con:
 
-\verb|$config['index_page'] = "index.php?";|
+\begin{code}
+$config['index_page'] = "index.php?";
+\end{code}
 
 \item [Permessi] non si riesce a copiare CodeIgniter nella root del proprio server web? Potrebbe essere un problema legato ai permessi. Solitamente solo l'amministratore può scrivere/modificare i file in questa cartella, quindi una soluzione veloce è quella di copiare i file con i permessi di super user, facendo precedere ogni vostro comando dalla stringa \ac{su}. Per esempio, una volta scaricato e decompresso il file zip che contiene CodeIgniter, questo può essere copiato nella directory del server con:
 

@@ -32,7 +32,7 @@ Il meccanismo alla base delle sessioni è abbastanza semplice. Quando una pagina
 Una sessione, per quanto concerne CodeIgniter, è semplicemente un array contenente le seguenti informazioni:
 
 \begin{itemize}
-\item ID Session: è l'identificativo univoco dell'utente che si collega al sito rappresentato da una stinga generata staticamente, con hash MD5 e rigenerata (per default) ogni 5 minuti
+\item ID Session: è l'identificativo univoco dell'utente che si collega al sito. A partire dalla versione 2.2.0 di CodeIgniter viene utilizzata una autenticazione basata su \ac{HMAC}
 \item IP Address: l'indirzzo IP dell'utente
 \item User Agent: i primi 120 caratteri contenuti nella stringa delle informazioni del browser
 \end{itemize}
@@ -52,6 +52,9 @@ I dati precedentemente menzionati sono memorizzati nei cookie in array serializz
 Se si ha abilitata l'opzione di cifratura, l'array serializzato verrà crittografato prima di essere memorizzato nel cookie, rendendo i dati altamente sicuri. Maggiori informazioni riguardo la crittografia sono disponibili nella sezione dedicata alla classe Encryption\vpageref{class:encryption}.
 
 Nota: i cookie di sessione sono aggiornati solo ogni cinque minuti per impostazione predefinita, al fine di ridurre il carico del server. Se si ricarica più volte una pagina si noterà che il tempo relativo all'ultima attività (last activity) sarà aggiornato solo se sono trascorsi 5 o più minuti dall'ultima volta in cui si è scritto nel cookie. Questa tempo è comunque personalizzabile modificando il parametro \verb|$config['sess_time_to_update']| nel file fil{/system/config/config.php}.
+
+\begin{deftabv}{HMAC}{\'E un codice per l'autenticazione di messaggi basata su una funzione di hash: fornisce un ragionevole grado di sicurezza atto a garantire sia l'integrità che l'autenticità di un messaggio. Una caratteristica peculiare di HMAC è il non essere legato a nessuna funzione di hash predefinita, questo per rendere possibile una sostituzione della funzione nel caso non fosse abbastanza sicura. Informazioni più dettagliate sono disponibili sul documento RFC 2104: \url{http://tools.ietf.org/html/rfc2104}}
+\end{deftabv}
 
 \section*{Recuperare i dati di sessione}
 

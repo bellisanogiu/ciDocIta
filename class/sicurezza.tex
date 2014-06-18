@@ -5,9 +5,7 @@
 La classe Security contiene i metodi utili a definire un'applicazione sicura, grazie all'elaborazione dei dati in ingresso.
 
 \section*{Filtro XSS}
-CodeIgniter è dotato di un filtro di prevenzione Cross Site Scripting Hack, che può essere eseguito automaticamente per filtrare tutti i dati POST e COOKIE oppure manualmente, scegliendo uno o più elementi specifici. Per impostazione predefinita questo filtro non viene eseguito a livello globale poiché potrebbe non essere sempre necessario e poi perché aumenta, anche se di poco, il carico di elaborazione sul server.
-
-Il filtro XSS scova tecniche comunemente utilizzate per attivare Javascript o altri tipi di codice che dirottano i cookie o compiono altre operazioni dannose. Se si incontra ``qualcosa di non conosciuto'', questo viene reso sicuro convertendo i dati in entità carattere.
+CodeIgniter è dotato di un filtro di prevenzione Cross Site Scripting Hack, che può essere eseguito automaticamente per filtrare tutti i dati POST e COOKIE oppure manualmente, scegliendo uno o più elementi specifici. Per impostazione predefinita questo filtro non viene eseguito a livello globale poiché potrebbe non essere sempre necessario e poi perché aumenta, anche se di poco, il carico di elaborazione sul server. Il filtro XSS scova tecniche comunemente utilizzate per attivare Javascript o altri tipi di codice che dirottano i cookie o compiono altre operazioni dannose. Se si incontra ``qualcosa di non conosciuto'', questo viene reso sicuro convertendo i dati in entità carattere.
 
 Nota: Questa funzione deve essere utilizzata solo per gestire i dati che vengono inviati al server. Non deve quindi essere utilizzata per esaminare i dati coinvolti nei processi interni di esecuzione in quanto verrebbero inutilmente impegnate parte delle risorse di elaborazione del server.
 
