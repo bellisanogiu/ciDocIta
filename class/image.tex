@@ -298,3 +298,40 @@ Preferenze & Default & Opzioni & Descrizione \\
 \bottomrule
 \end{tabx}
 \normalsize
+
+\section*{Modificare le immagini in sequenza}
+Se si volessero apportare più modifiche in sequenza ad o più immagini, si dovranno resettare le impostazioni della libreria attraverso l'istruzione:
+
+\begin{code}
+$this->image_lib->clear();
+\end{code}
+
+Questa andrà eseguita prima di inizializzare nuovamente la libreria con la configurazione desiderata. Qui di seguito si mostra un esempio che mostra due operazioni in successione sulla stessa immagine: una rotazione e un successivo ridimensionamento. Si noti che dopo la prima operazione, la libreria viene resettata e una volta definiti i parametri della seconda operazione, nuovamente inizializzata.
+
+\begin{code}
+//Impostazioni per rotazione verticale  
+$config['image_library'] = 'gd2';  
+$config['source_image'] = '/percorso/miaimmagine.jpg';  
+$config['rotation_angle'] = 'vrt';
+
+// Viene caricata la libreria con la configurazione  
+$this->load->library('image_lib', $config);  
+
+// Viene eseguita la rotazione
+$this->image_lib->rotate();
+
+// Le impostazioni della libreria vengono cancellate
+$this->image_lib->clear(); 
+
+// Vengono definiti i parametri per il cropping
+$config['image_library'] = 'gd2';  
+$config['source_image'] = '/percorso/miaimmagine.jpg';  
+$config['x_axis'] = '50';  
+$config['y_axis'] = '50';
+
+// La libreria con la configurazione viene inizializzata
+$this->image_lib->initialize($config); 
+
+// Infine si esegue il ridimensionamento
+$this->image_lib->crop();  
+\end{code}
