@@ -3,13 +3,13 @@
 \label{cap:model}
 %************************************************
 
-Questo capitolo è dedicato al Modello, l'elemento del pattern \ac{MVC}, demandato ad interfacciare quanto sviluppato con una base di dati. Ora, non solo si farà pratica con tale prezioso strumento, ma si esamineranno anche le funzioni messe a disposizione per l'aggiornamento, inserimento, cancellazione e selezione dei dati tramite query.
+Questo capitolo è dedicato al Modello, l'elemento del pattern \ac{MVC} demandato ad interfacciare quanto sviluppato con una base di dati. Ora, non solo si farà pratica con tale prezioso strumento, ma si esamineranno anche le funzioni messe a disposizione per l'aggiornamento, inserimento, cancellazione e selezione dei dati tramite query.
 
 \section*{Introduzione alla base di dati}
 \omissis
 
 \section*{Server locale}
-Daremo per scontata una certa dimestichezza con i database di tipo MySQL: la loro installazione e configurazione è ormai alla portata dei neofiti grazie a progetti come LAMP per Linux e per i maggiori sistemi operativi. Abbiamo già esaminato un tutorial per la loro installazione e la configurazione (si veda la sezione\vref{sec:installazione}): per maggiori informazioni si rimanda anche alla vasta documentazione reperibile in rete. Si consiglia anche l'utilizzo del tool ``phpMyAdmin'' \url{http://www.phpmyadmin.net/} con cui è resa più agevole la gestione della propria base di dati grazie ad una intuitiva interfaccia grafica.
+Daremo per scontata una certa dimestichezza con i database di tipo MySQL: la loro installazione e configurazione è ormai alla portata dei neofiti grazie a progetti come LAMP per Linux e per i maggiori sistemi operativi. Abbiamo già esaminato un tutorial per la loro installazione e la configurazione (si veda la sezione\vref{sec:installazione}): per maggiori informazioni si rimanda anche alla vasta documentazione reperibile in rete. Si consiglia anche l'utilizzo del tool ``phpMyAdmin'' \url{http://www.phpmyadmin.net/} con cui è resa più agevole la gestione della propria base di dati grazie ad una intuitiva interfaccia grafica (vedi immagini \vpageref{fig:016} e \vpageref{fig:017}).
 
 \begin{img}{phpMyAdmin}{3}{016}
 \end{img}
@@ -18,7 +18,8 @@ Daremo per scontata una certa dimestichezza con i database di tipo MySQL: la lor
 \end{img}
 
 \section*{Configurazione della base di dati}
-Si crei un database che al momento chiameremo semplicemente ``test'': al suo interno definiamo una tabella ``news'' e quindi i suoi attributi (si veda \vpageref{fig:017}). Come si ricorderà, nel capitolo\vref{sec:notizia} si è già introdotto lo schema della nostra tabella: una serie di record con un \emph{titolo}, un \emph{testo} e la relativa \emph{data di inserimento}. Realizziamo quanto appena esposto attraverso questa serie di istruzioni MySQL, che possono essere eseguite attraverso l'interprete SQL installato o tramite l'interfaccia di phpMyAdmin.
+Si crei un database che al momento chiameremo semplicemente ``test'': tramite il menu in alto di phMyadmin si selezioni la voce \textit{Database} e si inserisca il nome desiderato, nel nostro caso ``test'' (vedi immagine \vpageref{fig:020}).
+al suo interno definiamo una tabella ``news'' e quindi i suoi attributi (si veda \vpageref{fig:017}). Come si ricorderà, nel capitolo\vref{sec:notizia} si è già introdotto lo schema generico della nostra tabella: una serie di record con un \emph{titolo}, un \emph{testo} e la relativa \emph{data di inserimento}. Realizziamo quanto appena esposto attraverso una serie di istruzioni MySQL, che possono essere eseguite attraverso l'interprete SQL installato o tramite l'interfaccia di phpMyAdmin.
 
 \begin{code}
 CREATE TABLE news (
@@ -31,7 +32,11 @@ CREATE TABLE news (
 );
 \end{code}
 
-L'attributo \var{slug} è un indice con cui ``marcheremo'' ogni notizia pubblicata per poi richiamarla eventualmente in seguito. Una sorta di segnalibro, più o meno. Ora si inseriscano due notizie per popolare la tabella. Qui viene riportato il codice che può essere processato velocemente selezionando la voce SQL dal menu principale (vedi \vpageref{fig:018}).
+\begin{img}{Creazione di un nuovo database}{3}{020}
+\end{img}
+
+
+L'attributo \var{slug} è un indice con cui ``marcheremo'' ogni notizia pubblicata per poi richiamarla facilmente in seguito: una sorta di segnalibro, più o meno. Ora si inseriscano due notizie per popolare la tabella. Qui viene riportato il codice che può essere processato velocemente selezionando la voce SQL dal menu principale (vedi immagine \vpageref{fig:018}).
 
 \begin{img}{Inserimento della query}{3}{018}
 \end{img}

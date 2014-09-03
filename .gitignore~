@@ -87,7 +87,6 @@ sympy-plots-for-*.tex/
 
 # xindy
 *.xdy
-/versioni/*
 /versioni/020614book.pdf
 /versioni/040614book.pdf
 /versioni/050614book.pdf
