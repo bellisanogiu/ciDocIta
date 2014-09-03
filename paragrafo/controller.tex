@@ -3,7 +3,7 @@
 \label{cap:controller}
 %************************************************
 
-Con questo capitolo incominceremo a gettare le basi del nostro programma. Introdurremo il concetto del Controller che ci renderà più chiaro il pattern \ac{MVC} e lo stesso CodeIgniter. Con poche righe di codice genereremo una pagina con un elenco di notizie prelevate da un database e saremo anche in grado, tramite un form, di crearne facilmente di nuove. Se l'installazione di CodeIgniter e la configurazione del server web saranno stati portati a termine correttamente saremo pronti per creare il primo Controller. In caso contrario, ahimè, vi rimandiamo al paragrafo\vref{sec:problemi} per la risoluzione dei problemi più comuni.
+Ora si entrerà nel vivo del nostro programma. Introdurremo il concetto del Controller che ci renderà più chiaro il pattern \ac{MVC} e lo stesso CodeIgniter. Con poche righe di codice genereremo una pagina con un elenco di notizie prelevate da un database e saremo anche in grado, tramite un form, di crearne facilmente di nuove e di memorizzarle automaticamente in una base di dati persinstente. Se l'installazione di CodeIgniter e la configurazione del server web saranno stati portati a termine correttamente si sarà pronti per creare il primo Controller. In caso contrario, ahimè, vi rimandiamo al paragrafo\vref{sec:problemi} per la risoluzione dei problemi più comuni.
 
 La nostra pagina delle notizie avrà un indirizzo presumibilmente come:
 
@@ -11,7 +11,7 @@ La nostra pagina delle notizie avrà un indirizzo presumibilmente come:
 http://127.0.0.1/codeigniter/index.php/pages/news/
 \end{code}
 
-Che si può scomporre nel seguente schema su cui sarà bene prestare un poco di attenzione:
+Che si può scomporre nel seguente schema:
 
 \label{sec:urisintassi}
 \begin{code}
@@ -24,7 +24,7 @@ http://127.0.0.1/[codeigniter/index.php]/[controller]/[metodo]/[argomenti]
 \item [codeigniter/index.php] è la directory in cui è installato il framework che sarà presente in tutti gli \ac{URI} della nostra guida
 \item [controller] è la classe principale che viene invocata per instradare la nostra richiesta. Nel nostro esempio si chiama \var{pages}. Questa classe racchiude uno o più metodi dalle precise funzionalità
 \item [metodo] si chiama \var{news} ed è il metodo del nostro Controller \var{pages} \'E questo il nome con cui sono chiamate le funzioni nei linguaggi orientati agli oggetti come lo è il \ac{PHP}. Ogni metodo è in pratica una funzione specifica del nostro programma. In questo esempio, il metodo \var{news} si occuperà della pubblicazione delle ``notizie''
-\item [argomenti] (facoltativi) si riferiscono alle variabili e hai relativi valori che vengono passati al metodo \var{news}. Attualmente non abbiamo inserito alcun argomento ma in seguito li introdurremo, non preoccupatevi
+\item [argomenti] (facoltativi) si riferiscono alle variabili e hai relativi valori che vengono passati al metodo \var{news}. Attualmente non abbiamo previsto alcun argomento ma in seguito li introdurremo, non preoccupatevi
 \end{description}
 
 \section*{Il nostro primo Controller}
@@ -40,11 +40,9 @@ class Pages extends CI_Controller {
 }
 \end{code}
 
-Il codice \ac{PHP} è molto semplice: viene definita una classe \var{Pages} (il nostro Controller) e il metodo \var{view()}, al momento non ancora definito. Quest'ultimo, una volta completo, si occuperà di visualizzare un elenco di notizie.
+Il codice \ac{PHP} è molto semplice: viene definita una classe \var{Pages} (il nostro Controller) e al suo interno il metodo \var{view()}, al momento non ancora definito. Quest'ultimo, una volta completo, si occuperà di visualizzare un elenco di notizie.
 
-I Controller, lo ribadiamo, accettano in ingresso una richiesta attraverso il protocollo \ac{HTTP} e associano ad essa una funzionalità del nostro programma. Come viene definita la richiesta in un Controller? Semplicemente definendo un \ac{URI}, ovvero una stringa che identifica in modo univoco una risorsa del progetto. 
-
-Riassumiamo i concetti esposti con un esempio pratico che tenga conto del nostro progetto:
+I Controller, lo ribadiamo, accettano in ingresso una richiesta attraverso il protocollo \ac{HTTP} e associano ad essa una funzionalità del nostro programma. Come viene definita la richiesta in un Controller? Semplicemente definendo un \ac{URI}, ovvero una stringa che identifica in modo univoco una risorsa del progetto. Riassumiamo i concetti esposti con un esempio pratico che tenga conto del nostro progetto:
 
 \begin{code}
 http://127.0.0.1/codeigniter/index.php/pages/view
@@ -66,17 +64,21 @@ class Pages extends CI_Controller {
 }
 \end{code}
 
-Si tratta di poche righe, che non dovrebbero creare alcun problema a chi possiede anche una minima conoscenza del \ac{PHP}.
+Si tratta di poche righe, che risulteranno familiari a chi possiede anche una minima conoscenza del \ac{PHP}.
 
 \begin{itemize}
 \item \verb|[class Pages extends CI_Controller]| definisce la classe \var{Pages} che è una estensione della classe-Controller principale di CodeIgniter, \verb|CI_Controller|. Quando definiremo un Controller abituiamoci a questa sintassi
 \item function view() è il nostro metodo che si occuperà, in questo caso specifico, di visualizzare un testo
 \end{itemize}
 
-Il metodo \var{view()} scritto in codice \ac{PHP} utilizza il comando \var{echo} per visualizzare la stringa contenuta tra virgolette. Ovviamente, nessuno vi vieta di personalizzare il messaggio se lo desiderate. 
+Il metodo \var{view()} scritto in codice \ac{PHP} utilizza il comando \var{echo} per visualizzare la stringa contenuta tra virgolette. Ovviamente nessuno vi vieta di personalizzare il messaggio se lo desiderate. Per vedere il risultato del primo Controller/metodo, carichiamo la pagina come precedentemente indicato:
+
+\begin{code}
+http://127.0.0.1/codeigniter/index.php/pages/view
+\end{code}
 
 \section*{Facciamo pratica}
-Proviamo a comprendere meglio la funzione del Controller realizzando un secondo esempio. Se nel nostro sito volessimo inserire anche una pagina dedicata ai ``contatti'', basterà creare un nuovo Controller apposito. Si crei un nuovo file \fil{contatti.php} in \sys{application/controllers/} con il codice:
+Proviamo a comprendere meglio la funzione del Controller realizzando un secondo esempio. Se nel nostro sito volessimo inserire anche una pagina dedicata ai ``contatti'', basterà definire un nuovo Controller. Si crei un nuovo file \fil{contatti.php} in \sys{application/controllers/} con il codice:                        
 
 \begin{code}
 <?php
@@ -89,7 +91,7 @@ class Contatti extends CI_Controller {
 \end{code}
 
 Le differenze rispetto al precedente Controller sono minime, eppure significative. Qui di seguito un elenco chiarificatore:
-
+  
 \begin{description}
 \item[il nome] il Controller ora si chiama \var{Contatti}: questo è esplicitato sia nel codice (il nome della classe) che nel nome del file (\fil{contatti.php}).
 \item[metodo] il metodo \var{view()} viene sostituito da \var{index()}, che è definito come il ``metodo base'' di ogni Controller. Se non viene specificato alcun metodo, nella richiesta \ac{HTTP} il Controller esegue automaticamente quello predefinito, appunto \var{index()}.
@@ -101,9 +103,7 @@ Osserviamo il frutto del nostro lavoro digitando:
 http://127.0.0.1/codeigniter/index.php/contatti/
 \end{code}
 
-Ricordate quello che abbiamo detto prima analizzando la sintassi degli \ac{URI} \vpageref{sec:urisintassi}? Subito dopo la stringa \sys{index.php} compare \sys{contatti}: questo è il nuovo Controller. Inoltre, non specificando alcun metodo subito dopo \sys{/contatti/}, verrà eseguito \var{index()} il metodo predefinito di ogni Controller.
-
-Si vuole rimarcare che un Controller non ``genera'' alcunché. Il suo compito non è produrre, o visualizzare, ma esaminare una richiesta \ac{HTTP}, ovvero un indirizzo ed eseguire la funzione definita all'interno del Controller. In modo analogo è possibile sbizzarrirci creando svariati Controller, ognuno dei quali corrisponde ad un nuovo file all'interno del percorso \fil{application/controllers/}:
+Ricordate quanto detto prima, analizzando la sintassi degli \ac{URI} \vpageref{sec:urisintassi}? Subito dopo la stringa \sys{index.php} compare \sys{contatti}: questo è il nuovo Controller. Inoltre, non specificando alcun metodo subito dopo \sys{/contatti/}, verrà eseguito \var{index()}, quello predefinito di ogni Controller. Si vuole rimarcare che un Controller non ``genera'' alcunché. Il suo compito non è produrre, o visualizzare, ma esaminare una richiesta \ac{HTTP}, ovvero un indirizzo ed eseguire la funzione definita al suo interno. In modo analogo è possibile sbizzarrirsi creando svariati Controller, ognuno dei quali corrisponde ad un nuovo file all'interno del percorso \fil{application/controllers/}:
 
 \begin{itemize}
 \item http://127.0.0.1/codeigniter/index.php/about/ (instrada verso la pagina dei contatti)
@@ -111,7 +111,7 @@ Si vuole rimarcare che un Controller non ``genera'' alcunché. Il suo compito no
 \item http://127.0.0.1/codeigniter/index.php/top/ (instrada verso una classifica generica)
 \end{itemize}
 
-Nota: Vi è una aspetto sui nomi dei file e delle classi a cui è bene prestare attenzione. Il file del Controller (\fil{pages.php}) assume il nome della classe definita al suo interno (negli esempi \var{Pages} o \var{Contatti}). Il nome del file deve essere scritto in minuscolo, mentre la classe definita all'interno deve presentare il primo carattere (l'iniziale) in maiuscolo.
+Nota: Vi è una aspetto sui nomi dei file e delle classi a cui è bene prestare attenzione. Il file del Controller (\fil{pages.php}) assume il nome della classe definita al suo interno (negli esempi \var{Pages} e \var{Contatti}). Il nome del file deve essere scritto in minuscolo, mentre la classe definita all'interno del codice deve presentare il primo carattere (l'iniziale) in maiuscolo.
 
 \section*{Un metodo avanzato}
 Riprendiamo il metodo \var{view()} per introdurre il concetto di ``passaggio di variabili''. In precedenza si era accennato al fatto che un metodo può contenere degli argomenti opzionali. Esaminiamo il nostro Controller \var{Pages} opportunamente modificato.
@@ -131,26 +131,24 @@ Il codice è quasi immutato tranne che per l'introduzione di due elementi.
 
 \begin{itemize}
 \item \verb|$page = 'home'| all'interno del metodo \var{view()} si trovano, specificati tra parentesi, gli (opzionali) argomenti. Nel nostro caso viene definita la variabile \verb|$page| che assume il valore ``home''
-\item il messaggio che viene stampato su schermo con \var{echo}, ora contiene un riferimento alla variabile appena introdotta: la nostra scritta sarà personalizzata in base al valore che \verb|$page| assumerà
+\item il messaggio che viene stampato su schermo con \var{echo}, ora contiene un riferimento alla variabile appena introdotta: la nostra scritta sarà personalizzata in base al valore che l'argomento \verb|$page| assumerà
 \end{itemize}
 
 Se ora si digita: \sys{http://127.0.0.1/index.php/pages/view} comparirà il messaggio \textit{``Ciao! Ti trovi nella sezione home''}.
 
-La variabile \verb|$page| del metodo \var{view()} in mancanza di un argomento specifico, assume il valore predefinito ``home'' e lo riporta nel messaggio. Proviamo ora ad impostare da soli un argomento. Digitiamo l'indirizzo seguente e leggiamo il messaggio.
+La variabile \verb|$page| del metodo \var{view()} in mancanza di un argomento specifico, assume il valore predefinito ``home'' e lo riporta nel messaggio. Proviamo ora ad introdurre un argomento. Digitiamo l'indirizzo seguente e leggiamo il messaggio.
 
 \begin{code}
 http://127.0.0.1/codeigniter/index.php/pages/view/segreta
 \end{code}
 
-Ebbene sì, attraverso questo \ac{URI} definiamo in sequenza il Controller \var{Pages}, il metodo \var{view()} e il relativo argomento \var{segreta} che personalizza il messaggio su schermo.
-
-Se l'argomento non è del tutto chiaro, non preoccupatevi, verrà ripreso nuovamente in seguito con altri esempi (si veda\vpageref{sec:passaggio}).
+Ebbene sì, attraverso questo \ac{URI} definiamo in sequenza il Controller \var{Pages}, il metodo \var{view()} e il relativo argomento \var{segreta} che personalizza il messaggio su schermo. Se l'argomento non è del tutto chiaro, non preoccupatevi, verrà ripreso nuovamente in seguito con altri esempi (si veda\vpageref{sec:passaggio}).
 
 \label{sec:uri}
 \section*{Importanza del Controller}
 Ora dovrebbe essere maggiormente chiaro il compito svolto dal Controller all'interno del pattern \ac{MVC}. Ma perché è così importante? Chi ha qualche nozione di programmazione potrebbe supporre che questo modo di ragionare sia troppo farraginoso e che un controller possa essere banalmente sostituito da una libreria di funzioni che svolga compiti analoghi. Ma questo non è propriamente corretto, perché lo scopo ultimo di un Controller è instradare, non generare.
 
-Si ipotizzi, in un futuro prossimo, di voler modificare la struttura del proprio sito, magari per realizzare una versione in lingua inglese da affiancare a quella già esistente in italiano. In questo caso, per accedere ad una ipotetica pagina inglese dei ``contatti'' utilizzando il pattern \ac{MVC}, si avranno due controller:
+Si ipotizzi, in un futuro prossimo, di voler modificare la struttura del proprio sito, magari per realizzare una versione in lingua inglese da affiancare a quella già esistente in italiano. In questo caso, per accedere anche ad una ipotetica pagina inglese dei ``contatti'' utilizzando il pattern \ac{MVC}, si implementeranno due controller:
 
 \begin{itemize}
 \item \sys{http://mioSito/index.php/contatti} (per la versione in italiano)
@@ -158,11 +156,11 @@ Si ipotizzi, in un futuro prossimo, di voler modificare la struttura del proprio
 \item \sys{http://mioSito/index.php/contact} (per la versione in inglese)
 \end{itemize}
 
-Sì, è stata variata solo una parola, ma questa modifica è solo in parvenza banale. Infatti se il progetto non avesse adottato il pattern \ac{MVC} si sarebbe potuti incorrere in problemi molto fastidiosi, come per esempio la ridefinizione di tutti i link nei menu di navigazione, e probabilmente delle funzioni richiamate dagli script. Apportare queste correzioni si rivela sempre impegnativo, noioso, senza tener conto degli errori che si introducono ogni volte che si modifica un vecchio codice.
+\'E stata variata solo una parola (il Controller), ma questa modifica è solo in parvenza banale. Infatti se il progetto non avesse adottato il pattern \ac{MVC} si sarebbe potuti incorrere in problemi molto fastidiosi, come per esempio la ridefinizione di tutti i link nei menu di navigazione, e probabilmente delle funzioni richiamate dagli script. Apportare queste correzioni si rivela sempre impegnativo, noioso, senza tener conto degli errori che si introducono ogni volta che si modifica un vecchio codice.
 
-La definizione di un Controller risolve agevolmente tutti questi problemi. Nel nostro caso specifico, basterà creare un nuovo Controller \fil{contact.php} con all'interno un codice identico a quello di \fil{contatti.php}, avendo ovviamente l'accortezza di rinominare la classe al suo interno in \var{Contact} (mi raccomando solo l'iniziale maiuscola!). In questo modo un utente potrà digitare ambedue gli indirizzi sopra esposti ed essere instradato verso la medesima pagina. Anche se, come è lecito immaginare, si dovrebbero personalizzare i due Controller per caricare due pagine differenti: una in italiano e l'altra in inglese. Ma questo, al momento, non è una priorità.
+La definizione di un Controller risolve agevolmente tutti questi problemi. Nel nostro caso specifico, basterà creare un nuovo Controller \fil{contact.php} con all'interno un codice identico a quello di \fil{contatti.php}, avendo ovviamente l'accortezza di rinominare la classe al suo interno in \var{Contact} (mi raccomando solo l'iniziale maiuscola!). In questo modo un utente potrà digitare ambedue gli indirizzi sopra esposti ed essere instradato verso la medesima pagina. Anche se, come è lecito immaginare, si dovrebbero personalizzare i due Controller per caricare due pagine con informazioni differenti: una in italiano e l'altra in inglese. Ma questo, al momento, non è una priorità.
 
-Il Controller è in definitiva questo: analizza una richiesta esplicitata dall'\ac{URI} presente nell'indirizzo e instrada verso il metodo appropriato. Altre sue importanti funzionalità hanno ripercussioni positive sulla sicurezza del progetto web tanto per citare un esempio. Prima che il Controller sia caricato e i suoi metodi eseguiti, la ``richiesta http'' e tutti i dati inviati dall'utente vengono filtrati per la sicurezza. Il Controller carica inoltre il Modello, le Librerie, gli Helper e ogni altra risorsa necessaria ad eseguire la richiesta specifica. Il Controller svolge anche la funzione che fa da intermediario tra il Modello, la Vista e ogni altra risorsa necessaria alle richieste \ac{HTTP} e alla generazione di pagine web. CodeIgniter è abbastanza permissivo sull'approccio al pattern \ac{MVC}, in quanto si può anche escludere la parte riguardante il Modello: se non si utilizza un database, si può semplicemente ignorare questo aspetto  e costruire la propria applicazione utilizzando il Controller e la Vista. CodeIgniter permette anche di incorporare i propri script o addirittura sviluppare le librerie di base, per lavorare in maniera più produttiva.
+Il Controller è in definitiva questo: analizza una richiesta esplicitata nell'\ac{URI} presente nell'indirizzo e instrada verso il metodo appropriato. Altre sue importanti funzionalità hanno ripercussioni positive sulla sicurezza del progetto web tanto per citare un esempio. Prima che il Controller sia caricato e i suoi metodi eseguiti, la ``richiesta http'' e tutti i dati inviati dall'utente vengono filtrati per la sicurezza. Il Controller carica il Modello, le Librerie, gli Helper e ogni altra risorsa necessaria ad eseguire la richiesta specifica ed inoltre fa da intermediario tra il Modello, la Vista e ogni altra risorsa necessaria alle richieste \ac{HTTP} e alla generazione di pagine web. CodeIgniter è abbastanza permissivo sull'approccio al pattern \ac{MVC}, in quanto si può anche escludere la parte riguardante il Modello: se non si utilizza un database, si può semplicemente ignorare questo aspetto  e costruire la propria applicazione utilizzando il Controller e la Vista. CodeIgniter permette anche di incorporare i propri script o addirittura sviluppare le librerie di base, per lavorare in maniera più produttiva.
 
 \section*{Riepilogo}
-Probabilmente se si è arrivati a questo punto alcune cose saranno più chiare, altre continueranno a non esserlo, ma non preoccupatevene troppo. CodeIgniter è un framework che si differenzia dalla concorrenza per la sua facilità d'uso, leggerezza e prestazioni. Il suo scopo è sviluppare progetti software (generalmente web) di media complessità, utilizzando l'approccio \ac{MVC} per separare la logica (il codice) dalla presentazione (l'aspetto grafico del nostro software). Per ottenere questo scopo vengono utilizzati il Controller, il Modello e la Vista. Il primo accetta una richiesta, la esamina ed esegue una operazione tra quelle previste (per esempio potrebbe restituire una pagina, fornire un elenco di dati prelevati da un database, ecc). Il Controller si comporta come un vigile in mezzo al traffico: esamina la situazione e in base alle direttive (fornite dallo sviluppatore) dirige il flusso verso una determinata strada. Il Modello (raramente opzionale) contiene le query per interfacciare il Controller con la nostra base di dati. La Vista infine si occupa dell'aspetto visuale delle pagine. In questo capitolo si è fatta dimestichezza con i Controller, compiendo un primo passo nella realizzazione di un progetto per la visualizzazione delle notizie collegate ad una base di dati. 
+Probabilmente se si è arrivati a questo punto alcuni concetti saranno maggiormente chiari, altri continueranno a non esserlo, ma non preoccupatevene troppo: siete solo all'inizio. CodeIgniter è un framework che si differenzia dalla concorrenza per la sua facilità d'uso, leggerezza e prestazioni. Il suo scopo è sviluppare progetti software (generalmente web) di media complessità, utilizzando l'approccio \ac{MVC} per separare la logica (il codice) dalla presentazione (l'aspetto grafico del nostro software). Per ottenere questo scopo vengono utilizzati il Controller, il Modello e la Vista. Il primo accetta una richiesta, la esamina ed esegue una operazione tra quelle previste (per esempio potrebbe restituire una pagina, fornire un elenco di dati prelevati da un database, ecc). Il Controller si comporta come un vigile in mezzo al traffico: esamina la situazione e in base alle direttive (fornite dallo sviluppatore) dirige il flusso verso una determinata strada. Il Modello (raramente opzionale) contiene le query per interfacciare il Controller con la nostra base di dati. La Vista infine si occupa dell'aspetto visuale delle pagine. In questo capitolo si è fatta dimestichezza con i Controller, compiendo un primo passo nella realizzazione di un progetto per la visualizzazione delle notizie collegate ad una base di dati. 

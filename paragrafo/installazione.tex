@@ -3,16 +3,12 @@
 \label{cap:installazione}
 %************************************************
 
-Questo capitolo spiega in maniera concisa e si spera chiara, come installare CodeIgniter a prescindere dal sistema operativo utilizzato. La guida è stata realizzata basandosi sulla versione 2.1.4 disponibile sul sito ufficiale: \url{http://ellislab.com/codeigniter}. Il framework per poter funzionare correttamente deve essere utilizzato su una macchina con installato \ac{PHP} e un server web.
+Questo capitolo spiega in maniera concisa e si spera chiara, come installare CodeIgniter a prescindere dal sistema operativo utilizzato. La guida è stata realizzata basandosi sulla versione 2.2.0 disponibile sul sito ufficiale: \url{http://ellislab.com/codeigniter}. Il framework per poter funzionare correttamente deve essere utilizzato su una macchina con installato \ac{PHP} e un server web come Apache.
 
-\section{Ambiente di sviluppo}
-Esistono due soluzioni per creare un ambiente idoneo allo sviluppo: realizzare un server web locale o uno remoto. Le due soluzioni, mettono a disposizione ambedue un sistema caratterizzato dagli stessi software di base come Apache, MySQL e PHP, ma differiscono per la dislocazione delle macchine.
+\section{Server locale e remoto}
+Esistono due soluzioni per creare un ambiente idoneo allo sviluppo: realizzare un server web locale o uno remoto. Le due soluzioni mettono a disposizione ambedue un sistema caratterizzato dagli stessi software di base come Apache, \ac{MySQL} e \ac{PHP}, ma differiscono per la dislocazione delle macchine. Un server locale è una macchina che fisicamente è situata nelle vicinanze dello sviluppatore e che soventemente si identifica con il sistema utilizzato quotidianamente. Diverse soluzioni software permettono infatti di realizzare un sistema casalingo per lo sviluppo e la fruizione dei contenuti web. Un server remoto, come si evince dalla parola stessa, è una macchina non disponibile fisicamente. Solitamente essa viene messa a disposizione da apposite aziende commerciali sotto forma di hosting o housing con pacchetti che variano dalle poche decine di euro alle migliaia di euro l'anno. L'oscillazione dipende dalle funzionalità del server, dalla sua potenza e dall'assistenza fornita dall'azienda. L'utilizzo di un server remoto non è però strettamente necessario per realizzare un ambiente votato allo sviluppo, pertanto si esamineranno le soluzioni più immediate per installare e utilizzare un server locale.
 
-Un server locale è una macchina che fisicamente è situata nelle vicinanze dello sviluppatore e che soventemente si identifica con il sistema utilizzato quotidianamente. Diverse soluzioni software permettono infatti di realizzare un sistema casalingo per lo sviluppo e la fruizione dei contenuti web.
-
-Un server remoto, come si evince dalla parola stessa, è una macchina non disponibile fisicamente. Solitamente essa viene messa a disposizione da apposite aziende commerciali sotto forma di hosting o housing con pacchetti che variano dalle poche decine di euro alle migliaia di euro l'anno. L'oscillazione dipende dalle funzionalità del server, dalla sua potenza e dall'assistenza fornita dall'azienda. L'utilizzo di un server remoto non è però strettamente necessario per realizzare un ambiente votato allo sviluppo, pertanto si esamineranno le soluzioni più immediate per installare e utilizzare un server locale.
-
-\section{Requisiti minimi e installazione}
+\section*{Requisiti minimi e installazione}
 Le richieste di CodeIgniter sono tutto sommato modeste per quanto riguarda l'hardware, mentre lato software, la compatibilità con \ac{PHP} si ha dalla versione 5.1.6 o più recente. Un database è richiesto per lo sviluppo della maggior parte delle applicazioni web, mentre le basi di dati attualmente supportate sono: MySQL (4.1+), MySQLi, MS SQL, Postgres, Oracle, SQLite, e ODBC.
 
 \label{sec:installazione}
@@ -31,7 +27,7 @@ Un'altra soluzione molto utilizzata è \copyl{EasyPHP} \url{http://www.easyphp.o
 \end{img}
 
 \subsection{Installazione per Mac OS}
-Molte sono anche le soluzioni ``pronte all'uso'' per Mac OS X (ma anche versioni precedenti del sistema operativo Apple), definite semplicemente \ac{MAMP}. Tra i tanti software citiamo la proposta dell'azienda \copyl{appsolute GmbH} che fornisce un pacchetto liberamente utilizzabile ed una versione PRO a pagamento, dotata di maggiori funzionalità. Per le nostre esigenze, la versione gratuita sarà più che sufficiente.
+Molte sono anche le soluzioni ``pronte all'uso'' per Mac OS X (ma anche versioni precedenti del sistema operativo Apple), definite semplicemente \ac{MAMP}. Tra i tanti software citiamo la proposta dell'azienda \copyl{appsolute} che fornisce un pacchetto liberamente utilizzabile ed una versione PRO a pagamento dotata di maggiori funzionalità. Per le nostre esigenze, la versione gratuita sarà più che sufficiente: \url{http://www.mamp.info/en/}
 
 \begin{img}{MAMP - schermata iniziale}{5}{010}
 \end{img}
@@ -40,12 +36,10 @@ Molte sono anche le soluzioni ``pronte all'uso'' per Mac OS X (ma anche versioni
 \end{img}
 
 \subsection{installazione per GNU/Linux}
-Questo è il sistema di riferimento per la produzione. Nonostante non tutti abbiano le conoscenze e la pazienza per installare e padroneggiare un nuovo sistema operativo, vale la pena prima o poi muovere i passi nell'affascinante mondo del software libero. La procedura di installazione varia a seconda della distribuzioni utilizzata: qui prenderemo in esame quella per il sistema Ubuntu, una della maggiori distruzioni per diffusione tra utenti consumer.
-
-Esistono diverse modalità per l'installazione di \ac{LAMP} e per tutte è obbligatorio avere i permessi di amministratore \ac{su}. Esamineremo alcune procedure:
+Questo è il sistema di riferimento per la produzione. Nonostante non tutti abbiano le conoscenze e la pazienza per padroneggiare un sistema operativo differente da quello solitamente utilizzato, vale la pena prima o poi muovere i passi nell'affascinante mondo del software libero. La procedura di installazione varia a seconda della distribuzione utilizzata: qui prenderemo in esame quella per il sistema Ubuntu, una della maggiori distruzioni per diffusione tra utenti consumer. Esistono diverse modalità per l'installazione di \ac{LAMP} e per tutte è obbligatorio avere i permessi di amministratore \ac{su}. Esamineremo alcune procedure:
 
 \begin{description}
-\item[mediante tasksel] Probabilmente la soluzione più veloce. Si apra il terminale bash e si dia il seguente comando per installare ``tasksel'':
+\item[mediante tasksel] Probabilmente la soluzione più veloce. Aprendo il terminale bash, si esegua il comando per installare ``tasksel'':
 
 \begin{code}
 sudo apt-get install tasksel
@@ -57,9 +51,7 @@ Successivamente si esegua l'istruzione:
 sudo tasksel
 \end{code}
 
-Dal menu proposto, si selezionerà l'installazione ``Lamp server''. 
-
-Successivamente si potranno installare altri utili moduli come ``PhpMyAdmin'' con:
+Dal menu proposto, si selezionerà l'installazione ``Lamp server''. Successivamente si potranno installare altri utili moduli come ``PhpMyAdmin'' con:
 
 \begin{code}
 sudo apt-get install phpmyadmin
@@ -71,7 +63,7 @@ sudo apt-get install phpmyadmin
 sudo apt-get install synaptic
 \end{code}
 
-Successivamente si apra il programma dotato di interfaccia grafica e si selezioni dal menù ``Modifica'' la voce ``Marca i pacchetti per attività''. Si aprirà una finestra in cui si dovrà selezionare l'opzione ``LAMP server'', quindi si confermi l'operazione premendo su ``OK'' (si veda la figura \vpageref{fig:012}).
+Successivamente si apra il programma dotato di interfaccia grafica e si selezioni dal menu ``Modifica'' la voce ``Marca i pacchetti per attività''. Si aprirà una finestra in cui si dovrà selezionare l'opzione ``LAMP server''; infine, si confermi l'operazione premendo su ``OK'' (si veda la figura \vpageref{fig:012}).
 \end{description}
 
 \begin{img}{Synaptic - installazione LAMP}{5}{012}
@@ -81,11 +73,11 @@ Successivamente si apra il programma dotato di interfaccia grafica e si selezion
 \end{img}
 
 \subsection{Configurare e verificare il server}
-In fase di installazione dovremmo apportare alcune modifiche e verificare alla fine il corretto funzionamento del server. Esaminiamole nel dettaglio:
+In fase di installazione si dovranno apportare alcune modifiche e verificare alla fine il corretto funzionamento del server. Esaminiamole nel dettaglio:
 
 \begin{enumerate}
-\item durante l'installazione verrà chiesta la password per MySQL (si veda l'immagine\vpageref{fig:013}). Inserite una password (non dimenticatela!), e si tenga presente che il nome utente/login è ``root'', quindi si proceda con l'installazione.
-\item a fine installazione si verifichi la corretta presenza sul proprio sistema di Apache scrivendo sul terminale del sistema operativo:
+\item durante l'installazione verrà chiesta la password per MySQL (si veda l'immagine\vpageref{fig:013}). Si inserisca una password (non dimenticatela!), e si tenga presente che il nome utente/login è ``root'', infine si concluda l'installazione.
+\item a fine installazione si verifichi la corretta presenza sul proprio sistema di Apache scrivendo sul terminale bash:
 
 \begin{code}
 sudo /etc/init.d/apache2 restart
@@ -107,7 +99,7 @@ compare una schermata di benvenuto o un messaggio ``it Works!'', significa che l
 ?>
 \end{code}
 
-Si salvi il file e lo si copi nella directory del server web locale (su sistemi GNU/Linux si trova generalmente nel percorso \sys{/var/www/}).
+Si salvi il file e lo si copi nella directory del server web locale (che su sistemi GNU/Linux si trova generalmente nel percorso \sys{/var/www/}).
 
 Nella barra degli indirizzi del browser si digiti:
 
@@ -183,9 +175,9 @@ oppure
 $config['base_url'] = "http://127.0.0.1/mioProgetto";
 \end{code}
 
-Nota: i termini localhost e 127.0.0.1 sono equivalenti e richiamano ambedue il server locale, utilizzato in fase di sviluppo.
+Nota: i termini localhost e 127.0.0.1 sono equivalenti e richiamano ambedue il server locale utilizzato in fase di sviluppo.
 
-Comunque chi non avesse esperienza nella configurazione di un server web, può tranquillamente evitare per il momento di ``toccare'' i preziosi file di configurazione.
+Comunque chi non avesse esperienza nella configurazione di un server web, può tranquillamente evitare per il momento di mettere mano ai preziosi file di configurazione.
 
 \label{sec:accessodb}
 Se la nostra applicazione dovrà collegarsi ad una base di dati sarà necessario configurare anche il file \fil{database.php} localizzato al percorso \sys{/application/config/database.php}
@@ -213,7 +205,7 @@ Qui sarà possibile impostare le seguenti voci:
 \textbf{collation} & Ad ogni character set è associata una o più collaction, che rappresentano i modi possibili di confrontare le stringhe di caratterei di uno stesso insieme di caratteri. \\
 \end{deftabg}
 
-Se si dispone di un database di nome \var{test} a cui è possibile accedere con i dati di login \var{mioNome} e password \var{1234}, i dati nel file \fil{database.php} dovranno essere così modificati:
+Se per esempio si dispone di un database di nome \var{test} a cui è possibile accedere con i dati di login \var{mioNome} e password \var{1234}, i dati nel file \fil{database.php} dovranno essere così impostati:
 
 \begin{code}
 $db['default']['hostname'] = 'localhost';
@@ -226,16 +218,16 @@ $db['default']['dbdriver'] = 'mysql';
 L'ultima riga indica che stiamo utilizzando un database di tipo MySQL. 
 
 \section{Primi accorgimenti per la sicurezza}
-Se si desidera incrementare la sicurezza nascondendo il percorso dei propri file di CodeIgniter, è possibile rinominare le directory \sys{System} e \sys{Application} per renderle meno evidenti: si apra il file \fil{index.php} e si configurino opportunamente le variabili \verb|$system_path| e \verb|$application_folder| (che si trovano all'inizio del file) con dei nuovi nomi a propria scelta.
+Se si desidera incrementare la sicurezza nascondendo il percorso dei propri file di CodeIgniter, è possibile rinominare le directory \sys{System} e \sys{Application} per renderle meno evidenti; successivamente si apra il file \fil{index.php} e si configurino opportunamente le variabili \verb|$system_path| e \verb|$application_folder| inserendo i nomi delle direcotry precedentemente modificati.
 
-Se si è particolarmente diffidenti (e questo è un bene), è consigliabile rendere inaccessibili sia la directory \sys{System} che quella \sys{Application} ad un browser web. Normalmente i file \fil{.htaccess} sono inclusi in ogni directory per prevenire l'accesso diretto, ma è consigliato rimuoverli dall'accesso pubblico quando non siano strettamente necessari o la configurazione del server web cambia. Dopo aver rimosso i file \fil{.htaccess}, si apra il file \fil{index.php} principale e si configurino le variabili \verb|$system_folder| e \verb|$application_folder| preferibilmente con un percorso del tipo: \sys{/www/Mionome/system}. 
+Se si è particolarmente diffidenti (e questo è un bene) è consigliabile rendere inaccessibili sia la directory \sys{System} che quella \sys{Application} ad un browser web. Normalmente i file \fil{.htaccess} sono inclusi in ogni directory per prevenire l'accesso diretto, ma è consigliato rimuoverli dall'accesso pubblico quando non siano strettamente necessari o la configurazione del server web cambia. 
 
-Una ulteriore misura da adottare in fase di produzione è quella di disabilitare gli avvisi che mostrano gli errori di \ac{PHP}, e qualsiasi altro messaggio mostri informazioni non rilevanti per l'utente. In CodeIgniter questo può essere fatto settando opportunamente le costanti \var{ENVIROMENT}. 
+Una ulteriore misura da adottare in fase di produzione è quella di disabilitare gli avvisi che mostrano gli errori di \ac{PHP}, e qualsiasi altro messaggio che riporti informazioni non rilevanti per l'utente. In CodeIgniter questo può essere fatto settando opportunamente le costanti \var{ENVIROMENT} sempre all'interno di \fil{index.php}. I valori selezionabili sono: development, testing e production.
 
-Per il momento, non ci si preoccupi troppo, perché le misure da adottare per la sicurezza del proprio progetto saranno affrontate successivamente nel capitolo\vref{cap:sicurezza}.
+Per il momento, non ci si preoccupi troppo poiché le misure da adottare per la sicurezza del proprio progetto saranno affrontate successivamente nel capitolo\vref{cap:sicurezza}.
 
 \section{Siamo pronti}
-A questo punto siamo pronti per visualizzare la nostra prima schermata di benvenuto. Se tutto è filato liscio, inserendo nel browser il seguente indirizzo:
+A questo punto s è pronti per visualizzare la nostra prima schermata di benvenuto. Se tutto è filato liscio, inserendo nel browser il seguente indirizzo:
 
 \begin{code}
 http://127.0.0.1/index.php/codeigniter/
@@ -247,16 +239,16 @@ dove \sys{codegniter} è il nome dato alla directory in cui si trova il framewor
 \end{img}
 
 \label{sec:welcome}
-CodeIgniter ci saluta, invitandoci a modificare la pagina introduttiva \fil{welcome.php} che si trova al percorso \verb|application/views/welcome_message.php| e il corrispettivo Controller situato su \verb|application/controllers/welcome.php|. A completare il messaggio vi è un rimando alla pratica guida, che si può consultare anche in locale su \verb|user_guide/|. 
+CodeIgniter ci saluta, invitandoci a modificare la pagina introduttiva \fil{welcome.php} che si trova al percorso \verb|application/views/welcome_message.php| e il corrispettivo Controller situato su \verb|application/controllers/welcome.php|. A completare il messaggio vi è un rimando alla pratica guida, che si può consultare anche in locale nella directory \verb|user_guide/|. 
 
 Per il momento, evitiamo di seguire l'invito di CodeIgniter e di apportare qualsiasi modifica: dobbiamo ancora impratichirci con i concetti base.
 
 \label{sec:problemi}
 \section{Risoluzione dei problemi}
-Qui di seguito prendiamo alcuni dei problemi più comuni nell'installazione e configurazione di CodeIgniter.
+\'E assai improbabile che la fase di installazione non porti a qualche inconveniente, soprattutto se non si ha molta dimistichezza con la configurazione di un server. Qui di seguito sono passati in rassegna alcuni dei problemi più comuni nell'installazione e configurazione di CodeIgniter.
 
 \begin{description}
-\item[Pagine non caricate] se si scopre che nonostante ciò che inseriamo nel nostro \ac{URL}, solo la pagina di default viene caricata, questo potrebbe significare che il server non supporta la variabile \verb|PATH_INFO| necessaria per mostrare \ac{URL} amichevoli ai motori di ricerca. Come primo passo, si apra il file \fil{config.php} al percorso \sys{/application/config/} quindi si cerchino le informazioni sul protocollo \ac{URI}. \'E consigliabile provare un paio di impostazioni alternative. Se ancora non funziona dopo aver provato questo metodo, si dovrà forzare CodeIgniter per aggiungere un punto interrogativo agli \ac{URL}. Per fare questo, si apra il \fil{config.php} al percorso \sys{/application/config/}, e si modifichi:
+\item[Pagine non caricate] se si scopre che nonostante ciò che inseriamo nel nostro \ac{URL} del browser, solo la pagina di default viene caricata, questo potrebbe significare che il server non supporta la variabile \verb|PATH_INFO| necessaria per mostrare \ac{URL} amichevoli ai motori di ricerca. Come primo passo si apra il file \fil{config.php} al percorso \sys{/application/config/} quindi si cerchino le informazioni sul protocollo \ac{URI}. \'E consigliabile provare un paio di impostazioni alternative. Se ancora non funziona dopo aver provato questo metodo, si dovrà forzare CodeIgniter per aggiungere un punto interrogativo agli \ac{URL}. Per fare questo, si apra il \fil{config.php} al percorso \sys{/application/config/}, e si modifichi:
 
 \begin{code}
 $config['index_page'] = "index.php";
@@ -268,13 +260,13 @@ con:
 $config['index_page'] = "index.php?";
 \end{code}
 
-\item [Permessi] non si riesce a copiare CodeIgniter nella root del proprio server web? Potrebbe essere un problema legato ai permessi. Solitamente solo l'amministratore può scrivere/modificare i file in questa cartella, quindi una soluzione veloce è quella di copiare i file con i permessi di super user, facendo precedere ogni vostro comando dalla stringa \ac{su}. Per esempio, una volta scaricato e decompresso il file zip che contiene CodeIgniter, questo può essere copiato nella directory del server con:
+\item[Permessi] non si riesce a copiare CodeIgniter nella root del proprio server web? Potrebbe essere un problema legato ai permessi. Solitamente solo l'amministratore può scrivere/modificare i file in questa cartella, quindi una soluzione veloce è quella di copiare i file con i permessi di super user, facendo precedere ogni vostro comando dalla stringa \ac{su}. Per esempio, una volta scaricato e decompresso il file zip che contiene CodeIgniter, questo può essere copiato nella directory del server con:
 
 \begin{code}
 su cp codeigniter /var/www/MioProgetto/
 \end{code}
 
-Con il comando \ac{su} si acquisiranno per breve tempo i ``poteri'' di amministratore, ma ovviamente si dovrà conoscere l'apposita password. Un'altra soluzione, meno consigliata sotto il profilo della sicurezza, è quella di modificare i permessi di scrittura/lettura della directory del server web. In questo caso, il comando ``su chmod -R 777'', eseguito nel percorso \sys{/var/www/} permetterà a chiunque di scrivere e modificare i file del vostro progetto: comodo, ma rischioso se il computer è accessibile ad altri utenti.
+Con il comando \ac{su} si acquisiranno per breve tempo i ``poteri'' di amministratore, ma ovviamente si dovrà conoscere l'apposita password. Un'altra soluzione, meno consigliata sotto il profilo della sicurezza, è quella di modificare i permessi di scrittura/lettura della directory del server web. In questo caso, il comando ``su chmod -R 777'', eseguito nel percorso \sys{/var/www/} permetterà a chiunque di scrivere e modificare i file del vostro progetto: comodo ma rischioso se il computer è accessibile ad altri utenti.
 \item[Attenzione ai dettagli] verificate il percorso inserito nel browser. A volte basta un carattere in più (o in meno), una maiuscola nell'indirizzo per visualizzare un errore ``404 not found'' e farci sprofondare nella disperazione più totale.
 \item[Servizi web] se digitando \verb|http://127.0.0.1| la pagina che vi si presenta è un desolante ``404 not found'' è probabile che non siano stati avviati i servizi web per far funzionare correttamente il vostro server locale. Provate a digitare:
 
@@ -288,6 +280,6 @@ e successivamente:
 sudo service httpd start
 \end{code}
 
-Provate nuovamente a collegarvi all'indirizzo \verb|http://127.0.0.1|. Bene, avete risolto il problema?
+Collegatevi nuovamente all'indirizzo \verb|http://127.0.0.1| e incrociate le dita.
 \item[Trovare la soluzione da soli] leggete con attenzione i messaggi di errore. Se legati a CodeIgniter sono spesso accompagnati da informazioni che ne permettono l'individuazione e la risoluzione: basterà una ricerca in rete, magari nel forum della community per venirne a capo facilmente.
 \end{description}
