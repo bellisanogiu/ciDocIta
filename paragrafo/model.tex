@@ -43,12 +43,12 @@ L'attributo \var{slug} è un indice con cui ``marcheremo'' ogni notizia pubblica
 
 \begin{code}
 INSERT INTO `test`.`news` (`id`, `titolo`, `slug`, `testo`) 
-VALUES (NULL, 'Oggi piove', 'n1', 'o almeno si crede'), 
-	(NULL, 'Domani splende il sole', 'n2', 'quindi andiamo al mare');
+VALUES (NULL, 'Oggi piove', 'n1', 'o almeno questo dicono le previsioni'), 
+	(NULL, 'Domani splende il sole', 'n2', 'quindi andremo al mare');
 \end{code}
 
 \section*{Anatomia del Modello}
-CodeIgniter, come visto per il Controller e le View, prevede una cartella apposita dove memorizzare i Model. Come è oramai intuibile, questa si trova al percorso \sys{/application/models/}.
+CodeIgniter, come visto per il Controller e le View, prevede una cartella apposita dove memorizzare i file Model. Come è oramai intuibile, questa si trova al percorso \sys{/application/models/}.
 
 Il framework richiamerà da questa directory i Model necessari alla nostra applicazione; è comunque possibile organizzare la directory in più sottocartelle in modo da realizzare una struttura del progetto strutturata e ordinata.
 
@@ -95,7 +95,7 @@ La nuova istruzione introdotta è \verb|$this->load->database()| che si occupa d
 
 La seconda parte del codice si occupa di recuperare le notizie dal database ``test'': d'altra parte è questo il compito del Model. All'interno del metodo \verb|get_news()| sono presenti due differenti query: una per ottenere tutte le notizie e la seconda per recuperarne una ben precisa, marcata dall'identificatore \var{slug}.
 
-Apriamo una piccola parentesi sulla sicurezza. Nella consueta programmazione ogni variabile usata come argomento per interfacciarsi con un database deve essere prima esaminata e ``messa in sicurezza'', come nel caso di \var{slug}. Utilizzando CodeIgniter non ci si dovrà preoccupare di questi dettagli perché sarà lui stesso a curare questo aspetto per noi.
+Apriamo una piccola parentesi sulla sicurezza. Nella tradizionale programmazione ogni variabile usata come argomento per interfacciarsi con un database deve essere prima esaminata e ``messa in sicurezza'', come nel caso di \var{slug}. Utilizzando CodeIgniter non ci si dovrà preoccupare di questi dettagli perché sarà lui stesso a curare questo aspetto per noi.
 
 Nota: una normale prassi nella programmazione ad oggetti e quella di chiamare i metodi che recuperano i dati con \var{get()}, mentre quelli che li modificano con \var{set()}. Il nostro metodo infatti si chiama \verb|get_news()|) e rende subito chiara la sua funzione. Ci si abitui a questa convenzione perché è universalmente adottata.
 
@@ -111,7 +111,7 @@ $this->pippo->function();
 Altra possibilità offerta da CodeIgnition è il caricamento automatico di un determinato Model durante l'inizializzazione del sistema. \'E possibile definire il Model in questione configurando l'array \var{autolad} nel file \sys{/application/config/autoload.php}.
 
 \section*{Visualizzare le notizie}
-Ora che le query sono state realizzate, il Model deve essere collegato alle Viste: ci si prepari quindi a rappresentare su schermo le due notizie che sono state inserite nella tabella. Si dovrà fare affidamento ad un Controller, ad una o più Viste e al layer di astrazione \emph{Active Record} incluso in CodeIgniter. Quest'ultimo è un potente strumento che interpreta le istruzioni per il database rendendole indipendenti dalla soluzione adottata per il progetto. Ritorneremo in seguito sull'argomento, ma Active Record permette in pratica di passare da un database MySQL ad uno completamente differente (che utilizza un altro set di istruzioni), senza che si verifichino incompatibilità o problemi di alcun tipo.
+Ora che le query sono state realizzate, il Model deve essere collegato alle Viste: ci si prepari quindi a rappresentare su schermo le due notizie che sono state inserite nella tabella. Si dovrà fare affidamento ad un Controller, ad una o più Viste e al layer di astrazione \emph{Active Record} incluso in CodeIgniter. Quest'ultimo è un potente strumento che interpreta le istruzioni per il database rendendole indipendenti dalla soluzione adottata per il progetto. Ritorneremo in seguito sull'argomento, ma per il momento ci si accontenti di sapere che Active Record permette di passare da un database MySQL ad uno completamente differente (che utilizza un altro set di istruzioni), senza che si verifichino incompatibilità o problemi di alcun tipo.
 
 \begin{deftab}{Istruzioni SQL}{Le query sono istruzioni per interfacciarsi con il database, per cancellare, memorizzare o richiedere i record.}
 \end{deftab}
@@ -119,7 +119,7 @@ Ora che le query sono state realizzate, il Model deve essere collegato alle Vist
 Ritorniamo allo sviluppo del nostro progetto e precisamente alla definizione del Controller \var{News}:
 
 \begin{enumerate}
-\item Creiamo il file \fil{news.php} 
+\item Creiamo il nuovo file \fil{news.php} 
 \item Il file in questione dovrà trovarsi nel percorso \sys{/application/controllers/}
 \item Inseriamo il codice seguente:
 \end{enumerate}
@@ -170,7 +170,7 @@ public function index()
 }
 \end{code}
 
-Il metodo contiene un array \var{data} con due indici \var{news} e \var{titolo}. Il primo assume tutti i valori delle notizie attraverso l'istruzione \verb|news_model->get_news()| di cui si occupa il Model, come si è già visto. Invece il \var{titolo} del medesimo array assume il valore di una stringa prefissata, ovvero il titolo della nostra pagina principale per cui abbiamo scelto un ben poco originale ``Lista delle notizie''. Le istruzioni successive caricano le Viste che compongono il template completo (in alcune di esse viene passato anche l'array \verb|$data| per utilizzarne i dati memorizzati).
+Il metodo contiene un array \var{data} con due indici \var{news} e \var{titolo}. Il primo assume tutti i valori delle notizie attraverso l'istruzione \verb|news_model->get_news()| di cui si occupa il Model, come si è già visto. Invece il \var{titolo} del medesimo array assume il valore di una stringa prefissata, ovvero il titolo della nostra pagina principale per cui abbiamo scelto il poco originale ``Lista delle notizie''. Le istruzioni successive caricano le Viste che compongono il template completo (in alcune di esse viene passato anche l'array \verb|$data| per utilizzarne i dati memorizzati).
 
 Ora che abbiamo definito il Controller e il Modello \verb|News_model|, dobbiamo solo ridefinire le Viste per apprezzare il risultato di tutto questo duro lavoro. Si apra il file della Vista creata in precedenza \fil{main.php} quindi si inserisca il codice:
 
@@ -187,7 +187,7 @@ Ora che abbiamo definito il Controller e il Modello \verb|News_model|, dobbiamo 
 <?php endforeach ?>
 \end{code}
 
-Un primo risultato è visibile ricaricando la pagina:
+Un primo risultato incoraggiante è visibile ricaricando la pagina:
 
 \begin{code}
 http://127.0.0.1/codeignition/index.php/news/
@@ -195,7 +195,7 @@ http://127.0.0.1/codeignition/index.php/news/
 
 Il Controller caricherà il metodo predefinito e visualizzerà tutta la lista delle notizie memorizzate nel database. 
 
-\section*{Visualire la notizia marcata}
+\section*{Visualizzare la notizia marcata}
 Per visualizzare solo una certa notizia è stato fissato un indice definito dall'argomento \verb|$slug|. Terminiamo il lavoro completando l'implementazione della funzione \verb|function view($slug)| nel Controller.
 
 \begin{code}
@@ -220,11 +220,11 @@ public function view($slug)
 Alcuni punti sono nuovi, vediamoli:
 
 \begin{enumerate}
-\item Viene effettuato un controllo preventivo. Se non esiste alcuna notizia con l'argomento passato \var{slug}, l'indice dell'array \verb|$data['news_item']| conterrà un valore nullo La funzione \var{empty()} verifica proprio questo e nel caso la condizione non fosse soddisfatta, comparirà un messaggio di errore tramite \verb|show_404()|
-\item \verb|$data['titolo'] = $data['news_item']['titolo']| questa istruzione si riferisce ad un array bidimensionale. Viene caricato il titolo di ogni notizia identificata dall'indice \verb|news_item|
+\item Viene effettuato un controllo preventivo. Se non esiste alcuna notizia con l'argomento passato \var{slug}, l'array \verb|$data['news_item']| sarà nullo: la funzione \var{empty()}, nella riga successiva, verifica proprio questa situazione. Se l'istruzione condizione \textit{if} è true, ovvero se non esiste alcun indice slug corrispondente ad una notizia, verrà visualizzato un messaggio di errore tramite \verb|show_404()|
+\item \verb|$data['titolo'] = $data['news_item']['titolo']| questa istruzione definisce un array bidimensionale che memorizza al suo interno il titolo della notizia identificata dall'indice \verb|news_item|
 \end{enumerate}
 
-Inoltre nella parte riguardante le Viste, si può osservare come ora venga richiamato un altro template, \var{unanews}. Creiamo quindi la vista \fil{unanews.php} e inseriamo le istruzioni per caricare la notizia identificata dal marcatore.
+Inoltre nella parte riguardante le Viste, si può osservare come ora venga richiamato un altro template, \var{unanews}. Creiamo quindi anche questa nuova Vista \fil{unanews.php} e inseriamo le istruzioni per caricare la notizia identificata dal marcatore.
 
 \begin{code}
 <?php
