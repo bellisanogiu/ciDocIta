@@ -77,13 +77,13 @@ class News_model extends CI_Model {
 }
 \end{code}
 
-Il Model viene quindi richiamato tramite il Controller attraverso l'istruzione ormai facilmente intuibile:
+Il Model verrà richiamato tramite il Controller attraverso l'istruzione ormai facilmente intuibile:
 
 \begin{code}
 $this->load->model('nome_model');
 \end{code}
 
-Dove \verb|nome_model| è il nome del Model. Se questo si trova in una sottodirectory di sys{application/models/} basterà specificare il percorso prima del nome:
+Dove \verb|nome_model| è il nome scelto per il proprio Model. Se questo si trova in una sottodirectory di sys{application/models/} basterà specificare il percorso prima del nome:
 
 \begin{code}
 $this->load->model('percorso/nome_model');
@@ -91,7 +91,7 @@ $this->load->model('percorso/nome_model');
 
 La struttura di un Model è sintatticamente molto semplice e rispecchia le convenzioni già viste nel Controller e nella View. Viene creato un nuovo Modello di nome \verb|News_model| che è una estensione del \verb|CI_Model|, il modello di base di Codeigniter. 
 
-La nuova istruzione introdotta è \verb|$this->load->database()| che si occupa di caricare il database grazie ai parametri memorizzati nel file \fil{database.php} nel percorso \sys{/application/config/} (si veda la sezione\vref{sec:accessodb}).
+La nuova istruzione introdotta è \verb|$this->load->database()| che si occupa di caricare il database i cui parametri sono memorizzati nel file \fil{database.php} nel percorso \sys{/application/config/} (si veda la sezione\vref{sec:accessodb}).
 
 La seconda parte del codice si occupa di recuperare le notizie dal database ``test'': d'altra parte è questo il compito del Model. All'interno del metodo \verb|get_news()| sono presenti due differenti query: una per ottenere tutte le notizie e la seconda per recuperarne una ben precisa, marcata dall'identificatore \var{slug}.
 
@@ -137,7 +137,7 @@ class News extends CI_Controller {
 
 	public function index()
 	{
-	$data['news'] = $this->news_model->get_news();
+		$data['news'] = $this->news_model->get_news();
 	}
 
 	public function view($slug)
@@ -147,7 +147,7 @@ class News extends CI_Controller {
 }
 \end{code}
 
-Il Controller non si limita a caricare ``solo'' il Modello con l'istruzione \verb|$this->load->model('news_model')| ma in esso vengono definiti anche due metodi: \var{index()} e \var{view()}. Esaminiamoli.
+Il Controller non si limita a caricare ``solo'' il Modello con l'istruzione \verb|$this->load->model('news_model')| ma in esso vengono definiti anche due importanti metodi: \var{index()} e \var{view()}. Esaminiamoli.
 
 \begin{enumerate}
 \item index() è il metodo predefinito che caricherà tutte le notizie (al momento non è completo)
@@ -217,7 +217,7 @@ public function view($slug)
 }
 \end{code}
 
-Alcuni punti sono nuovi, vediamoli:
+Alcuni punti sono inediti, vediamoli:
 
 \begin{enumerate}
 \item Viene effettuato un controllo preventivo. Se non esiste alcuna notizia con l'argomento passato \var{slug}, l'array \verb|$data['news_item']| sarà nullo: la funzione \var{empty()}, nella riga successiva, verifica proprio questa situazione. Se l'istruzione condizione \textit{if} è true, ovvero se non esiste alcun indice slug corrispondente ad una notizia, verrà visualizzato un messaggio di errore tramite \verb|show_404()|
@@ -244,16 +244,19 @@ $route['(:any)'] = 'pages/view/$1';
 $route['default_controller'] = 'pages/view';
 \end{code}
 
+\begin{deftab}{Commentare il codice}{Quando si deve modificare del codice di cui non si è sicuri se potrà essere utile o meno in futuro, è consigliabile commentare le righe che lo contengono, piuttosto che cancellarle. In questo modo, sarà sempre possibile rispristinare la precedente situazione semplicemente eliminando i simboli di commento che in \ac{PHP} sono rappresentati da ``//''}
+\end{deftab}
+
 Si scriva nel browser l'indirizzo del controller e si ammiri il risultato ottenuto:
 
 \begin{code}
 http://127.0.0.1/codeigniter/index.php/news
 \end{code}
 
-Il codice si avvale delle espressioni regolari che costituisce un argomento dell'informatica a se stante, che consigliamo di apprendere soprattutto se vi interessano definire pattern di ricerca.
+Il codice si avvale delle espressioni regolari che costituisce un argomento dell'informatica a se stante, che consigliamo di apprendere soprattutto se si è interessati a definire pattern di ricerca.
 
 \section*{Inserire una notizia}
-Precedentemente le notizie sono state inserite tramite una istruzione SQL e anche se l'interfaccia di phpMyAdmin è amichevole, esistono altri sistemi più intuitivi e sicuri per memorizzare informazioni nel database. Uno di questi prevede l'uso di form, ovvero pagine con semplici interfacce per l'inserimento di input. Quindi se nella sezione precedente il nostro obiettivo è stato quello di ``leggere'' i record dalla base di dati, ora ci occuperemo di ``scrivere'' le notizie.
+Precedentemente le notizie sono state inserite tramite una istruzione SQL e anche se l'interfaccia di phpMyAdmin è amichevole, esistono altri sistemi più intuitivi e sicuri per memorizzare informazioni nel database. Uno di questi prevede l'uso di form, ovvero pagine con semplici interfacce per l'inserimento di input. Quindi se nella sezione precedente il nostro obiettivo è stato quello di ``leggere'' i record dalla base di dati, ora ci occuperemo di ``memorizzare'' le notizie.
 
 Innanzitutto si definisca una nuova Vista con il codice per visualizzare il form, al percorso \sys{/application/views/} e caratterizzata dal nome \fil{creanews.php}. Il form sarà composto da due campi: uno per l'inserimento del titolo ed uno per quello del testo. Rispetto a quanto visto prima, non si dovrà inserire il marcatore slug, in quanto si svilupperà un sistema per la creazione automatica di un marcatore univoco.
 
@@ -264,7 +267,7 @@ Ecco il codice \ac{PHP} e \ac{HTML}:
 
 <?php echo validation_errors(); ?>
 
-<?php echo form_open('creanews') ?>
+<?php echo form_open('creanews'); ?>
 
 	<label for="titolo">Titolo</label>
 	<input type="input" name="titolo" /><br />
@@ -327,7 +330,7 @@ Definiamo ora una nuova Vista \fil{successo.php} nel percorso \sys{/application/
 \end{code}
 
 \section*{Infine il Modello}
-Ormai siamo ad un passo dal raggiungere l'obiettivo prefissato: l'unica cosa che manca è il metodo che memorizza i dati inseriti nel database. Useremo la classe Active Record di CodeIgniter, per semplificare il procedimento. Si apra il Modello creato precedentemente e si aggiunga:
+Ormai siamo ad un passo dal raggiungere l'obiettivo prefissato: l'unica cosa che manca è il metodo che memorizza i dati inseriti nel database. Useremo la classe Active Record di CodeIgniter per semplificare il procedimento. Si apra il Modello creato precedentemente e si aggiunga:
 
 \begin{code}
 public function set_news()
@@ -346,9 +349,9 @@ public function set_news()
 }
 \end{code}
 
-Questo nuovo metodo provvede a memorizzare correttamente i dati nel database: analizziamolo nel dettaglio. La terza linea contiene un nuova funzione \verb|url_title()| (fornita dall'Helper URL \pageref{helper:url)} che sostituisce tutti gli spazi della stringa inserita come argomento con dei simboli ``dash'' (-) e nel contempo, rende minuscolo ogni carattere della stringa. Questa è una funzione utilissima per creare degli \ac{URI} corretti da una stringa. Il risultato di questa funzione sarà assegnato alla variabile \verb|$slug|: ecco così creato un indice automatizzato. Per evitare ambiguità ci si aspetta però che i titoli delle notizie siano tutti differenti.
+Questo nuovo metodo provvede a memorizzare correttamente i dati nel database: analizziamolo nel dettaglio. La terza linea contiene un nuova funzione \verb|url_title()| (fornita dall'Helper URL \pageref{helper:url)} che sostituisce tutti gli spazi della stringa inserita come argomento con dei simboli ``dash'' (-) e nel contempo, rende minuscolo ogni carattere della stringa. Questa è una funzione utilissima per creare degli \ac{URI} corretti partendo da una stringa. Il risultato di questa funzione sarà assegnato alla variabile \verb|$slug|: ecco così creato un indice automatizzato. Per evitare ambiguità ci si aspetta però che i titoli delle notizie siano tutti differenti.
 
-Attraverso l'istruzione \verb|$this->input->post| il titolo e il testo della notizia vengono memorizzati preventivamente nell'array \verb|$data|. Il metodo \var{post()} è fornito dalla Libreria input che svolge anche una funzione importante: rende sicuri i dati evitando che codice malevole possa essere memorizzato e richiamato come input di dati. La libreria input è, proprio per la sua importante funzione, caricata automaticamente dal framework. Alla fine tutti i campi dell'array \verb|$data| saranno inseriti correttamente nel database con l'istruzione \verb|db->insert();|
+Attraverso l'istruzione \verb|$this->input->post| il titolo e il testo della notizia vengono memorizzati preventivamente nell'array \verb|$data|. Il metodo \var{post()} è fornito dalla Libreria input che svolge anche una funzione importante: rende sicuri i dati evitando che codice malevole possa essere memorizzato e richiamato come input di dati. La libreria input è, proprio per il suo importante compito, caricata automaticamente dal framework. Alla fine tutti i campi dell'array \verb|$data| saranno inseriti correttamente nel database con l'istruzione \verb|db->insert();|
 
 \section*{Nuove modifiche al Routing}
 Prima di procedere, aggiungendo le notizie al database, è necessario modificare nuovamente il file \fil{routes.php} per prevedere appunto la rotta per la ``creazione di notizia'' (\var{creanews}). Riportiamo tutte le regole route per completezza:
@@ -396,4 +399,4 @@ $this->load->model('Nome_modello', '', $config);
 \section{Riepilogo}
 Congratulazioni, si è realizzata la prima applicazione con CodeIgniter sfruttando il patter \ac{MVC}, utilizzando il Controller, la View e interfacciandosi con un database grazie al Model. Nonostante l'utilizzo di un database sia opzionale, la semplicità con cui può essere implementato e gli innumerevoli vantaggi che ne derivano dall'adozione lo rendono una scelta presente nella maggior parte dei progetti. Facilità di accesso ai dati, gestione semplificata e soprattutto la loro riusabilità in diversi contesti, fanno sì che l'accoppiata Model/database vengano utilizzati anche in semplici progetti. Si è potuto dare un primo sguardo agli Helper e alle Librerie apprezzando la loro utilità e soprattutto la loro potenza in fatto di sicurezza e validazione dei dati. Anche la sintassi degli \ac{URI} utilizzata nel framework dovrebbe essere ormai più familiare.
 
-Sono state scalfite solo alcune potenzialità di CodeIgniter e ci si disperi se alcuni aspetti non sono ancora chiari. Nei prossimi capitoli ritorneremo con maggiori dettagli su molte nozioni sin qui introdotte.
+Sono state scalfite solo alcune potenzialità di CodeIgniter e non ci si disperi se alcuni aspetti sono ancora poco chiari. Nei prossimi capitoli ritorneremo con maggiori dettagli su molte nozioni sin qui introdotte.

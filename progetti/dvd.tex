@@ -1,0 +1,36 @@
+
+
+realizzazione di un archivio per dvd
+
+titolo
+formato
+lingua
+anno
+attori
+regista
+numero dischi
+note aggiuntive
+
+
+Istruzione SQL per la definizione della tabella dvd:
+
+create table dvd (
+id int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+titolo varchar(128) NOT NULL,
+formato varchar(64),
+lingua varchar(64),
+anno int(4),
+attori varchar(128),
+regista varchar(64),
+num_dischi int(2),
+note varchar(256)
+);
+
+
+
+
+Route
+
+$route['404_override'] = '';
+$route['dvd'] = 'dvd';
+$route['dvd_insert'] = 'dvd/dvd_insert';
