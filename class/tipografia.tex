@@ -12,13 +12,13 @@ $this->load->library('typography');
 Una volta caricata, l'oggetto libreria sarà disponibile utilizzando: \var{\$this->typography}.
 
 \begin{itemize}
-\item \verb|auto_typography()| formatta il testo per essere sematicamente e tipograficamente corretto nel formato HTML: viene presa una stringa in ingresso che viene poi restituita con la seguente formattazione:
+\item \verb|auto_typography()| formatta il testo per essere sematicamente e tipograficamente corretto nel formato \ac{HTML}: viene presa una stringa in ingresso che viene poi restituita con la seguente formattazione:
 
 \begin{itemize}
 \item delimita i paragrafi con i tag <p></p>. I paragrafi sono individuati dal doppio ritorno a capo
 \item il singolo ritorno a capo è convertito nel tag <br />, eccetto per il testo che si trova all'interno dei tag <pre> (preformattato)
 \item i tag che delimitano i blocchi di livello come <div> non vengono inseriti all'interno dei paragrafi, ma solo il testo da essi delimitato se contengono paragrafi.
-\item le doppie virgolette sono convertite con i simboli corretti, tranne se queste appaiono all'interno dei tag.
+\item le doppie virgolette sono convertite con i simboli corretti, tranne se queste appaiono all'interno dei tag
 \item gli apostrofi sono convertiti nel corretto carattere apostrofo
 \item i doppi trattini tra le parole come \verb|primo -- ultimo| oppure \verb|primo--ultimo| diventano lineette.
 \item tre punti consecutivi, precedenti o successivi una parola vengono convertiti in puntini di sospensione \verb|...|
@@ -32,21 +32,20 @@ $string = $this->typography->auto_typography($string);
 \end{code}
 
 \subsection*{Parametri}
-
-Per quanto riguarda i parametri, è possibile utilizzarne uno che determina se il parser deve suddividere su due righe consecutive due interruzione di riga consecutive. Per impostazione predefinita, il parser non riduce le interruzioni di linea, ovvero, se nessun parametro (TRUE/FALSE) viene fornito, è come se si eseguisse:
+Per quanto riguarda i parametri, è possibile utilizzarne uno che determina se il parser deve suddividere su due righe due interruzione di riga consecutive. Per impostazione predefinita il parser non riduce le interruzioni di linea, ovvero, se nessun parametro (TRUE/FALSE) viene fornito, è come se si eseguisse:
 
 \begin{code}
 $string = $this->typography->auto_typography($string, FALSE);
 \end{code}
 
-La formattazione attraverso questa classe può essere molto impegnativa per il processore del proprio server, soprattutto se si hanno molti contenuti da formattare. L'utilizzo di questa funzione è consigliata se abbinata alla funzione di caching per le proprie pagine (si veda la sezione\vref{cap:cache}).
+La formattazione attraverso questa classe può essere molto impegnativa per il processore del proprio server, soprattutto se si hanno molti contenuti da formattare. L'utilizzo di questa funzione è consigliata se abbinata alla funzione di caching (si veda la sezione\vref{cap:cache}).
 
 \item \verb|format_characters()| simile alla funzione \verb|auto_typography|, si differenzia per il fatto che è utilizzata solo per la conversione dei caratteri:
 
 \begin{itemize}
-\item le doppie virgolette sono convertite con i simboli corretti, tranne se queste appaiono all'interno dei tag.
+\item le doppie virgolette sono convertite con i simboli corretti, tranne se queste appaiono all'interno dei tag
 \item gli apostrofi sono convertiti nel corretto carattere apostrofo
-\item i doppi trattini tra le parole come \verb|primo -- ultimo| oppure \verb|primo--ultimo| diventano lineette.
+\item i doppi trattini tra le parole come \verb|primo -- ultimo| oppure \verb|primo--ultimo| diventano lineette
 \item tre punti consecutivi, precedenti o successivi una parola vengono convertiti in puntini di sospensione \verb|...|
 \item i doppi spazi che segueno una frase vengono convertiti in spazi caratteri che imitare la spaziatura doppino
 \end{itemize}
@@ -63,7 +62,7 @@ $string = $this->typography->format_characters($string);
 $string = $this->typography->nl2br_except_pre($string);
 \end{code}
 
-\item \verb|protect_braced_quotes| quando viene usata la libreria Typography insieme con quella Template Parser, spesso si desidera proteggere le virgolette singole e doppie all'interno di parentesi graffe. Per abilitare questa funzione, si deve impostare la proprietà della classe \verb|protect_braced_quotes| su TRUE. 
+\item \verb|protect_braced_quotes| quando viene usata la libreria Typography insieme con quella Template Parser, spesso si desidera proteggere le virgolette singole e doppie all'interno delle parentesi graffe. Per abilitare questa funzione, si deve impostare la proprietà della classe \verb|protect_braced_quotes| su TRUE. 
 
 Esempio di utilizzo:
 

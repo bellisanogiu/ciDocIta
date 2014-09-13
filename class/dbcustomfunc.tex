@@ -1,13 +1,13 @@
 %inizio Custom Function Calls
 
 \section*{Chiamata delle funzioni custom}
-La funzione \verb|$this->db->call_function()| abilita le possibilità di invocare metodi \ac{PHP} che non sono compresi nativamente in CodeIgniter. Per esempio se si desidera richiamare la funzione \verb|mysql_get_client_info()| che non è nativamente supportata da CodeIgniter, è possibile scrivere:
+La funzione \verb|$this->db->call_function()| abilita le possibilità di invocare metodi \ac{PHP} che non sono compresi nativamente in CodeIgniter. Per esempio, se si desidera richiamare la funzione \verb|mysql_get_client_info()| che non è nativamente supportata da CodeIgniter, è possibile scrivere:
 
 \begin{code}
 $this->db->call_function('get_client_info');
 \end{code}
 
-\'E necessario fornire il nome della funzione senza il prefisso \verb|mysql_| nel primo parametro, poiché questo viene aggiunto automanticamente Questo accorgimento permette di eseguire le stesse funzioni in differenti piattaforme di database. Ovviamente non tutte le chiamate alle funzioni sono identiche tra le diverse piattaforme, per cui ci sono dei limiti all'utilizzo pratico di questa funzione in termini di portabilità.
+\'E necessario fornire il nome della funzione senza il prefisso \verb|mysql_| nel primo parametro, poiché questo viene aggiunto automanticamente. Questo accorgimento permette di eseguire le stesse funzioni in differenti piattaforme di database. Ovviamente non tutte le chiamate alle funzioni sono identiche tra le diverse piattaforme, per cui ci sono dei limiti all'utilizzo pratico di questa funzione in termini di portabilità.
 
 Tutti i parametri necessari per la funzione che si sta chiamando saranno aggiunti al secondo parametro.
 
@@ -21,7 +21,7 @@ Spesso è necessario fornire l'ID di connessione al database o l'ID risultato de
 $this->db->conn_id;
 \end{code}
 
-Mentre l'ID risultato, può essere ottenuto sotto forma di oggetto:
+Mentre l'ID risultato si recupera sotto forma di oggetto:
 
 \begin{code}
 $query = $this->db->query("ALCUNE QUERY");

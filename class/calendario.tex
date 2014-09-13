@@ -105,7 +105,7 @@ Si noteranno alcune cose circa l'esempio precedente:
 
 \begin{itemize}
 \item è necessario impostare la \verb|show_next_prev"| su TRUE
-\item è necessario fornire al controller l'URL contenente il calendario al parametro \verb|next_prev_url|
+\item è necessario fornire al controller l'\ac{URL} contenente il calendario al parametro \verb|next_prev_url|
 \item è necessario fornire l'anno e il mese alla funzione che genera il calendario tramite i singoli segmenti di \ac{URI} in cui appaiono (nota: la classe del calendario aggiunge automaticamente l'anno/mese all'\ac{URL} base fornito)
 \end{itemize}
 
@@ -127,7 +127,7 @@ public function view($page='home')
 \end{img}
 
 \section*{Personalizzare il template}
-\'E possibile modificare l'aspetto grafico del calendario, modificando alcuni parametri delle seguenti pseudo variabili:
+L'aspetto grafico del calendario è modificabile agendo su alcuni parametri delle seguenti pseudo variabili:
 
 \begin{code}
 $prefs['template'] = '

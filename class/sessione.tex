@@ -3,17 +3,14 @@
 \label{class:sessione}
 %************************************************
 
-La classe Session (sessione) permette di tenere traccia dell'utente collegato e di seguire la sua attività all'interno del sito sino a quando sarà presente. La classe Session memorizza le informazioni sulle sessioni riguardanti ogni utente all'interno di appositi file denominati cookie; queste informazioni possono essere opzionalmente crittografate. \'E anche possibile memorizzare i dati della sessione all'interno di una tabella del database per incrementare la sicurezza: questo permette di confrontare l'ID della sessione presente nel cookie dell'utente con quelli precedentemente memorizzati nel database: in questo modo si effettuano degli ulteriori controlli incrociati sull'identità dell'utente. Per impostazione predefinita solo i cookie vengono salvati, ma se si sceglie di memorizzare anche le informazioni sul database, si dovrà creare una tabella apposita adibita alla memorizzazione delle sessioni, come verrà descritto più avanti.
+La classe Session (sessione) permette di tenere traccia dell'utente collegato e di seguire la sua attività all'interno del sito sino a quando sarà presente. La classe Session memorizza le informazioni sulle sessioni riguardanti ogni utente all'interno di appositi file denominati cookie; queste informazioni possono essere opzionalmente crittografate. \'E anche possibile memorizzare i dati della sessione all'interno di una tabella del database per incrementare la sicurezza: questo permette di confrontare l'ID della sessione presente nel cookie dell'utente con quelli precedentemente memorizzati nel database. In questo modo si effettuano degli ulteriori controlli incrociati sull'identità dell'utente. Per impostazione predefinita solo i cookie vengono salvati, ma se si sceglie di memorizzare anche le informazioni sul database, si dovrà creare una tabella apposita adibita alla memorizzazione delle sessioni, come verrà descritto più avanti.
 
-Nota: la classe Session non utilizza le sessioni native del \ac{PHP}, poiché genera dei propri dati di sessione, che offrono maggiore flessibilità agli sviluppatori.
+Nota: la classe Session non utilizza le sessioni native del \ac{PHP} poiché genera dei propri dati di sessione, che offrono maggiore flessibilità agli sviluppatori.
 
 Nota: anche se non si utilizzano sessioni crittografate, è necessario impostare una chiave di cifratura nel file di configurazione che verrà utilizzata per aiutare a prevenire la manipolazione dei dati di sessione.
 
 \section*{Inizializzare una sessione}
-
-Una sessione è generalmente eseguita globalmente con il caricamento di qualsiasi pagina, quindi la classe Session deve essere inizializzata nei metodi costruttore del proprio controller oppure sarà caricata automaticamente dal sistema. 
-
-Per inizializzare la classe, manualmente nel proprio costruttore del controller, si usi la seguente la funzione: \var{\$this->load->library}
+Una sessione è generalmente eseguita globalmente con il caricamento di qualsiasi pagina, quindi la classe Session deve essere inizializzata nei metodi costruttore del proprio controller oppure sarà caricata automaticamente dal sistema. Per inizializzare la classe, manualmente nel proprio costruttore del controller, si usa la seguente la funzione: \var{\$this->load->library}
 
 \begin{code}
 $this->load->library('session');
@@ -22,13 +19,9 @@ $this->load->library('session');
 Una volta caricata, l'oggetto della libreria Session sarà disponibile con l'istruzione \var{\$this->session}.
 
 \section*{Come funziona una sessione}
-
-Il meccanismo alla base delle sessioni è abbastanza semplice. Quando una pagina viene caricata, la classe controlla prima di tutto se, per l'utente, esiste già una sessione valida all'interno dei suoi cookie. Se i dati della sessione non esistono (oppure se sono scaduti), verrà creata una nuova sessione memorizzata all'interno del cookie. Invece, se una sessione utente è presente, le sue informazioni verranno aggiornate così come il cookie che le contiene. Con ogni aggiornamento il \verb|session_id| sarà rigenerato.
-
-\'E importante tenere a mente che la classe Session, una volta inizializzata, funzionerà automaticamente senza che sia necessario apportare alcuna modifica. Inoltre è possibile, come si vedrà in seguito, lavorare con i dati della sessione o anche aggiungere i propri dati alla sessione di un utente, ma in generale il processo di lettura, scrittura e aggiornamento di una sessione è automatico.
+Il meccanismo alla base delle sessioni è abbastanza semplice: quando una pagina viene caricata, la classe controlla prima di tutto se, per l'utente, esiste già una sessione valida all'interno dei suoi cookie. Se i dati della sessione non esistono (oppure se sono scaduti), verrà creata una nuova sessione memorizzata all'interno del cookie. Invece, se una sessione utente è presente, le sue informazioni verranno aggiornate così come il cookie che le contiene. Con ogni aggiornamento il \verb|session_id| sarà rigenerato. \'E importante tenere a mente che la classe Session, una volta inizializzata, funzionerà automaticamente senza che sarà necessario apportare alcuna modifica. Inoltre è possibile lavorare con i dati della sessione o anche aggiungere i propri dati alla sessione di un utente, ma in generale il processo di lettura, scrittura e aggiornamento di una sessione è automatico.
 
 \section*{I dati di sessione}
-
 Una sessione, per quanto concerne CodeIgniter, è semplicemente un array contenente le seguenti informazioni:
 
 \begin{itemize}
@@ -57,8 +50,7 @@ Nota: i cookie di sessione sono aggiornati solo ogni cinque minuti per impostazi
 \end{deftabv}
 
 \section*{Recuperare i dati di sessione}
-
-\'E possibile recuperare ogni dato dall'array di sessione utilizzando la seguente funzione:
+Ogni dato dall'array di sessione si può recuperare utilizzando la seguente funzione:
 
 \begin{code}
 $this->session->userdata('item');
@@ -73,8 +65,7 @@ $session_id = $this->session->userdata('session_id');
 La funzione restituisce FALSE se l'elemento richiesto non esiste.
 
 \section*{Aggiungere i propri dati sessione}
-
-Un'aspetto molto utile degli array di sessione è la possibilità di aggiungere i propri dati e memorizzarli nel cookie dell'utente. Ma perché si dovrebbe fare una cosa simile? Ecco un esempio:
+Un'aspetto molto utile degli array di sessione è la possibilità di aggiungere i propri dati e memorizzarli nel cookie dell'utente. Ma perché si dovrebbe fare una cosa simile? Si immagini una situazione di questo tipo: 
 
 Un utente accede al sito tramite login/password. Una volta autenticato si potrebbe voler memorizzare lo username e l'email nel cookie di sessione, in modo da rendere disponibili queste informazioni globalmente, senza dover eseguire successivamente delle query sul database per recuperarle. 
 
@@ -105,7 +96,6 @@ $this->session->set_userdata('qualche_nome', 'qualche_valore');
 Nota: i cookie possono contenere solo 4KB di dati, quindi si deve prestare attenzione a non superare tale capacità. Il processo di crittografia, in particolare, produce una stringa di dati più lunga di quella originale in modo da tenere una traccia accurata dei dati memorizzati.
 
 \section*{Recuperare tutti i dati sessione}
-
 Un array con tutti i dati dell'utente può essere ottenuto con la seguente istruzione:
 
 \begin{code}
@@ -125,7 +115,6 @@ Array
 \end{code}
 
 \section*{Eliminare i dati sessione}
-
 Così come è possibile aggiungere alcune informazioni in una sessione con \verb|set_userdata()|, allo stesso modo è possibile rimuoverle con \verb|unset_userdata()| a cui si passerà semplicemente la chiave di sessione. Per esempio, se si vuole rimuovere \verb|qualche_nome| dal flusso di informazioni della sessione:
 
 \begin{code}
@@ -141,8 +130,7 @@ $this->session->unset_userdata($array_items);
 \end{code}
 
 \section*{Flashdata}
-
-CodeIgniter supporta i ``flashdata'', o i dati di sessione, che sono disponibili solo per la successiva richiesta del server  per poi venire automaticamente cancellati. Questi possono essere molto utili poiché sono tipicamente utilizzati per i messaggi informativi o di stato (per esempio: ``il record 2 è stato cancellato'').
+CodeIgniter supporta i ``flashdata'', o i dati di sessione, che sono disponibili solo per la successiva richiesta del server per poi venire automaticamente cancellati. Questi possono essere molto utili poiché sono tipicamente utilizzati per i messaggi informativi o di stato (per esempio: ``il record 2 è stato cancellato'').
 
 Nota: le variabili Flash sono precedute da \verb|flash_| quindi si eviti di utilizzare questo prefisso nei propri nomi di sessione.
 
@@ -163,12 +151,11 @@ $this->session->flashdata('item');
 Se si vuole preservare una variabile flashdata per un'ulteriore richiesta, è possibile farlo usando la funzione \verb|keep_flashdata()|.
 
 \section*{Salvare una sessione in un database}
-
-Sin quando l'array di sessione contenente l'ID Session è memorizzato nel cookie dell'utente non lo si può validare: l'unica possibilità è memorizzarlo in un database. Per alcune applicazioni che richiedono poca o nessuna sicurezza, la convalida dell'ID Session può non essere necessaria, ma se l'applicazione richiede una maggiore sicurezza, la convalida si rende obbligatoria. In caso contrario, una vecchia sessione potrebbe essere ripristinata da un utente modificando il proprio cookie.
+Sin quando l'array di sessione contenente l'ID Session è memorizzato nel cookie dell'utente, non lo si può validare: l'unica possibilità è memorizzarlo in un database. Per alcune applicazioni che richiedono poca o nessuna sicurezza, la convalida dell'ID Session può non essere necessaria, ma se l'applicazione richiede una maggiore sicurezza, la convalida si rende obbligatoria. In caso contrario, una vecchia sessione potrebbe essere ripristinata da un utente modificando il proprio cookie.
 
 Quando i dati di sessione sono disponibili in un database, ogni volta che una sessione valida si trova nel cookie dell'utente, viene eseguita una query per effettuare un confronto e vedere se coincidono. Se l'ID di sessione non corrisponde, la sessione viene distrutta. Si presti attenzione al fatto che l'ID di sessione non può mai essere aggiornato, ma solamente generato quando si crea una nuova sessione.
 
-Per memorizzare le sessioni, è necessario innanzitutto creare una tabella di database per questo scopo. Ecco il prototipo di base (per MySQL) richiesto dalla classe sessione:
+Per memorizzare le sessioni è necessario innanzitutto creare una tabella di database per questo scopo. Ecco il prototipo di base (per MySQL) richiesto dalla classe sessione:
 
 \begin{code}
 CREATE TABLE IF NOT EXISTS  `ci_sessions` (
@@ -197,7 +184,6 @@ $config['sess_use_database'] = TRUE;
 Ora la classe Sessione memorizzerà le informazioni nel database. Una particolarità di questa classe è quella di avere incluso un sistema di ``garbace-collection'' che elimina le sessioni scadute automaticamente, senza un intervento da parte dello sviluppatore.
 
 \section*{Distruggere una sessione}
-
 Per eliminare la sessione attualmente attiva l'istruzione è:
 
 \begin{code}
@@ -207,11 +193,9 @@ $this->session->sess_destroy();
 Questa funzione deve essere invocata per ultima, altrimenti anche le variabili flash non saranno più disponibili. Se invece si vuole eliminare, non tutta la sessione, ma solo alcuni suoi elementi, allora la funzione da utilizzare è \verb|unset_userdata()|.
 
 \section*{Preferenze}
-
 Qui di seguito si fornisce un elenco delle preferenze relative alla classe Session, modificabili nel file \fil{/application/config/config.php}:
 
 \small
-
 \begin{tabx}{lXXX}
 \toprule
 Preferenze & Default & Opzioni & Descrizione \\

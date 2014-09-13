@@ -7,7 +7,7 @@ Unit testing è un approccio allo sviluppo del software in cui vengono scritti t
 
 %Se non si ha familiarità con il concetto si potrebbe fare un po 'googling sull'argomento. 
 
-La classe che risulta abbastanza intuitiva, è costituita da una funzione di valutazione e da due funzioni di risultato. Non deve essere considerata come uno strumento per fare veri e propri test di debug, ma piuttosto come un semplice meccanismo per valutare il codice e determinare se si sta producendo il tipo di dati e il risultato corretti.
+La classe che risulta abbastanza intuitiva, è costituita da una funzione di valutazione e da due funzioni di risultato. Non deve essere considerata come uno strumento per fare veri e propri test di debug, ma piuttosto come un semplice meccanismo per valutare il codice e determinare se si sta producendo il tipo di dati e i risultati corretti.
 
 La classe viene inizializzata nel proprio controller utilizzando la funzione \var{\$this->load->library}:
 
@@ -18,14 +18,13 @@ $this->load->library('unit_test');
 Una volta caricata la classe, l'oggetto Unit Test sarà disponibile utilizzando \var{\$this->unit}.
 
 \section*{Test}
-
 Per eseguire un test è necessario che si fornisca una condizione e il risultato atteso tramite la seguente funzione:
 
 \begin{itemize}
 \item \verb|$this->unit->run( test, expected result, 'test name', 'notes')|
 \end{itemize}
 
-Dove \var{test} è il risultato del codice che si vuole testare, \var{expected result} è il dato che ci si aspetta \var{test name} è un nome opzionale che può essere dato al test, e \var{notes} è un commento, anch'esso opzionale. Per esempio:
+Dove \var{test} è il risultato del codice che si vuole testare, \var{expected result} è il dato che ci si aspetta, \var{test name} è un nome opzionale che può essere dato al test, e \var{notes} è un commento, anch'esso opzionale. Per esempio:
 
 \begin{code}
 $test = 1 + 1;
@@ -66,7 +65,6 @@ is_null
 \end{code}
 
 \section*{Generare un Report}
-
 \'E possibile visualizzare i risultati dopo ogni test, oppure eseguire diversi test e generare un rapporto finale in una pagina formattata come una tabella \ac{HTML}. Per visualizzare un report si utilizzi la funzione \var{eco} oppure si utilizzi la funzione \var{run()}:
 
 \begin{code}
@@ -86,20 +84,19 @@ echo $this->unit->result();
 \end{code}
 
 \section*{Modalit\'a Strict}
-
 La classe Unit Test come impostazione predefinita effettua un confronto letterale di tipo loose. Si consideri questo esempio:
 
 \begin{code}
 $this->unit->run(1, TRUE);
 \end{code}
 
-Il test valuta un valore intero (1) ma il risultato atteso è un booleano (TRUE). Il linguaggio PHP, però, grazie alla sua tipizzazione dei dati loose valuterà il codice di cui sopra come TRUE utilizzando un test di uguaglianza normale:
+Il test valuta un valore intero (1) ma il risultato atteso è un booleano (TRUE). Il linguaggio \ac{PHP}, però, grazie alla sua tipizzazione dei dati loose valuterà il codice di cui sopra come TRUE utilizzando un test di uguaglianza normale:
 
 \begin{code}
-if (1 == TRUE) echo 'This evaluates as true';
+if (1 == TRUE) echo 'Valutato come TRUE';
 \end{code}
 
-Se si preferisce, si può impostare la classe sulla modalità Strict per effettuare un confronto sia con il tipo di dati, che il suo valore
+Se si preferisce, si può impostare la classe sulla modalità Strict per effettuare un confronto sia con il tipo di dati, che il suo valore:
 
 \begin{code}
 $this->unit->use_strict(TRUE);
@@ -108,11 +105,10 @@ $this->unit->use_strict(TRUE);
 Ora, con questa modalità, il test di prima darà esito negativo:
 
 \begin{code}
-if (1 === TRUE) echo 'This evaluates as FALSE';
+if (1 === TRUE) echo 'Valutato come FALSE';
 \end{code}
 
 \section*{Unit Testing}
-
 \'E possibile disabilitare alcuni test nei propri script utilizzando:
 
 \begin{code}
@@ -120,7 +116,6 @@ $this->unit->active(FALSE)
 \end{code}
 
 \section*{Visualizzare Unit Testing}
-
 Quando vengono visualizzati i risultati dei test, i seguenti elementi saranno messi in evidenza per impostazione predefinita:
 
 \begin{itemize}
@@ -140,8 +135,7 @@ $this->unit->set_test_items(array('test_name', 'result'));
 \end{code}
 
 \section*{Creare un template}
-
-Se si vuole modificare la formattazione con cui vengono visualizzati i risultati del test si può impostare un proprio template. Qui di seguito si mostra un semplice template in cui sono utilizzate delle pseudo variabili:
+Se si vuole modificare la formattazione con cui vengono visualizzati i risultati del test si può definire un proprio template. Qui di seguito si mostra un semplice template in cui sono utilizzate delle pseudo variabili:
 
 \begin{html}
 $str = '

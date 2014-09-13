@@ -7,7 +7,7 @@ La classe Input svolge due importanti compiti:
 
 \begin{itemize}
 \item effettua una elaborazione preventiva (pre-processing) dei dati per la sicurezza
-\item fornisce alcune funzioni helper per recuperare i dati di input ed elaborarli preventivamente
+\item fornisce alcune funzioni helper per recuperare i dati di input ed elaborarli anticipatamente
 \end{itemize}
 
 Nota: Questa classe viene inizializzata automaticamente dal sistema in modo che non sia necessario farlo manualmente.
@@ -66,17 +66,13 @@ Le tre funzioni che verranno esaminate nel dettaglio sono:
 $this->input->post('qualche_dato');
 \end{code}
 
-La funzione restituisce FALSe se l'elemento che si vuole recuperare non esiste. 
-
-Il secondo parametro (opzionale) permette di eseguire i dati attraverso il filtro \ac{XSS}. Per abilitare quest'ultimo si imposti il secondo parametro su TRUE.
+La funzione restituisce FALSE se l'elemento che si vuole recuperare non esiste. Il secondo parametro (opzionale) permette di eseguire i dati attraverso il filtro \ac{XSS}. Per abilitare quest'ultimo si imposti il secondo parametro su TRUE.
 
 \begin{code}
 $this->input->post('qualche_dato', TRUE);
 \end{code}
 
-Se la funzione viene chiamata senza parametri, verrà restituito un array con tutti gli elementi POST.
-
-Per ottenere tutti gli elementi POST e passarli al filtro \ac{XSS} si imposti il primo parametro della funzione con NULL. Questa restituirà FALSE se non ci sono elementi nel POST.
+Se la funzione viene chiamata senza parametri, verrà restituito un array con tutti gli elementi POST. Per ottenere tutti gli elementi POST e passarli al filtro \ac{XSS} si imposti il primo parametro della funzione su NULL. Questa restituirà FALSE se non ci sono elementi nel POST.
 
 \begin{code}
 $this->input->post(NULL, TRUE); // restituisce tutti gli elementi POST con filtro XSS
@@ -89,9 +85,7 @@ $this->input->post(); // restituisce tutti gli elementi POST senza filtro XSS
 $this->input->get('qualche_dato', TRUE);
 \end{code}
 
-Per ottenere un array con tutti gli elementi GET chiamare la funzione senza alcun parametro.
-
-Per ottenere tutti gli elmenti GET e passarli attraverso il filtro \ac{XSS}, si imposti il primo parametro su NULL. La funzione restituirà FALSE se non ci sono elementi da recuperare.
+Per ottenere un array con tutti gli elementi GET chiamare la funzione senza alcun parametro. Per ottenere tutti gli elementi GET e passarli attraverso il filtro \ac{XSS}, si imposti il primo parametro su NULL. La funzione restituirà FALSE se non ci sono elementi da recuperare.
 
 \begin{code}
 $this->input->get(NULL, TRUE); // restituisce tutti gli elementi GET con filtro XSS
@@ -137,15 +131,13 @@ $this->input->set_cookie($cookie);
 
 Nota: solo il nome e il valore sono obbligatori. Per eliminare un cookie impostato si lasci vuoto il parametro ``value''.
 
-La scadenza è impostata in secondi, che devono essere sommati al tempo corrente. Se non si include il tempo, ma solo il numero di secondi, questi determineranno il numero di secondi per i quali il cookie sarà valido. Se la scadenza è impostata a zero il cookie durerà solo fino a quando il browser rimarrà aperto.
-
-Per i cookie del sito, a prescindere da come il sito viene ``richiesto'', viene aggiunto al dominio il suo \ac{URL} partendo da un periodo, come questo \verb|.tuo-dominio.com|
-
-Il percorso non è di solito necessario in quanto la funzione imposta un percorso root.
-
-Il prefisso è necessario solo se si vogliono evitare conflitti con altri cookie che hanno lo stesso nome sul server.
-
-Il valore booleano \var{secure} è necessario solo se si vuole rendere un cookie sicuro impostandolo su TRUE.
+\begin{itemize}
+\item La scadenza è impostata con un valore espresso in secondi, che deve essere sommato al tempo corrente. Se non si include il tempo, ma solo il numero di secondi, questi determineranno i secondi per i quali il cookie sarà valido. Se la scadenza è impostata a zero il cookie durerà solo fino a quando il browser rimarrà aperto
+\item Per i cookie del sito, a prescindere da come il sito viene ``richiesto'', viene aggiunto al dominio il suo \ac{URL} partendo da un periodo, come questo \verb|.tuo-dominio.com|
+\item Il percorso non è di solito necessario in quanto la funzione imposta un percorso root
+\item Il prefisso è necessario solo se si vogliono evitare conflitti con altri cookie che hanno lo stesso nome sul server
+\item Il valore booleano \var{secure} è necessario solo se si vuole rendere un cookie sicuro impostandolo su TRUE
+\end{itemize}
 
 \subsection*{Parametri discreti}
 Se si preferisce, è possibile impostare i cookie passando i dati come singoli parametri:
@@ -166,7 +158,7 @@ Questa funzione restituisce FALSE se l'elemento che si sta cercando di recuperar
 cookie('qulche_cookie', TRUE);
 \end{code}
 
-\verb|$this->input->ip_address()| restituisce l'indirizzo IP dell'utente corrente. Se l'indirizzo IP non è valido, la funzione restituisce l'IP: 0.0.0.0.
+\verb|$this->input->ip_address()| restituisce l'indirizzo IP dell'utente corrente. Se l'indirizzo IP non è valido, la funzione restituisce l'IP 0.0.0.0.
 
 \begin{code}
 echo $this->input->ip_address();
@@ -193,7 +185,7 @@ else
 echo $this->input->user_agent();
 \end{code}
 
-Per maggiori informazioni si guardi la classe User Agent \vpageref{class:useragent}.
+Per maggiori informazioni si guardi la classe User Agent\vpageref{class:useragent}.
 
 \verb|$this->input->request_headers()| \'E utile se si lavora in un ambiente diverso da Apache dove la funzione \verb|apache_request_headers()| non è supportata. Restituisce un array di header.
 

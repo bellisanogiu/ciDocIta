@@ -10,13 +10,13 @@ $this->load->helper('typography');
 \end{code}
 
 \begin{itemize}
-\item \verb|auto_typography()| formatta il testo in modo che sia semanticamente e tipograficamente in \ac{HTML}. Si veda la classe Typography\vref{class:typography} per maggiori informazioni. Per esempio:
+\item \verb|auto_typography()| formatta il testo in modo che sia semanticamente e tipograficamente in \ac{HTML}. Si veda la classe Typography\vref{class:tipografia} per maggiori informazioni. Per esempio:
 
  \begin{code}
 $string = auto_typography($string);
 \end{code}
 
-L'uso di questa funzione può essere fonte di un intenso lavoro da parte del server, soprattutto se la quantità di dati da formattare è elevata. Se si utilizza questa funzione, è consigliabile effettuare il caching delle pagine (si veda la sezione\vref{sec:cache}.
+L'uso di questa funzione può essere fonte di un intenso lavoro da parte del server, soprattutto se la quantità di dati da formattare è elevata. Se si utilizza questa funzione, è consigliabile effettuare il caching delle pagine (si veda la sezione\vref{cap:cache}.
 
 \item \verb|nl2br_except_pre()| converte i ritorni a capo nel tag <br /> a meno che questi non siano all'interno dei tag <pre>. Questa funzione è simile a quella nativa PHP \var{nl2br()} tranne per il fatto che questa ignora i tag <pre>.
 

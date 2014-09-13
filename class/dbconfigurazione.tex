@@ -1,7 +1,6 @@
 %inizio Database Configuration
 
 \section*{Configurazione del database}
-
 La configurazione del database avviene inserendo i dati nel file \fil{/application/config/database.php} come per esempio lo username e la password per stabilire una connessione con la propria base di dati. Il prototipo del file di configurazione è il seguente:
 
 \begin{code}
@@ -22,7 +21,7 @@ $db['default']['autoinit'] = TRUE;
 $db['default']['stricton'] = FALSE;
 \end{code}
 
-Il file di configurazione si basa su un array multi-dimensionale piuttosto che su uno più semplice. Il motivo di questa scelta è quello di permettere la memorizzare di più insiemi di valori di connessione. Se, per esempio, si eseguono più ambienti (sviluppo, produzione, test, ecc) con un'unica installazione del framework, è possibile impostare un gruppo di connessione per ciascuno di essi, e in seguito passare tra i gruppi in base alle necessità. Ad esempio, per impostare un ambiente di ``test'' si procede nel seguente modo:
+Il file di configurazione si basa su un array multi-dimensionale piuttosto che su uno più semplice. Il motivo di questa scelta è quello di permettere la memorizzazione di più insiemi di valori di connessione. Se per esempio si eseguono più ambienti (sviluppo, produzione, test, ecc) con un'unica installazione del framework, sarà possibile impostare un gruppo di connessione per ciascuno di essi, e in seguito passare tra i gruppi in base alle necessità. Ad esempio, per impostare un ambiente di ``test'' si esamini il seguente esempio:
 
 \begin{code}
 $db['test']['hostname'] = "localhost";
@@ -42,7 +41,7 @@ $db['test']['autoinit'] = TRUE;
 $db['test']['stricton'] = FALSE;
 \end{code}
 
-Nota: l'array multidimensionale, ha come valore ``test''. 
+Nota: l'array multidimensionale ha come valore ``test''. 
 
 Quindi per utilizzare questa impostazione globalmente, si modifica il parametro seguente sempre nel file config:
 
@@ -50,10 +49,10 @@ Quindi per utilizzare questa impostazione globalmente, si modifica il parametro 
 $active_group = "test";
 \end{code}
 
-Il nome ``test'' è arbitrario: quindi è possibile impostare qualsiasi nome. Per impostazione predefinita, si è usata la parola ``default'' per la connessione primaria, ma anche questo può essere rinominato in qualcosa di più rilevante per il proprio progetto.
+Il nome ``test'' è arbitrario: quindi è possibile impostare qualsiasi nome. Per impostazione predefinita si è usata la parola ``default'' per la connessione primaria, ma anche questo può essere rinominato in qualcosa di più rilevante per il proprio progetto.
 
 \section*{Active Record}
-La classe Active Record si può abilitare globalmente o meno agendo sul parametro di configurazione \verb|$active_record| nel file di configurazione del database. Se non si utilizza la classe Active Record, si imposti il parametro sul valore FALSE: questo permetterà al sistema di consumare meno risorse quando le classi database saranno inizializzate. Se invece si vuole sfruttare questa peculiarità di CodeIgniter sarà sufficiente impostare il valore su TRUE:
+La classe Active Record si abilita globalmente o meno agendo sul parametro di configurazione \verb|$active_record| nel file di configurazione del database. Se non si utilizza la classe Active Record, si dovrà impostare il parametro sul valore FALSE: questo permetterà al sistema di consumare meno risorse quando le classi database saranno inizializzate. Se invece si vuole sfruttare questa peculiarità di CodeIgniter sarà sufficiente impostare il valore su TRUE:
 
 \begin{code}
 $active_record = TRUE;
@@ -70,15 +69,15 @@ Nota: Alcune classi di CodeIgniter come per esempio Sessions, richiedono che Act
 \item dbdriver. La tipologia di database utilizzato: mysql, postgres, odbc, ecc. Il nome deve essere specificato scrivendolo in minuscolo
 \item dbprefix. Indica un prefisso opzionale da aggiungere al nome della tabella quando si eseguono delle query Active Recors. Questo permette a diverse installazioni di CodeIgniter di condividere lo stesso database
 \item pcconnect. Viene utilizzato per indicare delle connessioni persistenti o meno: valore booleano TRUE/FALSE
-\item \verb|db_debug|. Viene utilizzato per indicare per visualizzare o meno gli errori del database: valore booleano TRUE/FALSE
-\item \verb|cache_on|. Viene utilizzato per abilitare o meno la cache delle query. Si veda anche la classe Database Caching
+\item \verb|db_debug|. Viene utilizzato per visualizzare o meno gli errori del database: valore booleano TRUE/FALSE
+\item \verb|cache_on|. Abilita o meno la cache delle query. Si veda anche la classe Database Caching
 \item cachedir. Il percorso assoluto della directory della query cache database
 \item \verb|char_set|. Il set di caratteri utilizzato con il database
 \item dbcollat. Le regole di confronto tra caratteri utilizzate nella comunicazione con il database. Questo parametro per MySQL e MySQLi è usato solo come backup se il proprio server funziona con una versione del PHP inferiore alla v.5.2.3. oppure se MySQL è inferiore alla v.5.0.7 (e le query di creazione della tabella sono realizzate con DB Forge). Esiste una incompatibilità nel PHP con la funzione \verb|mysql_real_escape_string()| che rende il proprio sito vulnerabile alle infezioni di tipo SQL se si usa un set di caratteri multi-byte e se si usa una versione inferiore di MySQL e PHP. I siti che utilizzano come set di caratteri per il database come Latin-1 o UTF-8 e collation non sono vulnerabili a questa minaccia
 \item \verb|swap_pre|. Il prefisso di default della tabella che può essere scambiato con \var{dbprefix}. Questo parametro è utile per le applicazioni distribuite in cui le query devono essere scritte manualmente e devono avere un prefisso personalizzabile dall'utente finale
 \item autoinit. Con questo parametro si stabilisce se si deve impostare una connessione automatica al database quando viene caricata la libreria. Se è viene utilizzato il valore FALSE la connessione avverrà prima di eseguire la prima query
 \item stricton. Stabilisce se forzare la connessione ``Strict Mode'', consigliato per garantire il rigoroso rispetto di SQL durante lo sviluppo di un'applicazione
-\item port. Il numero di porta della base di dati: si utilizza aggiungendo una linea nel file di configurazione relativa all'array del database.
+\item port. Il numero di porta della base di dati: si utilizza aggiungendo una linea nel file di configurazione relativa all'array del database
 
 \begin{code}
 $db['default']['port'] = 5432;

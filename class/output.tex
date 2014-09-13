@@ -3,9 +3,7 @@
 \label{class:output}
 %************************************************
 
-La classe Output ha un unico scopo: inviare le pagine web finali al browser web che le richiede. \'E anche responsabile per la memorizzazione nella cache delle pagine web, se si utilizza questa funzionalità. La classe viene inizializzata automaticamente dal sistema, quindi non deve essere caricata manualmente.
-
-In circostanze normali, non ci si accorge neppure delle azioni svolte dalla classe Output dato che funziona in modo trasparente senza alcun intervento da parte dello sviluppatore. Ad esempio, quando si utilizza la classe Loader per caricare una Vista, questa viene passata automaticamente alla classe Output, che sarà richiamata da CodeIgniter alla fine dell'esecuzione del sistema. \'E possibile, tuttavia, intervenire manualmente, utilizzando una delle seguenti funzioni:
+La classe Output ha un unico scopo: inviare le pagine web finali al browser web che le richiede. \'E anche responsabile per la memorizzazione nella cache delle pagine web, se si utilizza questa funzionalità. La classe viene inizializzata automaticamente dal sistema, quindi non deve essere caricata manualmente. In circostanze normali, non ci si accorge neppure delle azioni svolte dalla classe Output dato che funziona in modo trasparente senza alcun intervento da parte dello sviluppatore. Ad esempio, quando si utilizza la classe Loader per caricare una Vista, questa viene passata automaticamente alla classe Output, che sarà richiamata da CodeIgniter alla fine dell'esecuzione del sistema. \'E possibile, tuttavia, intervenire manualmente utilizzando una delle seguenti funzioni:
 
 \begin{itemize}
 \item \verb|$this->output->set_output()| permette di definire manualmente le stringhe di output. Per esempio:
@@ -14,9 +12,9 @@ In circostanze normali, non ci si accorge neppure delle azioni svolte dalla clas
 $this->output->set_output($data);
 \end{code}
 
-Se si configura manualmente l'output, questo deve essere l'ultimo elemento ad essere richiamato. Per esempio se si costruisce una pagina utilizzando uno dei metodi del controller, non si può richiamare il suo output se non come ultima istruzione.
+Se si configura manualmente l'output, questo deve essere l'ultimo elemento a venire richiamato. Per esempio se si costruisce una pagina utilizzando uno dei metodi del controller, non si può richiamare il suo output se non come ultima istruzione.
 
-\item \verb|$this->output->set_content_type()| permette di definire il tipo di mime della pagina in maniera tale da poter servire  facilmente i dati JSON, JPEG, di XML, ecc.
+\item \verb|$this->output->set_content_type()| permette di definire il tipo di mime della pagina in maniera tale da poter servire facilmente i dati JSON, JPEG, di XML, ecc.
 
 \begin{code}
 $this->output

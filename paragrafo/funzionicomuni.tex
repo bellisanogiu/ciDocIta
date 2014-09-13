@@ -3,7 +3,7 @@
 \label{cap:funzionicomuni}
 %************************************************
 
-CodeIgniter utilizza alcune funzioni per i suoi compiti che agiscono globalmente: esse sono sempre disponibili e non richiedono il caricamento di Librerie o Helper.
+CodeIgniter utilizza alcune funzioni per i suoi compiti che agiscono globalmente: queste sono sempre disponibili e non richiedono il preventivo caricamento di Librerie o Helper.
 
 \begin{itemize}
 \item \verb|is_php('numero_versione')| è utilizzata nelle istruzioni condizionali per determinare la versione del \ac{PHP} (restituisce un valore booleano)
@@ -18,7 +18,7 @@ if (is_php('5.3.0')) {
 }
 \end{code}
 
-\item \verb|is_really_writable('path/to/file')| questa funzione restituisce TRUE nei server Windows quando non si hanno i permessi di scrittura sul file. Invece viene restituito FALSE solo se l'attributo è di sola-lettura. Questa funzione è utile perché permette di capire se è \emph{consentito} scrivere su di un file, senza però effettivamente scriverci. Si ricorda che l'operazione di scrittura su un qualsiasi file può causare la perdita delle informazioni ivi contenute. Generalmente si consiglia l'utilizzo della funzione solo su piattaforme dove le informazioni sui file non possono essere determinate a priori.
+\item \verb|is_really_writable('path/to/file')| questa funzione restituisce TRUE nei server Windows quando non si hanno i permessi di scrittura sul file. Invece viene restituito FALSE solo se l'attributo è di sola lettura. Questa funzione è utile perché permette di capire se è \emph{consentito} scrivere su di un file, senza però effettivamente scriverci. Si ricorda che l'operazione di scrittura su un qualsiasi file può causare la perdita delle informazioni ivi contenute. Generalmente si consiglia l'utilizzo della funzione solo su piattaforme dove le informazioni sui file non possono essere determinate a priori.
 
 \begin{code}
 if (is_really_writable('file.txt')) {
@@ -36,7 +36,12 @@ else {
 
 \item \verb|config_item('item_key')| la Libreria Config è il metodo consigliato per accedere alle informazioni sulla configurazione. Tuttavia questa funzione può essere utilizzata per recuperare singoli parametri.
 
-\item \verb|show_error('message'), show_404('page'), log_message('level', 'message')| si tratta di funzioni legate alla gestione degli errori.
+\item le tre funzioni seguenti sono legate alla gestione degli errori: 
+\begin{itemize}
+\item \verb|show_error('message')|
+\item \verb|show_404('page')|
+\item \verb|log_message('level', 'message')|.
+\end{itemize}
 
 \item \verb|set_status_header(code, 'text');| permette di settare manualmente l'header dello stato del server. Per esempio:
 
@@ -48,24 +53,24 @@ set_status_header(401);
 
 \item \verb|remove_invisible_characters($str)| questa funzione previene l'inserimento di caratteri nulli tra i caratteri ASCII, come per esempio \verb|Java\0script|.
 
-\item \verb|html_escape($mixed)| fornisce una scorciatoia alla funzione \var{htmlspecialchars()}, utilizzata per l'escape delle stringhe. In questo modo si previene il fatto che codice esterno possa essere eseguito sul server e scatenare attacchi di tipo \ac{XSS}
+\item \verb|html_escape($mixed)| fornisce una scorciatoia alla funzione \var{htmlspecialchars()} utilizzata per l'escape delle stringhe. In questo modo si previene il fatto che codice esterno possa essere eseguito sul server e scatenare attacchi di tipo \ac{XSS}.
 \end{itemize}
 
 \section*{Funzioni per la gestione degli errori}
-In fase di debug risultano preziose le funzioni messe a disposizione da CodeIgniter che gestiscono gli errori e tutte le problematiche fastidiose che incorrono nella fase di sviluppo. CodeIgniter consente di creare dei report sugli errori nelle applicazioni grazie alle funzioni descritte di seguito. Inoltre, ha una classe di registrazione degli errori che consente di salvare come messaggi di testo tutti gli errori e gli avvisi di debug.
+In fase di debug risultano preziose le funzioni messe a disposizione da CodeIgniter per la gestione degli errori e di tutte le problematiche fastidiose che incorrono nella fase di sviluppo. CodeIgniter consente di creare dei report sugli errori che si verificano nelle applicazioni grazie alle funzioni descritte di seguito. Inoltre, possiede una classe che consente di salvare come messaggi di testo tutti gli errori e gli avvisi di debug.
 
-Per impostazione predefinita, CodeIgniter visualizza tutti gli errori generati dal PHP. Questo è utile in fase di sviluppo, ma si potrebbe voler modificare questo comportamento una volta che ci si trova nella fase di produzione. Per cambiare questo aspetto, si può agire sulla funzione \verb|error_reporting()| che si trova nella parte superiore del file \fil{index.php} principale. Disabilitare la segnalazione degli errori non impedirà comunque che il file di log venga generato se ci sono errori. 
+Per impostazione predefinita, CodeIgniter visualizza tutti gli errori generati dal \ac{PHP}. Questo fatto è utile in fase di sviluppo, ma si potrebbe voler modificare questo comportamento una volta che ci si trova nella fase di produzione. Per cambiare questo aspetto si può agire sulla funzione \verb|error_reporting()| che si trova nella parte superiore del file \fil{index.php} principale. Disabilitare la segnalazione degli errori non impedirà comunque che il file di log venga generato. 
 
-A differenza di molti sistemi in CodeIgniter, le funzioni di errore sono semplici interfacce procedurali che sono disponibili globalmente in tutta l'applicazione. Questo approccio consente di avere un completo log riguardante i messaggi di errore, senza doversi preoccupare di effettuare dei settaggi particolari sulle classi o metodi.
+A differenza di molti sistemi in CodeIgniter, le funzioni di errore sono semplici interfacce procedurali che sono disponibili globalmente in tutta l'applicazione. Questo approccio consente di avere un completo log riguardante i messaggi di errore senza doversi preoccupare di effettuare dei settaggi particolari sulle classi o i metodi.
 
 Il framework mette a disposizione le seguenti funzioni per la gestione degli errori:
 
 \begin{itemize}
-\item \verb|show_error('message' [, int $status_code= 500])|: questa funzione visualizza i messaggi di errore al seguente percorso: \verb|application/errors/error_general.php| Il parametro \verb|$status_code| è facoltativo: se utilizzato, determina quale codice di stato HTTP dovrebbe essere inviato con l'errore.
+\item \verb|show_error('message' [, int $status_code= 500])|: visualizza i messaggi di errore al seguente percorso: \verb|application/errors/error_general.php| Il parametro \verb|$status_code| è facoltativo: se utilizzato, determina quale codice di stato HTTP dovrebbe essere inviato con l'errore.
 
-\item \verb|show_404('page' [, 'log_error'])|: questa funzione visualizza i messaggi di errore al seguente percorso: \verb|application/errors/error_404.php|. Essa si aspetta che la stringa passata corrisponda ad una pagina inesistente (di cui non si trova il percorso). CodeIgniter visualizza sempre, automaticamente l'errore tramite questa funzione predefinita; è comunque possibile impostare il secondo parametro su FALSE in modo da evadere questo tipo di errori (skip log)
+\item \verb|show_404('page' [, 'log_error'])|: questa funzione visualizza i messaggi di errore al seguente percorso: \verb|application/errors/error_404.php|. Essa si aspetta che la stringa passata corrisponda ad una pagina inesistente (di cui non si trova il percorso). CodeIgniter visualizza sempre, automaticamente l'errore tramite questa funzione predefinita; è comunque possibile impostare il secondo parametro su FALSE in modo da ignorare questo tipo di errori (skip log).
 
-\item \verb|log_message('livello', 'messaggio')|: questa funzione consente di scrivere messaggi suoi propri file di log. È necessario fornire uno dei tre "livelli" nel primo parametro, che indica il tipo di messaggio che può essere: debug, errore, info. Il secondo parametro ``messaggio'' si indica il testo personalizzato che si desidera visualizzare. Per esempio:
+\item \verb|log_message('livello', 'messaggio')|: questa funzione consente di scrivere messaggi personalizzati suoi propri file di log. È necessario fornire uno dei tre "livelli" nel primo parametro, che indica il tipo di messaggio o etichetta se si preferisce: debug, error, info. Il secondo parametro ``messaggio'' specifica un testo personalizzato che si desidera visualizzare. Per esempio:
 
 \begin{code}
 if ($alcune_variabili == "")
@@ -80,14 +85,17 @@ else
 log_message('info', 'Lo scopo di una variabile è di fornire un certo valore');
 \end{code}
 
+\begin{img}{Il file log personalizzato}{3}{022}
+\end{img}
+
 Ci sono tre tipi di messaggio:
 \begin{enumerate}
-\item messaggi di errore: riguardano gli errori così come sono prodotti dagli errori dovuti al PHP o alle errate impostazione dell'utente
+\item messaggi di errore: riguardano gli avvisi così come sono prodotti dagli errori dovuti al \ac{PHP} o alle errate impostazione dell'utente
 \item messaggi di debug: assistono l'utente nell'individuazione dei problemi indicando per esempio, se una classe è stata inzializzata
 \item messaggi informativi: questi sono i messaggi con priorità più bassa. Semplicemente forniscono informazioni riguardanti qualche processo. CodeIgniter non genera come impostazione predefinita alcun messaggio di questo tipo, ma l'utente può utilizzarli per raccogliere utili informazioni
 \end{enumerate}
 
-Nota: affinché il file di log possa essere generato, la cartella \sys{logs} deve avere i permessi di scrittura. Inoltre, è necessario impostare la "soglia" per l'accesso in \sys{application/config/config.php}. Si potrebbe, per esempio, voler produrre solo i messaggi di errore che devono essere registrati e non gli altri due tipi. Se si imposta la registrazione (logging) a zero, questo verrà disabilitato. Per completezza elenchiamo tutti i parametri:
+Nota: affinché il file di log possa essere generato, la cartella \sys{logs} deve avere i permessi di scrittura. Inoltre, è necessario impostare la "soglia" per l'accesso di \verb|$config['log_threshold']| in \sys{application/config/config.php}. Si potrebbe, per esempio, voler produrre solo i messaggi di errore che devono essere registrati e non gli altri due tipi. Se si imposta la registrazione (logging) a zero, questo verrà disabilitato. Per completezza elenchiamo tutti i parametri:
 
 \begin{itemize}
 \item 0 = Disabilita la registrazione dei messaggi di errore

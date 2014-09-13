@@ -3,15 +3,13 @@
 \label{class:htmltable}
 %************************************************
 
-Questa classe fornisce delle funzioni per generare automaticamente delle tabelle tramite un array di dati, oppure una lista di risultati forniti da un database. La classe è inizializzata tramite il proprio controller utilizzando la funzione \var{\$this->load->library}:
+Questa classe aiuta nella definizione e implementazione delle tabelle tramite un array di dati, oppure una lista di risultati forniti da un database. La classe è inizializzata tramite il proprio controller utilizzando la funzione \var{\$this->load->library}:
 
 \begin{code}
 $this->load->library('table');
 \end{code}
 
-Una volta caricata, l'oggetto della libreria Table è disponibile utilizzando \var{\$this->table}. Per esempio:
-
-Nel seguente codice viene creata una tabella partendo da un array multidimensionale. Si noti che il primo indice dell'array diventerà la testata della tabella; per chi lo desiderasse è possibile definire una testata personalizzata utilizzando la funzione \verb|set_heading()| descritta nel reference della classe.
+Una volta caricata, l'oggetto della libreria Table è disponibile utilizzando \var{\$this->table}. Nel seguente codice viene creata una tabella partendo da un array multidimensionale. Si noti che il primo indice dell'array diventerà la testata della tabella; per chi lo desiderasse è possibile definire una testata personalizzata utilizzando la funzione \verb|set_heading()| descritta nel reference della classe.
 
 \begin{code}
 $this->load->library('table');
@@ -26,7 +24,7 @@ $data = array(
 echo $this->table->generate($data);
 \end{code}
 
-L'esempio successivo mostra una tabella creata a partire dal risultato di una query di un database. La classe Table genera automaticamente la testata della tabella; per chi lo desiderasse è possibile comunque definire una testata personalizzata utilizzando la funzione \verb|set_heading()| descritta nel reference della classe.
+L'esempio successivo mostra una tabella creata a partire dal risultato di una query di un database. La classe Table genera automaticamente la testata della tabella; inoltre è possibile definire una testata personalizzata utilizzando la funzione \verb|set_heading()| descritta nel reference della classe.
 
 \begin{code}
 $this->load->library('table');
@@ -92,9 +90,7 @@ $tmpl = array (
 $this->table->set_template($tmpl);
 \end{code}
 
-Si può notare come compaiano due blocchi di righe (row): questo permette di creare righe dai colori alternati, oppure di mettere in evidenza degli elementi che si alternano con ogni interazione.
-
-Non è quindi necessario fornire un template completo. Se si ha bisogno di cambiare solo alcuni aspetti del layout della tabella, si possono semplicemente ridefinire questi elementi. Per esempio, se si vuole solo personalizzare il tag di apertura della tabella:
+Si può notare come compaiano due blocchi di righe (row): questo permette di creare righe dai colori alternati, oppure di mettere in evidenza degli elementi che si alternano con ogni interazione. Non è quindi necessario fornire un template completo. Se si ha bisogno di cambiare solo alcuni aspetti del layout della tabella, si possono semplicemente ridefinire questi elementi. Per esempio, se si vuole solo personalizzare il tag di apertura della tabella:
 
 \begin{code}
 $tmpl = array ( 'table_open'  => '<table border="1" cellpadding="2" cellspacing="1" class="mytable">' );
@@ -132,7 +128,7 @@ $this->table->add_row('Blue', 'Red', 'Green');
 $this->table->add_row(array('Blue', 'Red', 'Green'));
 \end{code}
 
-Se si vuole definire gli attributi di un tag di una ben definita cella, si può utilizzare un array. La chiave associativa \var{data} definisce per l'appunto l'informazione della cella. Tutte le altre coppie ``chiave => valore'' sono aggiunte come un attributo al tag, nel formato ``key='val'':
+Se si vogliono definire gli attributi di un tag di una ben definita cella, si può utilizzare un array. La chiave associativa \var{data} definisce per l'appunto l'informazione della cella. Tutte le altre coppie ``chiave => valore'' sono aggiunte come un attributo al tag, nel formato ``key='val'':
 
 \begin{code}
 $cell = array('data' => 'Blue', 'class' => 'highlight', 'colspan' => 2);

@@ -5,9 +5,7 @@
 
 Gli Hook sono delle componenti del framework CodeIgniter con cui probabilmente molti sviluppatori non dovranno mai avere niente a che fare: è comunque importante essere consapevoli della loro esistenza. CodeIgnition è molto flessibile e ogni suo aspetto può essere facilmente configurato per adattarsi alle preferenze dello sviluppatore e al progetto stesso. Personalizzare però gli elementi core del framework è un lavoro che non dovrebbe mai essere svolto, se non da professionisti, altrimenti il rischio è quello di compromettere le funzionalità del tool di funzioni con conseguenze sulla loro stabilità ed efficienza.
  
-Nonostante CodeIgniter funzioni in base ad struttura ben organizzata (vedi \vpageref{fig:019}), è possibile modificare alcuni operazioni nel normale flusso di esecuzione, come per esempio caricare un particolare script prima che venga eseguito un proprio Controller, oppure subito dopo. Questa operazione si può attuare grazie ad un Hook che permetterà di svolger questo specifico compito in fase di esecuzione senza dover modificare il core di CodeIgniter.
-
-Gli strumenti che CodeIgnition mette a disposizione dello sviluppatore per svolgere queste personalizzazioni avanzate, (senza compromettere la stabilità del core), prendono il nome di \var{Hook}.
+Nonostante CodeIgniter funzioni in base ad struttura ben organizzata (vedi \vpageref{fig:019}), è possibile modificare alcuni operazioni nel normale flusso di esecuzione, come per esempio caricare un particolare script prima che venga eseguito un Controller, oppure subito dopo. Questa operazione si può attuare grazie ad un Hook che modifica il normale flusso di esecuzione senza agire sul core di CodeIgniter. Gli strumenti che CodeIgnition mette a disposizione dello sviluppatore per svolgere queste personalizzazioni avanzate, (senza compromettere la stabilità del core), prendono il nome di \var{Hook}.
 
 \begin{img}{Flow chart}{4}{019}
 \end{img}
@@ -17,30 +15,7 @@ Gli Hook si possono abilitare o meno, personalizzando il file \fil{config.php} a
 Modificando il valore booleano del parametro \verb|$config['enable_hooks']| si potranno abilitare gli Hook (TRUE) o disabilitarli (FALSE). Quest'ultimo è il valore di default.
 
 \section*{Utilizzare gli Hook}
-La definizione degli Hook è semplice, e avviene agendo sul file \fil{hooks.php} che si trova al percorso \sys{application/config/hooks.php}. La sintassi utilizzata è quella propria di un array in cui è necessario specificare la classe, il metodo, il file, il percorso e gli eventuali parametri. Un esempio chiarificatore è il seguente:
-
-\begin{code}
-// Definizione di un Hook
-$hook['pre_controller'] = array(
-	// nome della classe
-    'class'    => 'Classe',
-
-	// nome della funzione di classe
-	'function' => 'Funzione',
-
-	// nome del file di classe
-	'filename' => 'Classe.php',
-	
-	// cartella del file di classe
-	'filepath' => 'hooks',
-
-	// parametri da elaborare
-	'params'   => array('a', 'b', 'c')
-);
-\end{code}
-
-\section*{Definizione di un Hook}
-L'Hook viene abilitato agendo su uno specifico array nel file \fil{application/config/hooks.php}. Il seguente esempio mostra un prototipo:
+La definizione degli Hook è semplice, e avviene agendo sul file \fil{hooks.php} che si trova al percorso \sys{application/config/hooks.php}. La sintassi utilizzata è quella propria di un array in cui è necessario specificare la classe, il metodo, il file, il percorso e gli eventuali parametri. Il seguente esempio mostra un prototipo:
 
 \begin{code}
 $hook['pre_controller'] = array(
@@ -53,7 +28,7 @@ $hook['pre_controller'] = array(
 
 	'filepath' => 'hooks',
 
-	'params'   => array('beer', 'wine', 'snacks')
+	'params'   => array('rose', 'prati', 'farfalle')
 
 	);
 \end{code}
@@ -64,8 +39,8 @@ Nota: la parte radice (index) dell'array che nel nostro esempio è \verb|pre_con
 \item[class] il nome della classe che si desidera invocare. Se si preferisce usare una funzione procedurale invece di una classe, è necessario lasciare questo campo vuoto
 \item[function] si riferisce al nome della funzione da invocare
 \item[filename] è il nome del file che contiene la classe o la funzione
-\item[filepath] si riferisce al nome della directory che contiene il nostro script che si trova sempre all'interno della directory \sys{application/}. Per esempio se lo script si trova \sys{/application/hooks/}, ci si riferirà ad esso semplicemente con \sys{hooks} quando si indicherà il suo percorso. Se invece lo script, sempre facendo un altro esempio, si trova in \sys{/application/hooks/utilities/}, allora il percorso relativo da utilizzare sarà \sys{hooks/utilities} senza lo slash \var{/} iniziale e finale.
-\item[params]  ogni parametro, se lo si ritiene necessario, può essere passato al proprio script. Questo parametro è opzionale.
+\item[filepath] si riferisce al nome della directory che contiene il nostro script che si trova sempre all'interno della directory \sys{application/}. Per esempio se lo script è all'interno di \sys{/application/hooks/}, ci si riferirà ad esso semplicemente con \sys{hooks}. Se invece lo script, sempre facendo un altro esempio, si trova in \sys{/application/hooks/utilities/}, allora il percorso relativo da utilizzare sarà \sys{hooks/utilities} senza lo slash \var{/} iniziale e finale
+\item[params] ogni parametro, se lo si ritiene necessario, può essere passato al proprio script. I parametri sono opzionali
 \end{description}
 
 Per un maggiore ordine è vivamente consigliato inserire i propri Hook all'interno di una cartella creata per tale scopo. Se per esempio si volessero inserire gli script creati in una cartella chiamata ``mieiscript'', il relativo percorso sarà \sys{application/hooks/Mieiscript} mentre il valore da definire nel \var{filepath} sarà di conseguenza \var{hooks/Mieiscript}.
@@ -75,12 +50,12 @@ Gli array in cui sono definiti i parametri descritti prendono il nome di Hook po
 
 \begin{itemize}
 \item \verb|pre_system|: viene chiamato immediatamente dopo la fase di esecuzione, permette unicamente il caricamento delle classi per il benchmark e quelle relative agli Hook stessi;
-\item \verb|pre_controller|: ha la massima priorità: viene chiamato precedentemente a qualsiasi Controller; permette il caricamento di classi base come quelle per il routing e la sicurezza
-\item \verb|post_controller_constructor|: viene chiamato subito dopo che un Controller è istanziato, ma prima di qualsiasi metodo di classe in esso definito
-\item \verb|post_controller|: viene chiamato subito dopo l'esecuzione completa di un Controller;
+\item \verb|pre_controller|: ha la massima priorità: viene chiamato prima di qualsiasi Controller; permette il caricamento di classi base come quelle per il routing e la sicurezza
+\item \verb|post_controller_constructor|: viene invocato subito dopo che un Controller è istanziato, ma prima di qualsiasi metodo di classe in esso definito
+\item \verb|post_controller|: viene chiamato subito dopo l'esecuzione completa di un Controller
 \item \verb|display_override|: presiede all'override (riscrittura di un metodo ereditato) della funzione \verb|_display()|, utilizzata per inviare gli output al browser web alla fine di un'esecuzione. \'E necessario referenziarsi al super oggetto con \verb|$this->CI =& get_instance()|; i dati finalizzati saranno disponibili attraverso la chiamata \verb|$this->CI->output->get_output()|
-\item \verb|cache_override|: consente di utilizzare una propria funzione al posto della funzione di default \verb|_display_cache()| in modo da creare un sistema di cache personalizzato
-\item \verb|post_system|: viene chiamato dopo l'invio dell'output al browser al termine di tutte le esecuzioni del sistema
+\item \verb|cache_override|: consente di utilizzare una propria funzione al posto di quella di default \verb|_display_cache()| in modo da creare un sistema di cache personalizzato
+\item \verb|post_system|: viene invocata dopo l'invio dell'output al browser al termine di tutte le esecuzioni del sistema
 \end{itemize} 
 
 \section*{Chiamate multiple allo stesso Hook}
@@ -119,19 +94,18 @@ $hook['pre_controller'][] = array(
 Le seconde parentesi quadre, come nella prima riga \verb|$hook['pre_controller']|\textcolor{red}{[]} permettono di raggiungere lo scopo: definire un array multimensionale per utilizzare il nostro Hook in più script.
 
 \section*{Caricamento delle risorse}
-CodeIgniter utilizza un sistema di precaricamento che permette alle Librerie, Helper e Modelli di essere inizializzati automaticamente ogni volta che il sistema le richiede. Se invece è necessario che alcune risorse siano sempre disponibili globalmente, si dovrà configurare la funzionalità di CodeIgniter definita come ``auto-load''. Le seguenti risorse possono essere caricate automaticamente:
+CodeIgniter utilizza un sistema di precaricamento che permette alle Librerie, Helper e Modelli di essere inizializzati automaticamente ogni volta che il sistema le richiede. Se invece si vuole che alcune risorse siano sempre disponibili globalmente, si dovrà configurare la funzionalità di CodeIgniter definita come ``auto-load''. Le seguenti risorse possono essere caricate automaticamente:
 
 \begin{code}
-\item le classi core che si trovano nelle directory relative alle \sys{Librerie}
-\item i file Helper che si trovano nelle directory relative agli \sys{Helper}
-\item i file di configurazione che si trovano nella directory config
+\item le classi core che si trovano nelle directory relative alle \sys{libraries}
+\item i file Helper che si trovano nelle directory relative agli \sys{helpers}
+\item i file di configurazione che si trovano nella directory \sys{config}
 \item i file del linguaggio che si trovano nella directory \sys{system/language/}
-\item i Modelli che si trovano nelle  directory relative ai \sys{Modelli}
+\item i Modelli nella  directory relative ai \sys{models}
 \end{code}
 
-Per apportare delle modifiche personalizzate è sufficiente agire sul file \fil{autoload.php} siutato nel percorso \sys{/application/config/}, semplicemente inserendo le risorse che si desiderano precaricare nell'array. I commenti presenti nel codice dovrebbero essere sufficientemente autoesplicativi.
+Per apportare delle modifiche personalizzate è sufficiente agire sul file \fil{autoload.php} situato nel percorso \sys{/application/config/}, semplicemente inserendo le risorse che si desiderano precaricare nell'array. I commenti presenti nel codice dovrebbero essere sufficientemente autoesplicativi.
 
-Nota: come al solito, si ricorda di non inserire l'estensione \var{.php} quando si specifica la risorsa.
+Nota: si ricorda di non inserire l'estensione \var{.php} quando si specifica la risorsa.
 
-\section{Riepilogo}
-Gli Hook permettono di intervenire nei meccanismi del funzionamento del framework senza modificarne il core, ovvero il cuore del sistema. Questo permette di evitare pericolose instabilità. Ogni sviluppatore può realizzare i propri Hook, definendo delle apposite classi e i relativi metodi, oppure utilizzare quelli predefiniti di CodeIgniter: l'ordine con cui sono richiamati, definisce anche la sequenza di caricamento e di conseguenza la priorità. Infine si è visto che, anche se CodeIgniter cerca di caricare le risorse solo quando esse sono necessarie, è possibile ``forzare'' questo comportamento, grazie all'auto-load manuale.
+Riassumendo quando spiegato in questa sezione, possiamo dire che gli Hook permettono di intervenire nei meccanismi del funzionamento del framework senza modificarne il core, ovvero il cuore del sistema. Questo permette di evitare pericolose instabilità. Ogni sviluppatore può realizzare i propri Hook definendo delle apposite classi e i relativi metodi, oppure utilizzare quelli predefiniti di CodeIgniter: l'ordine con cui sono richiamati, definisce anche la sequenza di caricamento e di conseguenza la priorità. Infine si è visto che, anche se CodeIgniter cerca di caricare le risorse solo quando necessarie, è possibile ``forzare'' questo comportamento grazie all'auto-load manuale.

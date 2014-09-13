@@ -3,10 +3,10 @@
 \label{class:uriclasse}
 %************************************************
 
-Questa classe fornisce un'insieme di funzioni per recuperare preziosi dati dalle proprie stringhe URI. Se si utilizza l'instradamento URI, è possibile anche ottenere informazioni sui segmenti re-instradati. Questa classe, come altre presenti in CodeIgniter è inizializzata automaticamente dal sistema: nessun intervento manuale è necessario.
+Questa classe fornisce un'insieme di funzioni per recuperare preziosi dati dalle proprie stringhe\ac{URI}. Se si utilizza l'instradamento \ac{URI}, è possibile anche ottenere informazioni sui segmenti re-instradati. Questa classe, come altre presenti in CodeIgniter è inizializzata automaticamente dal sistema: nessun intervento manuale è necessario.
 
 \begin{itemize}
-\item \verb|$this->uri->segment(n)| permette di recuperare uno specifico segmento, individuato dal valore \var{n}. La numerazione dei segmenti avviene da sinistra a destra. Per esempio, se l'\ac{URL} completo è il seguente:
+\item \verb|$this->uri->segment(n)| permette di recuperare uno specifico segmento individuato dal valore \var{n}. La numerazione dei segmenti avviene da sinistra a destra. Per esempio, se l'\ac{URL} completo è il seguente:
 
 \begin{code}
 http://example.com/index.php/news/local/metro/crime_is_up
@@ -40,7 +40,7 @@ else
 }
 \end{code}
 
-\item \verb|$this->uri->rsegment(n)| questa funzione è identica a quella precedente, tranne che consente di recuperare un segmento specifico dal proprio URI re-indirizzato. Questo, nel caso in cui si stia usando la funzione URI Routing di CodeIgniter (si veda la sezione\vref{sec:uri}).
+\item \verb|$this->uri->rsegment(n)| questa funzione è identica a quella precedente, tranne che consente di recuperare un segmento specifico dal proprio URI re-indirizzato. Questo, nel caso in cui si stia usando la funzione URI Routing di CodeIgniter (si veda\vpageref{sec:uri}).
 
 \item \verb|$this->uri->slash_segment(n)| si differenzia  da \verb|$this->uri->segment()| solo per il fatto che aggiunge uno slash al segmento, la cui posizione è determinata dal secondo parametro. Se il parametro non viene utilizzato, viene aggiunto uno slash alla fine. Ecco alcuni esempi:
 
@@ -66,7 +66,7 @@ Restitiscono rispettivamente:
 index.php/user/search/name/joe/location/UK/gender/male
 \end{code}
 
-L'URI verrà così trasformato in un array associativo come nel prototipo seguente:
+L'\ac{URI} verrà così trasformato in un array associativo come nel prototipo seguente:
 
 \begin{code}
 [array]
@@ -77,9 +77,7 @@ L'URI verrà così trasformato in un array associativo come nel prototipo seguen
 )
 \end{code}
 
-Il primo parametro della funzione definisce un offset che per valore predefinito è uguale a 3.
-
-Il secondo parametro permette di impostare i nomi delle key predefinite, in modo che l'array restituito dalla funzione conterrà sempre gli indici attesi, anche se manca l'URI. Per esempio:
+Il primo parametro della funzione definisce un offset che per valore predefinito è uguale a 3. Il secondo parametro permette di impostare i nomi delle key predefinite, in modo che l'array restituito dalla funzione conterrà sempre gli indici attesi, anche se manca l'\ac{URI}. Per esempio:
 
 \begin{code}
 $default = array('name', 'gender', 'location', 'type', 'sort');
@@ -87,9 +85,7 @@ $default = array('name', 'gender', 'location', 'type', 'sort');
 $array = $this->uri->uri_to_assoc(3, $default);
 \end{code}
 
-Se l'URI non contiene un valore predefinito, verrà impostato su quel nome un indice di array con un valore FALSE.
-
-Infine, se un valore corrispondente non è disponibile per una determinata chiave (se vi è un numero dispari di segmenti URI) il valore verrà impostato su FALSE.
+Se l'\ac{URI} non contiene un valore predefinito, verrà impostato su quel nome un indice di array con un valore FALSE. Infine, se un valore corrispondente non è disponibile per una determinata chiave (se vi è un numero dispari di segmenti \ac{URI}) il valore verrà impostato su FALSE.
 
 \item \verb|$this->uri->ruri_to_assoc(n)| si differenzia dalla precedente funzione per il fatto che viene creato un array associativo utilizzando l'URI reindirizzato.
 

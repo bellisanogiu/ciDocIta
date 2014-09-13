@@ -3,9 +3,9 @@
 \label{class:cart}
 %************************************************
 
-La classe Cart (carrello) mette a disposizione dello sviluppatore delle comode funzionalità per progetti di e-commerce. Fulcro della classe sono gli elementi (per esempio i prodotti acquistati) che possono essere aggiunti alla sessione attiva, sin quando l'utente si trova sul sito sviluppato con CodeIgniter. Questi elementi possono essere recuperati e visualizzati in un formato standard ``shopping cart'', che consente all'utente di aggiornare la loro quantità, oppure rimuoverli dal carrello. 
+La classe Cart (carrello) mette a disposizione dello sviluppatore delle comode funzionalità per progetti di e-commerce. Fulcro della classe sono gli elementi (per esempio i prodotti acquistati) che possono essere aggiunti alla sessione attiva sin quando l'utente si trova sul sito sviluppato con CodeIgniter. Questi elementi possono essere recuperati e visualizzati in un formato standard ``shopping cart'', che consente all'utente di aggiornare la loro quantità, oppure rimuoverli dal carrello. 
 
-Questa classe, automatizza molti compiti legati alla sessione, ma non prevede funzionalità aggiuntive come lo shopping, l'autorizzazione delle carte di credito o altre caratteristiche che si basano sull'analisi e il processo di dati.
+Questa classe automatizza molti compiti legati alla sessione, ma non prevede funzionalità aggiuntive come lo shopping, l'autorizzazione delle carte di credito o altre caratteristiche che si basano sull'analisi e il processo di dati.
 
 Prima di utilizzare la classe Cart è importante fare alcune precisazioni. La prima è che Cart si basa a sua volta sulla classe Session per salvare le informazioni del carrello in un database: quindi prima di utilizzare la classe si deve configurare la tabella del database come indicato nella documentazione delle Sessioni\vref{class:sessione} e definire le preferenze nel file \fil{/application/config/config.php} per utilizzare una base di dati.
 
@@ -40,7 +40,7 @@ $data = array(
 I primi quattro indici dell'array (id, qty, price, name) sono obbligatori: se ommessi tutti o solo uno di essi, i dati non verranno memorizzati nel carrello. Il quinto indice (options) è invece opzionale: è utilizzato nei casi in cui il prodotto contenga ulteriori opzioni da associare; in questo caso viene passato un nuovo array, come nell'esempio in cui si sono specificati anche la taglia e il colore dell'articolo.
 
 \begin{description}
-\item[id] ogni prodotto nel negozio deve essere caratterizzato da un identificatore univoco. L'id, solitamente rappresentato da un numero, ha un prefisso, per garantire una maggiore sicurezza. Negli esempi di questa classe verrà utilizzato il prefisso ``sku''.
+\item[id] ogni prodotto nel negozio deve essere caratterizzato da un identificatore univoco. L'id, solitamente rappresentato da un numero, ha un prefisso per garantire una maggiore sicurezza. Negli esempi di questa classe verrà utilizzato il prefisso ``sku''
 \item [qty] la quantità dell'oggetto da acquistare
 \item [price] il prezzo
 \item [name] il nome dell'oggetto
@@ -52,9 +52,7 @@ I primi quattro indici dell'array (id, qty, price, name) sono obbligatori: se om
 
 Esistono, oltre a questi cinque indici, due parole riservate: \var{rowid} e \var{subtotal}. Questo significa che tali nomi non devono essere utilizzati per definire gli indici dell'array.
 
-L'array dei prodotti può contenere dati aggiuntivi: tutto ciò che si include, verrà memorizzato nella sessione. Tuttavia, è meglio adottare uno standard comune tra i dati di tutti i prodotti: in questo modo la visualizzazione delle informazioni in una tabella risulterà omogenea.
-
-Il metodo \var{insert()} restituirà \verb|$rowid| (l'identificatore del prodotto) solo se il dato sarà inserito correttamente nel database.
+L'array dei prodotti può contenere dati aggiuntivi: tutto ciò che si include verrà memorizzato nella sessione. Tuttavia è meglio adottare uno standard comune tra i dati di tutti i prodotti: in questo modo la visualizzazione delle informazioni in una tabella risulterà omogenea. Il metodo \var{insert()} restituirà \verb|$rowid| (l'identificatore del prodotto) solo se il dato sarà inserito correttamente nel database.
 
 \section*{Aggiungere pi\'u oggetti}
 Per aggiungere più prodotti al carrello bisogna affidarsi ad un array multidimensionale come nell'esempio: in questo modo tutti i dati vengono inseriti in una singola azione. Questo è utile per permettere agli utenti di scegliere tra diversi elementi collocati sulla stessa pagina.
@@ -87,7 +85,7 @@ $this->cart->insert($data);
 
 \label{sec:vedicarrello}
 \section*{Visualizzare il carrello}
-Per visualizzare il carrello si utilizzano, come è facile immaginare, una Vista con un codice simile a quello riportato nell'esempio e l'Helper Form:
+Per visualizzare il carrello si utilizzano, come è facile immaginare, una Vista con un codice simile a quello riportato nell'esempio e l'Helper Form (si veda \vpageref{helper:form}):
 
 \begin{html}
 <?php echo form_open('path/to/controller/update/function'); ?>
@@ -145,7 +143,7 @@ Per visualizzare il carrello si utilizzano, come è facile immaginare, una Vista
 \end{html}
 
 \section*{Aggiornare il carrello}
-L'aggiornamento del carrello con le informazioni dei prodotti in esso contenuti, avviene passando alla funzione \verb|$this->cart->update()| un array contenente l'id della riga (Row ID) e la relativa quantità. Un aspetto utile, è che se la quantità dell'oggetto in questione è zero, l'oggetto automaticamente verrà rimosso dal carrello.
+L'aggiornamento del carrello con le informazioni dei prodotti in esso contenuti, avviene passando alla funzione \verb|$this->cart->update()| un array contenente l'id della riga (Row ID) e la relativa quantità. Un aspetto utile è che, se la quantità dell'oggetto in questione è zero, l'oggetto automaticamente verrà rimosso dal carrello.
 
 \begin{code}
 $data = array(
@@ -175,9 +173,9 @@ $data = array(
 $this->cart->update($data);
 \end{code}
 
-Ma cosa è un \var{ID Row}? Si tratta di un identificatore univoco che viene generato dal codice del carrello quando un elemento viene aggiunto. La ragione per cui viene creato un ID univoco è per consentire la gestione di prodotti identici ma con piccole differenze significative. Si immagini per esempio di acquistare due birre, identiche in tutto, tranne per il fatto che una è ``analcolica'' e l'altra no. Un ulteriore esempio è dato da due t-shirt identiche (stesso prodotto), ma con taglie differenti: l'ID del prodotto (ma anche altri attributi) risulteranno così identici proprio perché ci si riferisce al medesimo prodotto, ovvero una t-shirt. Il carrello deve quindi permettere di identificare questa differenza sottile, ma importante in modo che le due taglie (e i relativi prodotti) possano essere gestiti indipendentemente l'uno dall'altro. CodeIgniter rende possibile tutto questo creando un unico ``ID Row'' in base all'ID del prodotto e alle eventuali opzioni associate.
+Ma cosa è un \var{ID Row}? Si tratta di un identificatore univoco che viene generato dal codice del carrello quando un elemento viene aggiunto. La ragione per cui viene creato un ID univoco è per consentire la gestione di prodotti identici ma con piccole differenze significative. Si immagini per esempio di acquistare due birre, identiche in tutto, tranne per il fatto che una è ``analcolica'' e l'altra no. Un ulteriore esempio è dato da due t-shirt della stessa marca, ma con taglie differenti: l'ID del prodotto (ma anche altri attributi) risulteranno così identici proprio perché ci si riferisce al medesimo prodotto, ovvero una t-shirt. Il carrello deve quindi permettere di identificare questa differenza sottile, ma importante in modo che le due taglie (e i relativi prodotti) possano essere gestiti indipendentemente l'uno dall'altro. CodeIgniter rende possibile tutto questo creando un unico ``ID Row'' in base all'ID del prodotto e alle eventuali opzioni associate.
 
-In quasi tutti i casi, l'aggiornamento del carrello sarà un'operazione che l'utente eseguirà attraverso la pagina ``Visualizza carrello''. In pratica non ci si dovrà preoccupare dell'ID Row perché CodeIgniter lo celerà in un opportuno campo nascosto per poi passarlo alla funzione demandata all'aggiornamento del carrello. Per maggiori informazioni si rimanda alla sezione ``Visualizza il carrello'' a pagina \pageref{sec:vedicarrello}. 
+In quasi tutti i casi, l'aggiornamento del carrello sarà un'operazione che l'utente eseguirà attraverso la pagina ``Visualizza carrello''. In pratica non ci si dovrà preoccupare dell'ID Row perché CodeIgniter lo celerà in un opportuno campo nascosto per poi passarlo alla funzione demandata all'aggiornamento del carrello. Per maggiori informazioni si rimanda alla sezione ``Visualizza il carrello''\vpageref{sec:vedicarrello}. 
 
 \section*{Reference}
 \begin{itemize}

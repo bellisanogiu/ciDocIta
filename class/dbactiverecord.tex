@@ -3,11 +3,7 @@
 \label{class:activerecord}
 %************************************************
 
-CodeIgniter usa una versione modificata del pattern Active Record Database. Questo pattern consente alle informazioni di essere recuperate, inserite e modificate attraverso i metodi di una specifica classe. In molti casi sono necessarie solo una o due linee di codice per eseguire una operazione sul database. CodeIgniter non richiede che ogni tabella della base di dati abbia il proprio file di classe poiché fornisce un'interfaccia maggiormente semplificata.
-
-Al di là della semplicità, un grande vantaggio nell'utilizzare le funzionalità Active Record è la possibilità di creare applicazioni indipendenti dal database utilizzato, attraverso l'astrazione. Ciò consente inoltre di generare query più sicure, in quanto l'escape sui valori viene svolto automaticamente dal sistema.
-
-Se comunque si intende scrivere la propria query autonomamente, si può tranquillamente disabilitare questa classe attraverso il file di configurazione del database. Questo permette alla libreria core del database, tra le altre cose, di consumare meno risorse.
+CodeIgniter usa una versione modificata del pattern Active Record Database per agevolare il recupero, l'inserimento e la modifica delle informazioni attraverso i metodi di una specifica classe. In molti casi sono necessarie solo una o due linee di codice per eseguire una operazione sul database. CodeIgniter non richiede che ogni tabella della base di dati abbia il proprio file di classe poiché fornisce un'interfaccia maggiormente semplificata. Al di là della semplicità, un grande vantaggio nell'utilizzare le funzionalità Active Record è la possibilità di creare applicazioni indipendenti dal database utilizzato, attraverso l'astrazione. Ciò consente inoltre di generare query più sicure, in quanto l'escape sui valori viene svolto automaticamente dal sistema. Se comunque si intende scrivere la propria query autonomamente, si può tranquillamente disabilitare questa classe attraverso il file di configurazione del database. Questo permette alla libreria core del database, tra le altre cose, di consumare meno risorse.
 
 \begin{deftabv}{Active Record}{Si tratta di un modulo implementato seguendo il pattern descritto da Martin Fowlor (\url{http://www.martinfowler.com/}) nel suo libro del 2003: Patterns of enterprise application architecture. Addison-Wesley. ISBN 978-0-321-12742-6. Secondo questo pattern esiste una relazione molto stretta fra tabella e classe, colonne e attributi della classe. Ecco alcuni punti importanti:
 \begin{itemize}
@@ -26,13 +22,13 @@ Se comunque si intende scrivere la propria query autonomamente, si può tranquil
 \normalsize
 
 \section*{Active Record: i principi}
-Le colonne delle tabelle sono rappresentante come attributi della classe: ogni istanza quindi può effettuare qualsiasi operazione sui valori dei propri attributi e renderli persistenti. In pratica, creando un'istanza di un oggetto (che rappresenta un record), si possono modificare gli attributi (i campi, o le colonne) e rendere persistente i dati (con le istruzioni INSERT o UPDATE), lasciando che Active Record faccia il resto.
+Le colonne delle tabelle sono rappresentante come attributi della classe: ogni istanza quindi può effettuare qualsiasi operazione sui valori dei propri attributi e renderli persistenti. In pratica, creando un'istanza di un oggetto (che rappresenta un record) si possono modificare gli attributi (i campi o le colonne) e rendere persistente i dati (con le istruzioni INSERT o UPDATE), lasciando che Active Record faccia il resto.
 
 Le convenzioni sui nomi delle tabelle, classi, colonne e attributi permettono di semplificare la produzione di codice SQL, partendo dalla definizione del modello:
 
 \begin{itemize}
 \item per ogni modello, una tabella possiede lo stesso nome al plurale e scritto tutto in minuscolo. Se il modello si chiama Blog, la tabella prenderà il nome di blogs
-\item i nomi dei modelli composti da più parole sono rappresentati con rappresentazione camel case (l'iniziale maiuscola); la tabella corrispondente avrà un nome separate da trattini bassi (underscore)
+\item i nomi dei modelli composti da più parole sono rappresentati con rappresentazione CamelCase (l'iniziale maiuscola); la tabella corrispondente avrà un nome separate da trattini bassi (underscore)
 \item ogni colonna della tabella è rappresentato da un attributo con lo stesso nome
 \item in ogni tabella vi è un identificatore univoco rappresentato da una colonna id (intero positivo)
 \end{itemize}
@@ -57,7 +53,7 @@ Il secondo e il terzo parametro del codice seguente limitano la lista dei risult
 \begin{code}
 $query = $this->db->get('mytable', 10, 20);
 
-// Produce: SELECT * FROM mytable LIMIT 20, 10 (in MySQL. Altri database hanno una sintassi leggermente diversa)
+// Produce: SELECT * FROM mytable LIMIT 20, 10 (questo in MySQL. Altri database hanno una sintassi diversa)
 \end{code}
 
 Si noterà che la funzione di cui sopra viene assegnata ad una variabile denominata \verb|\$query|, che può essere utilizzata per mostrare i risultati:
@@ -79,7 +75,7 @@ Per maggiori informazioni si rimanda alla funzione dei risultati.
 $query = $this->db->get_where('mytable', array('id' => $id), $limit, $offset);
 \end{code}
 
-Nota: \verb|get_where()| era precedentemente nota come \verb|getwhere()|, ora rimossa.
+Nota: \verb|get_where()| era precedentemente nota come \verb|getwhere()|, è ora stata rimossa.
 
 \item \verb|$this->db->select()| permette di scrivere la parte SELECT della query:
 
@@ -91,8 +87,7 @@ $query = $this->db->get('mytable');
 // Produce: SELECT title, content, date FROM mytable
 \end{code}
 
-Nota: se si selezionano tutti i dati (*) di una tabella non è necessario utilizzare questa funzione. Se omesso, CodeIgniter presuppone che si desidera selezionare *.
-La funzione accetta un secondo parametro opzionale: se lo si imposta su FALSE, CodeIgniter non cercherà di proteggere i vostri campi o la tabella con apici inversi. Questo è utile se si ha bisogno di una select composta:
+Nota: se si selezionano tutti i dati (*) di una tabella non è necessario utilizzare questa funzione. Se omesso, CodeIgniter presuppone che si desidera selezionare *. La funzione accetta un secondo parametro opzionale: se lo si imposta su FALSE, CodeIgniter non cercherà di proteggere i vostri campi o la tabella con apici inversi. Questo è utile se si ha bisogno di una select composta:
 
 \begin{code}
 $this->db->select('(SELECT SUM(payments.amount) FROM payments WHERE payments.invoice_id=4') AS amount_paid', FALSE); 
@@ -229,7 +224,7 @@ $this->db->where($array);
 \end{code}
 
 \item Stringhe personalizzate
-\'E possibile scrivere le clausole manualmente:
+Le clausole possono essere scritte manualmente:
 
 \begin{code}
 $where = "name='Joe' AND status='boss' OR status='active'";
@@ -244,7 +239,7 @@ $this->db->where('MATCH (field) AGAINST ("value")', NULL, FALSE);
 \end{code}
 \end{enumerate}
 
-\item \verb|$this->db->or_where()| questa funzione è identica a quella sopra descritta, tranne per il fatto che istanze multiple possono essere collegate tramite l'operatore OR:
+\item \verb|$this->db->or_where()| questa funzione è identica a quella sopra descritta, tranne per il fatto che istanze multiple possono essere collegate tramite l'operatore OR.
 
 \begin{code}
 $this->db->where('name !=', $name);
@@ -300,7 +295,7 @@ $this->db->like('body', 'match');
 // Produce: WHERE title LIKE '%match%' AND body LIKE '%match%
 \end{code}
 
-Se si desidera controllare dove è posto il wildcard (\%), è possibile usare opzionalmente un terzo argomento. Le opzioni possibili sono before, after e both (quest'ultimo è il parametro di default):
+Se si desidera controllare dove è posto il wildcard (%), è possibile usare opzionalmente un terzo argomento. Le opzioni possibili sono before, after e both (quest'ultimo è il parametro di default):
 
 \begin{code}
 $this->db->like('title', 'match', 'before'); 
@@ -375,7 +370,7 @@ $this->db->group_by(array("title", "date"));
 // Produce: GROUP BY title, date
 \end{code}
 
-Nota: \verb|group_by()| è conosciuto anche come groupby() ma quest'ultimo è stato ora rimosso.
+Nota: \verb|group_by()| è conosciuta anche come groupby() ma quest'ultima è stata ora rimossa.
 
 \item \verb|$this->db->distinct()| viene aggiunta la parola chiave DISTINCT alla query.
 
@@ -396,11 +391,11 @@ $this->db->having('user_id', 45);
 // Produce: HAVING user_id = 45
 \end{code}
 
-Se si utilizza un database per cui si effettua automaticamente l'escape delle query, è possibile evitare che il contenuto venga reso sicuro (escaping) passando un terzo argomento facoltativo, con il valore FALSE.
+Se si utilizza un database per cui si effettua automaticamente l'escape delle query, è possibile evitare che il contenuto venga reso sicuro (escaping) passando un terzo argomento facoltativo con il valore FALSE.
 
 \begin{code}
 $this->db->having('user_id', 45); 
-// Produce: HAVING `user_id` = 45 in some databases such as MySQL 
+// Produce: HAVING `user_id` = 45 in molti database come MySQL 
 $this->db->having('user_id', 45, FALSE); 
 // Produce: HAVING user_id = 45
 \end{code}
@@ -452,7 +447,7 @@ $this->db->limit(10, 20);
 // Produce: LIMIT 20, 10 (in MySQL. Gli altri database possono avere una sintassi leggermente differente)
 \end{code}
 
-\item \verb|$this->db->count_all_results()| permette di determinare il numero di righe di una particolare query Active Record. Le query accetteranno delle funzioni limitatrici come \verb|where(), or_where(), like(), or_like()|, ecc. Per esempio:
+\item \verb|$this->db->count_all_results()| determina il numero di righe di una particolare query Active Record. Le query accetteranno delle funzioni limitatrici come \verb|where(), or_where(), like(), or_like()|, ecc. Per esempio:
 
 \begin{code}
 echo $this->db->count_all_results('my_table');
@@ -464,7 +459,7 @@ echo $this->db->count_all_results();
 // Produce un intero come 17
 \end{code}
 
-\item \verb|$this->db->count_all()| consente di determinare il numero di righe di una determinata tabella. \'E necessario fornire come primo parametro il nome della tabella. Per esempio:
+\item \verb|$this->db->count_all()| determina il numero di righe di una tabella. \'E necessario fornire come primo parametro il nome della tabella. Ad esempio:
 
 \begin{code}
 echo $this->db->count_all('my_table');
@@ -528,9 +523,9 @@ $this->db->insert_batch('mytable', $data);
 // Produce: INSERT INTO mytable (title, name, date) VALUES ('Il mio titolo', 'Il mio nome', 'La mia data'), ('Un'altro titolo', 'Un altro nome', 'Un'altra data')
 \end{code}
 
- Tutti i valori sono resi sicuri (escaping) automaticamente, cosa che produce query pulite.
+Tutti i valori sono resi sicuri (escaping) automaticamente, cosa che produce query pulite.
  
- \item \verb|$this->db->set()| questa funzione permette di impostare i valori per gli inserimenti o gli aggiornamenti. Può essere usata al posto di  un array di dati. Per esempio:
+\item \verb|$this->db->set()| questa funzione permette di impostare i valori per gli inserimenti o gli aggiornamenti. Può essere usata al posto di  un array di dati. Per esempio:
 
 \begin{code}
 $this->db->set('name', $name); 
@@ -629,7 +624,7 @@ $this->db->update('mytable', $object);
 
 Nota: viene effettuato l'escape di tutti i valori, cosa che rende le query sicure.
 
-Si noterà che l'uso dell'istruzione \verb|$this->db->where()|, consente di impostare la clausola WHERE. Opzionalmente si possono passare queste informazioni direttamente alla funzione di aggiornamento sotto forma di una stringa:
+Si noterà che l'uso dell'istruzione \verb|$this->db->where()| consente di impostare la clausola WHERE. Opzionalmente si possono passare queste informazioni direttamente alla funzione di aggiornamento sotto forma di una stringa:
 
 \begin{code}
 $this->db->update('mytable', $data, "id = 4");
@@ -699,7 +694,7 @@ $this->db->delete('mytable');
 // WHERE id = $id
 \end{code}
 
-Un array di nomi di tabella possono essere passati nella funzione \verb|delete()| se si desiderano cancellare i dati provenienti da più di una tabella.
+Un array di nomi di tabella possono essere passati alla funzione \verb|delete()| se si desiderano cancellare i dati provenienti da più di una tabella.
 
 \begin{code}
 $tables = array('table1', 'table2', 'table3');
@@ -718,7 +713,7 @@ $this->db->empty_table('mytable');
 // DELETE FROM mytable
 \end{code}
 
-\item \verb|$this->db->truncate()| genera e tronca la stringa SQL, quindi esegue la query.
+\item \verb|$this->db->truncate()| genera e tronca la stringa SQL quindi esegue la query.
 
 \begin{code}
 $this->db->from('mytable'); 
@@ -730,7 +725,7 @@ $this->db->truncate('mytable');
 // TRUNCATE mytable 
 \end{code}
 
-Nota: se il comando TRUNCATE non è disponibile, allora sarà eseguita la funzione \verb|truncate()|  come ``DELETE FROM table''.
+Nota: se il comando TRUNCATE non è disponibile, allora \verb|truncate()| sarà eseguita come ``DELETE FROM table''.
 
 \end{itemize}
 
@@ -744,9 +739,7 @@ $query = $this->db->get();
 \end{code}
 
 \section*{Active Record Caching}
-Anche se non si tratta di un caching ``vero'', Active Record permette di salvare (o meglio memorizzare nella cache) alcune parti delle query per riutilizzarle successivamente quando il proprio script verrà eseguito nuovamente. Normalmente, quando una chiamata Active Record viene eseguita, tutte le informazioni memorizzate sono resettate per la chiamata successiva. Con la memorizzazione nella cache, è possibile evitare questo ripristino, e riutilizzare facilmente le informazioni.
-
-Le chiamate cache sono cumulative: se vengono fatte due chiamate \var{select()} (memorizzate nella cache) e successivamente due chiamate \var{select()} (non memorizzate nella cache), questo si tradurrà in quattro chiamate \var{select()}. Ci sono tre funzioni caching disponibili:
+Anche se non si tratta di un caching ``vero'', Active Record permette di salvare (o meglio memorizzare nella cache) alcune parti delle query per riutilizzarle successivamente quando il proprio script verrà eseguito nuovamente. Normalmente quando una chiamata Active Record viene eseguita, tutte le informazioni memorizzate sono resettate per la chiamata successiva. Con la memorizzazione nella cache è possibile evitare questo ripristino, e riutilizzare facilmente le informazioni. Le chiamate cache sono cumulative: se vengono fatte due chiamate \var{select()} (memorizzate nella cache) e successivamente due chiamate \var{select()} (non memorizzate nella cache), questo si tradurrà in quattro chiamate \var{select()}. Ci sono tre funzioni caching disponibili:
 
 \begin{itemize}
 \item \verb|$this->db->start_cache()|

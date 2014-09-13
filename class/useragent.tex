@@ -8,10 +8,7 @@ La classe User Agent fornisce degli utili strumenti per identificare le informaz
 La classe viene inizializzata nel proprio controller con la funzione \verb|$this->load->library('user_agent')|. Una volta caricata, l'oggetto sarà disponibile con la funzione \var{\$this->agent}.
 
 \section*{Definizione}
-
-Le definizioni riguardanti lo ``user agent'' sono memorizzate nel file \verb|/application/config/user_agents.php| in cui è possibile aggiungere ulteriori elementi se necessario.
-
-Per esempio, quando la classe è inizializzata è possibile determinare se lo user agent che naviga nel sito è un browser web, un dispositivo mobile o un robot. \'E anche possibile ottenere altre informazioni sulla piattaforma come il sistema operativo utilizzato.
+Le definizioni riguardanti lo ``user agent'' sono memorizzate nel file \verb|/application/config/user_agents.php| in cui è possibile aggiungere ulteriori elementi se necessario. Per esempio, quando la classe è inizializzata è possibile determinare se lo user agent che naviga nel sito è un browser web, un dispositivo mobile o un robot. \'E anche possibile ottenere altre informazioni sulla piattaforma come il sistema operativo utilizzato.
 
 \begin{code}
 $this->load->library('user_agent');
@@ -39,7 +36,6 @@ echo $this->agent->platform(); // Platform info (Windows, Linux, Mac, etc.)
 \end{code}
 
 \section*{Reference delle funzioni}
-
 \begin{itemize}
 \item \verb|$this->agent->is_browser()| restituisce un valore booleano TRUE/FALSE se il browser web è un user agent conosciuto o meno:
 

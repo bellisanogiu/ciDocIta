@@ -3,9 +3,7 @@
 \label{cap:url}
 %************************************************
 
-Nel capitolo in cui si è introdotto per la prima volta il Controller (vedi sezione\vref{cap:controller}) si è accennato alla gestione degli \ac{URL} in CodeIgniter e a come essi vengono rappresentati.
-
-Lo schema generale adottato da CodeIgniter può essere scomposto nei seguenti elementi:
+Nel capitolo in cui si è introdotto per la prima volta il Controller (si veda la sezione\vref{cap:controller}) si è accennato alla gestione degli \ac{URL} in CodeIgniter e a come essi vengono rappresentati. Nello schema adottato da CodeIgniter possono essere individuati i seguenti elementi:
 
 \begin{code}
 miosito.com/[controller]/[metodo]/[argomenti]
@@ -19,7 +17,7 @@ miosito.com/[controller]/[metodo]/[argomenti]
 \end{description}
 
 \section{Gestione degli URL}
-Un aspetto peculiare dei moderni framework, a cui CodeIgniter non fa eccezione, è la gestione semplificata degli \ac{URL}, ovvero degli indirizzi che caratterizzano il proprio progetto e che vengono visualizzati nella barra del browser web. Chi ha un po' di dimestichezza con la programmazione \ac{PHP} e la gestione dei parametri, sa bene che molti indirizzi verranno visualizzati nel formato:
+Un aspetto peculiare dei moderni framework, a cui CodeIgniter non fa eccezione, è la gestione semplificata degli \ac{URL}, ovvero degli indirizzi che caratterizzano il progetto e che vengono visualizzati nella barra del browser web. Chi ha un po' di dimestichezza con la programmazione \ac{PHP} e il passaggio dei parametri, sa bene che molti indirizzi verranno visualizzati nel formato:
 
 \begin{code}
 http://www.miosito.com/cartella/val1=pippo&val2=pluto
@@ -41,7 +39,7 @@ Se quanto detto sinora non vi convincesse, potete continuare ad usare il sistema
 index.php?c=prodottis&m=view&id=345
 \end{codef}
 
-\'E sufficiente modificare il file \fil{config.php} e modificare alcune variabili all'interno:
+\'E sufficiente aprire il file \fil{config.php} e modificare alcune variabili all'interno:
 
 \begin{code}[Esempio di URL basato su query string]
 $config['enable_query_strings'] = TRUE; // per abilitare le query string
@@ -49,7 +47,13 @@ $config['controller_trigger'] = 'c';
 $config['function_trigger'] = 'm';
 \end{code}
 
-Nota: utilizzando gli url sotto forma di query string si dovrà prestare attenzione all'utilizzo degli Helper per la generazione degli \ac{URI}, tenendo conto della soluzione adottata.
+Se si scegli di impostare su TRUE la variabile \verb|enable_query_strings| i controller e i metodi saranno accessibili con le parole \textit{trigger} specificate nel file \fil{config.php}. Di default esse sono rispettivamente \var{c} e \var{m}. Esempio:
+
+\begin{code}
+index.php?c=controller&m=method
+\end{code}
+
+Nota: utilizzando gli url sotto forma di query string si dovrà prestare attenzione all'utilizzo degli Helper per la generazione degli \ac{URI}, che tengono conto della soluzione adottata.
 
 \section{Aggiungere un suffisso URL}
 \'E possibile aggiungere un suffisso alla parte terminale degli \ac{URL} generati, modificando la sezione \var{URL suffix} del file \fil{config.php} che, si ricorda si trova al percorso \sys{/application/config/} . 
@@ -70,7 +74,7 @@ http://mioSito.com/index.php/pages/news/1.html
 \section{Un file index di troppo}
 Trattando un altro aspetto degli indirizzi, è possibile notare come CodeIgniter inserisca all'interno del \ac{URL}, la stringa \sys{index.php}. Nel caso si desideri eliminare questa informazione dal percorso, si dovrà modificare il file \fil{.htaccess}. 
 
-Nell'esempio seguente si utilizza un metodo ``negativo'' con cui ogni elemento viene reindirizzato eccetto gli elementi specificati: index.~php, immages e robot.~txt.
+Nell'esempio seguente si utilizza un metodo ``negativo'' con cui ogni elemento viene reindirizzato eccetto gli elementi specificati: index.~php, images e robot.~txt.
 
 \begin{code}
 RewriteEngine on

@@ -3,14 +3,14 @@
 \label{cap:helper}
 %************************************************
 
-Chi mastica un po' di inglese avrà già compreso la funzione di questi preziosi strumenti di CodeIgniter. Gli Helper sono degli ``aiutanti'', ovvero delle librerie di funzioni che rendono agevoli le operazioni più ripetitive nello sviluppo. Divisi in categorie, gli Helper sono ideati per la gestione degli array, dei file, delle date, delle sessioni, dei form, della posta elettronica e molto altro. Nonostante sia necessario un po' di tempo per apprendere le loro funzionalità (niente che con la pratica e la curiosità non si possa risolvere), la loro adozione presenta indiscutibili vantaggi, anche perché lo sviluppatore deve concentrarsi sulla interfaccia degli Helper e non sulla loro implementazione.
+Chi mastica un po' di inglese avrà già compreso la funzione di questi preziosi strumenti a corredo di CodeIgniter. Gli Helper sono degli ``aiutanti'', ovvero delle librerie di funzioni che rendono agevoli le operazioni più ripetitive nello sviluppo. Divisi in categorie, gli Helper sono ideati per la gestione degli array, dei file, delle date, delle sessioni, dei form, della posta elettronica e molto altro. Nonostante sia necessario un po' di tempo per apprendere le loro funzionalità (niente che con la pratica e la curiosità non si possa risolvere), la loro adozione presenta indiscutibili vantaggi, anche perché lo sviluppatore deve concentrarsi sull'interfaccia degli Helper e non sulla loro implementazione.
 
 \section{Interfaccia e implementazione}
-Questi due concetti sono spesso presenti nella programmazione, soprattutto quando si parla di ``quella orientata agli oggetti''. Senza approfondire troppo l'argomento, riteniamo utile presentarli. I termini ``interfaccia e implementazione'' non sono comuni solo alla programmazione di qualche oscuro codice, ma sono degli aspetti che caratterizzano l'interazione di ognuno di noi con il mondo esterno. Immaginatevi al volante della vostra automobile che guidate beatamente in mezzo al traffico: sapete che ruotando lo sterzo a destra o a sinistra, la macchina si sposta nella relativa direzione. E conoscete anche la funzione dei pedali, il freno a mano e dei vari pulsanti presenti sul cruscotto. Bene, ma avete mai smontato il volante per comprendere i meccanismi o esaminato l'elettronica che rende possibili tutte queste funzionalità? Immagino che la risposta più gettonata sia: ``No! E non ci penso neppure!''. Comunque non preoccupatevi, non intendiamo aprire un corso sul come assemblare da soli la propria fuoriserie in come uscite settimanali: i risultati sarebbe nefasti, soprattutto per la vostra automobile.
+Questi due concetti sono spesso presenti nella programmazione, soprattutto quando si parla di ``quella orientata agli oggetti''. Senza approfondire troppo l'argomento, riteniamo utile presentarli. I termini ``interfaccia e implementazione'' non sono comuni solo alla programmazione di qualche oscuro codice, ma sono degli aspetti che caratterizzano l'interazione di ognuno di noi con il mondo esterno. Immaginatevi al volante della vostra automobile che guidate beatamente in mezzo al traffico: sapete che ruotando lo sterzo a destra o a sinistra, la macchina si sposta nella relativa direzione. E conoscete anche la funzione dei pedali, il freno a mano e dei vari pulsanti presenti sul cruscotto. Bene, ma avete mai smontato il volante per comprendere i meccanismi o esaminato l'elettronica che rende possibili tutte queste funzionalità? Immagino che la risposta più gettonata sia: ``No! E non ci penso neppure!''. Comunque non preoccupatevi, non intendiamo aprire un corso sul come assemblare da soli la propria fuoriserie in comode uscite settimanali: i risultati sarebbe nefasti, soprattutto per la vostra automobile.
 
-Questa digressione ci è servita per porre l'accento sulle differenze tra l'interfaccia e l'implementazione. La prima, in una macchina, è costituita dal volante, dai pedali e da tutti i pulsanti che la caratterizzano. Non dobbiamo essere degli ingegneri meccanici per guidare un'auto, basta aver studiato il codice della strada e aver acquisito un po' di dimestichezza con il veicolo. Insomma, se per noi l'automobile è un mezzo per andare dal punto A a quello B, concorderemo che sia meglio che di meccanica e di elettronica siano altri ad occuparsene. Tutto quello che si trova ``all'interno'' dell'auto che permette alla macchina di sterzare quando si gira il volante, o di arrestarsi se si preme l'apposito pedale costituisce l'implementazione. Riassumendo: possiamo guidare un'auto conoscendo la sua interfaccia, pur rimanendo all'oscuro dei dettagli interni, che rappresentano l'implementazione.
+Questa digressione ci è servita per porre l'accento sulle differenze tra l'interfaccia e l'implementazione. La prima, in una macchina, è costituita dal volante, dai pedali e da tutti i pulsanti che la caratterizzano. Non dobbiamo essere degli ingegneri meccanici per guidare un'auto, basta aver studiato il codice della strada e aver acquisito un po' di dimestichezza con il veicolo. Insomma, se per noi l'automobile è un mezzo per andare dal punto A a quello B, concorderemo che sia meglio che di meccanica e di elettronica siano altri ad occuparsene. Tutti quegli oscuri meccanismi che si trovano ``all'interno'' dell'auto e che permetteno di sterzare quando si gira il volante, o di arrestarsi se si preme l'apposito pedale costituisce l'implementazione. Riassumendo: possiamo guidare un'auto conoscendo la sua interfaccia, pur rimanendo all'oscuro dei dettagli interni, che rappresentano l'implementazione.
 
-Questo è un discorso che ci aiuta a comprendere meglio l'utilità degli Helper. Perché questi aiutanti forniscono numerose funzioni già pronte, ma non impongono allo sviluppatore di conoscere il codice interno. Insomma, anche chi non conosce a menadito il \ac{PHP}, \ac{SQL}, o altri linguaggi, potrà sfruttarne le potenzialità. La separazione tra interfaccia e implementazione presenta anche altri vantaggi:
+Questo è un discorso aiuta a comprendere meglio l'utilità degli Helper, perché questi aiutanti forniscono numerose funzioni già pronte, ma non impongono a chi le utilizza di conoscere il codice interno. Insomma, anche chi non padroneggia a menadito il \ac{PHP}, \ac{SQL}, o altri linguaggi, potrà sfruttarne le potenzialità. La separazione tra interfaccia e implementazione presenta anche altri vantaggi:
 
 \begin{description}
 \item[minori conoscenze tecniche] \'E faticoso conoscere tanti linguaggi di programmazione, senza tener conto che ad ogni loro nuova release molte funzioni vengono introdotte o deprecate (sconsigliate)
@@ -39,7 +39,7 @@ Per esempio, se si desidera caricare l'Helper per la gestione degli array, il co
 $this->load->helper('array');
 \end{code}
 
-Se si ha l'esigenza di caricare più Helper con un solo comando, basta specificarne i nomi, separandoli con una virgola. Con questa istruzione abbiamo caricato gli aiutanti per array, le date e i file.
+Se si ha l'esigenza di caricare più Helper con un solo comando, basta specificarne i nomi separandoli con una virgola. Con questa istruzione abbiamo caricato gli aiutanti per array, le date e i file.
 
 \begin{code}
 $this->load->helper('array', 'date', 'file');
@@ -66,11 +66,11 @@ Analizziamo il codice suddividendolo per punti:
 
 \begin{itemize}
 \item Viene caricato l'Helper demandato alla gestione degli array
-\item L'array è composto da tre indici (nome, cognome, città) a cui rispettivamente si assegnano tre valori (giuseppe, bellisano, cagliari) secondo la sintassi propria del linguaggio \ac{PHP}.
+\item L'array è composto da tre indici (nome, cognome, città) a cui rispettivamente si assegnano tre valori (giuseppe, bellisano, cagliari) secondo la sintassi propria del linguaggio \ac{PHP}
 \item la funzione element() svolge il compito di visualizzare un elemento dell'array. Nel nostro caso il primo argomento è l'indice, mentre il secondo è l'array da prendere in considerazione). Il risultato sarà ``giuseppe''.
 \end{itemize}
 
-Un altro esempio è dato dall'Helper \var{anchor()} che si può utilizzare in una delle Viste: esso crea facilmente un link. Il nome del collegamento è definito dalla stringa \var{Clicca qui}, mentre \var{blog/commenti} costituisce l'\ac{URI} del controller/metodo che intendiamo linkare.
+Un altro esempio è dato dall'Helper \var{anchor()} riportato qui di seguito, che utilizzato in una Vista permette di creare facilmente un link. Il nome del collegamento è definito dalla stringa \var{Clicca qui}, mentre \var{blog/commenti} costituisce l'\ac{URI} del controller/metodo che intendiamo linkare.
 
 \begin{code}
 <?php echo anchor('blog/commenti', 'Clicca qui');?>
@@ -89,7 +89,7 @@ Gli aiutanti predefiniti in CodeIgniter possono essere estesi creando un file in
 Come esempio citiamo l'Helper \var{Array} le cui funzioni potranno essere estese o sovrascritte creando \verb|MY_array_helper.php| al percorso \sys{/application/helpers/}
 
 \begin{code}
-// any_in_array() è una nuova funzione da noi realizzata
+// any_in_array() è una nuova funzione da noi realizzata. Non è presente nell'Helper Array, quindi non sovrascriverà alcuna funzione nativa
 function any_in_array($needle, $haystack)
 {
     $needle = (is_array($needle)) ? $needle : array($needle);
@@ -106,7 +106,7 @@ function any_in_array($needle, $haystack)
 }
 
 // random_element() è inclusa nell'Helper originale
-// quindi verrà sovrascritta dalla funzione da noi definita
+// quindi la nostra funzione sovrascriverà quella nativa di CodeIgniter
 function random_element($array)
 {
     shuffle($array);
@@ -125,7 +125,7 @@ Ora è possibile sostituire il prefisso con tutti quelli che vi passano per la t
 
 \label{cap:plugin}
 \section{Plugin ridefiniti}
-Per molti aspetti i Plugin possono essere identificati con gli Helper esaminati nel precedente capitolo. Infatti condividono molti elementi in comune, come il fatto di essere delle funzioni che aiutano lo sviluppatore in compiti precisi, senza per questo essere costretti a conoscere la loro implementazione. Se sono identici, perché chiamarli in modo differente? Mentre gli Helper sono integrati nel core del framework e realizzati direttamente dal team di CodeIgniter, i Plugin appaiono più come moduli esterni, evoluti, solitamente  prodotti da sviluppatori esterni, indicati con il termine di ``vendor''. I Plugin rispetto agli Helper, inoltre non mettono a disposizione una serie di tool per svolgere i più disparati compiti, ma si concentrano unicamente su una funzione specialistica. Un esempio è dato dalla sistema per la gestione del \ac{CAPTCHA}, che implementa l'odiato sistema per scovare i bot attraverso il riconoscimento difficoltoso di caratteri presentati sullo schermo. Quante volte si sarà esclamato: ``Cosa è quello strano geroglifico?!? Si forse ho capito, ma dove si trova nella tastiera il tasto ``zampa di coniglio''?).
+Per molti aspetti i Plugin possono essere identificati con gli Helper esaminati nel precedente capitolo. Infatti condividono molti elementi in comune, come il fatto di essere delle funzioni che aiutano lo sviluppatore in compiti precisi, senza per questo essere costretti a conoscere la loro implementazione. Ma se sono identici, perché chiamarli in modo differente? Mentre gli Helper sono integrati nel core del framework e realizzati direttamente dal team di CodeIgniter, i Plugin appaiono più come moduli esterni, evoluti, solitamente  prodotti da sviluppatori esterni, indicati con il termine di ``vendor''. I Plugin rispetto agli Helper, inoltre non mettono a disposizione una serie di tool per svolgere i più disparati compiti, ma si concentrano unicamente su una funzione specialistica. Un esempio è dato dalla sistema per la gestione del \ac{CAPTCHA}, che implementa l'odiato sistema per scovare i bot attraverso il riconoscimento difficoltoso di caratteri presentati sullo schermo. Quante volte si sarà esclamato: ``Cosa è quello strano geroglifico?!? Sì forse ho capito, ma dove si trova nella tastiera il tasto ``zampa di coniglio''?).
 
 Nonostante queste premesse, la loro distinzione non è parsa così netta neppure al team di CodeIgniter, che a partire dalla versione 2.0.0 ha optato per la loro rimozione, accorpandoli con gli Helper. Se quindi utilizzate una versione precedente del framework, troverete i plugin al percorso \sys{/application/plugins}.
 

@@ -21,7 +21,7 @@ $this->pagination->initialize($config);
 echo $this->pagination->create_links();
 \end{code}
 
-L'array \var{\$config} contiene le variabili di configurazione: questi viene passato alla funzione \var{\$this->pagination->initialize()}. Esistono almeno una ventina di parametri che si possono impostare, ma almeno tre saranno fondamentali:
+L'array \var{\$config} contiene le variabili di configurazione: questi viene passato alla funzione \var{\$this->pagination->initialize()}. Esistono almeno una ventina di parametri che si possono impostare, ma solo tre saranno fondamentali:
 
 \begin{itemize}
 \item \verb|base_url| si tratta dell'URL completo del controller classe/metodo che contiene il pagination. Nell'esempio precedendente, esso punta al controller chiamato \var{Test} e quindi al metodo \var{page}. Si tenga a mente che se si modifica la struttura è possibile apportare le opportune variazioni di instradamento agendo sull'URI (si veda la sezione\vref{sec:uri})
@@ -31,22 +31,22 @@ L'array \var{\$config} contiene le variabili di configurazione: questi viene pas
 
 La funzione \verb|create_link| restituisce una stringa vuota quando non vi è alcun pagination da mostrare.
 
-Se si preferisce impostare le preferenze non dinamicamente, ma tramite un file di configurazione, si deve definire l'array \var{\$config} all'interno del nuovo file \fil{pagination.php}; questo verrà salvato in sys{/config/pagination.php}. In questo modo, i parametri definiti al suo interno verranno automaticamente utilizzati, senza la necessità di istanziarli tramite la funzione \var{\$this->pagination->initialize()}.
+Se si preferisce impostare le preferenze non dinamicamente, ma tramite un file di configurazione, si deve definire l'array \var{\$config} all'interno del nuovo file \fil{pagination.php}; questo verrà salvato in sys{/config/pagination.php}. In questo modo i parametri definiti al suo interno verranno automaticamente utilizzati, senza la necessità di istanziarli tramite la funzione \var{\$this->pagination->initialize()}.
 
 \section*{Parametri di configurazione}
 Qui di seguito vengono mostrati tutti i parametri per configurare il pagination secondo le proprie esigenze:
 
 \begin{itemize}
 \item \verb|$config['uri_segment'] = 3;| la funzione pagination determina automaticamente quale segmento dell'URI contiene il numero di pagina. Se si ha bisogno di qualcosa di diverso è possibile specificarlo
-\item \verb|$config['num_links'] = 2;| il numero di link che si vorrebbe visualizzare prima e dopo il numero di pagina selezionata. Ad esempio, il numero 2 conterrà due cifre (link) su entrambi i lati, come nell'esempio pubblicato in cima alla capitolo
-\item \verb|$config['use_page_numbers'] = TRUE;| per impostazione predefinita, il segmento URI utilizzerà l'indice iniziale per gli elementi che si stanno impaginando. Se si preferisce visualizzare il numero di pagina attuale, si scelga il valore su TRUE
-\item \verb|$config['page_query_string'] = TRUE;| per impostazione predefinita, la libreria pagination assume che si stia utilizzando la segmentazione URI, e costruisce i link come nell'esempio:
+\item \verb|$config['num_links'] = 2;| il numero di link che si vorrebbe visualizzare prima e dopo il numero di pagina selezionata. Ad esempio, il numero 2 conterrà due cifre (link) su entrambi i lati, come nell'esempio pubblicato in cima al capitolo
+\item \verb|$config['use_page_numbers'] = TRUE;| per impostazione predefinita, il segmento URI utilizzerà l'indice iniziale per gli elementi che si stanno impaginando. Se si preferisce visualizzare il numero di pagina attuale, si imposti il valore su TRUE
+\item \verb|$config['page_query_string'] = TRUE;| per impostazione predefinita, la libreria Pagination assume che si stia utilizzando la segmentazione URI, e costruisce i link come nell'esempio:
 
 \begin{code}
 http://example.com/index.php/test/page/20
 \end{code}
 
-Se si utilizzano gli slash per definire l'URI (query string) e quindi si è impostato su TRUE il parametro \verb|$config['enable_query_strings']|, allora i  link verranno automaticamente impostati utilizzando le stringhe di query (questa opzione può anche essere impostata esplicitamente). Utilizzando il parametro \verb|config['page_query_string'] | con valore TRUE, il link pagination diventerà:
+Se si utilizzano gli slash per definire l'\ac{URI} (query string) e quindi si è impostato su TRUE il parametro \verb|$config['enable_query_strings']|, allora i link verranno automaticamente impostati utilizzando le stringhe di query (questa opzione può anche essere impostata esplicitamente). Utilizzando il parametro \verb|config['page_query_string'] | con valore TRUE, il link pagination diventerà:
 
 \begin{code}
 http://example.com/index.php?c=test&m=page&per_page=20
@@ -65,7 +65,7 @@ Se si vuole inserire la pagination tra elementi di markup, si possono utilizzare
 
 \section*{Il link First}
 \begin{itemize}
-\item \verb|$config['first_link'] = 'First';| specifica il testo che comparirà nel link ``first'' (primo) sulla sinistra. \'E possibile disabilitarlo impostando il valore su FALSE
+\item \verb|$config['first_link'] = 'First';| specifica il testo che comparirà nel link ``first'' (primo) sulla sinistra. Si può disabilitare impostando il valore su FALSE
 \item \verb|$config['first_tag_open'] = '<div>';| Il tag di apertura del link first (primo)
 \item \verb|$config['first_tag_close'] = '</div>';| Il tag di chiusura del link first (primo)
 \end{itemize}
@@ -110,4 +110,4 @@ Se si vuole inserire la pagination tra elementi di markup, si possono utilizzare
 \end{itemize}
 
 \section*{Anchor}
-Nota: è anche possibile aggiungere una propria classe di attributi ad ogni link di navigazione attraverso la classe Pagination. Per fare questo si deve impostare la \verb|anchor_class| con lo stesso nome della classe desiderata.
+Nota: è possibile aggiungere una propria classe di attributi ad ogni link di navigazione attraverso la classe Pagination. Per fare questo si deve impostare la \verb|anchor_class| con lo stesso nome della classe desiderata.

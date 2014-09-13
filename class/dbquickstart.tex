@@ -1,9 +1,9 @@
 %inizio Database Quick Start: Example Code
 \section*{Introduzione}
-Qui di seguito verranno alcuni esempi su come viene utilizzata la classe Database. Per informazioni dettagliate si rimanda alla lettura delle singole sezioni che descrivono ogni funzione.
+Qui di seguito verranno descritti alcuni esempi su come viene utilizzata la classe Database. Per informazioni dettagliate si rimanda alla lettura delle singole sezioni che descrivono ogni funzione.
 
-\section*{Query Standard con risultati multipli (object}
-Qui di seguito si mostra un codice di una query standard con risultati multipli (versione Object). La funzione \var{resul()} restituisce un array di oggetti. Esempio \var{\$row->title}.
+\section*{Query Standard con risultati multipli (object)}
+Verrà mostrato un codice di una query standard con risultati multipli (versione Object). La funzione \var{resul()} restituisce un array di oggetti. Esempio \var{\$row->title}.
 
 \begin{code}
 $query = $this->db->query('SELECT name, title, email FROM my_table');
@@ -18,8 +18,8 @@ foreach ($query->result() as $row)
 echo 'Totale dei risultati: ' . $query->num_rows();
 \end{code}
 
-\section*{Query Standard con risultati multipli (array}
-Le query standard con risultati multipli, ma che utilizza l'array per i propri dati, prevede una sintassi leggermente differente. In questo caso la funzione \verb|result_array()| restituisce un array di indici di array, come per esempio \var{\$row['title']}:
+\section*{Query Standard con risultati multipli (array)}
+La query standard con risultati multipli, ma che utilizza l'array per i propri dati, prevede una sintassi leggermente differente. In questo caso la funzione \verb|result_array()| restituisce un array di indici di array, come per esempio \var{\$row['title']}:
 
 \begin{code}
 $query = $this->db->query('SELECT name, title, email FROM my_table');
@@ -48,7 +48,7 @@ if ($query->num_rows() > 0)
 }
 \end{code}
 
-La query standard con un singolo risultato, presenta la funzione \var{row()} che resistuisce un oggetto:
+La query standard con un singolo risultato presenta la funzione \var{row()} che resistuisce un oggetto:
 
 \begin{code}
 $query = $this->db->query('SELECT name FROM my_table LIMIT 1');

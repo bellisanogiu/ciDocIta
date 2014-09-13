@@ -3,9 +3,7 @@
 \label{class:benchmark}
 %************************************************
 
-La classe Benchmarking di CodeIgniter svolge un semplice quanto prezioso compito: calcola la differenza di tempo tra due marcatori fissati. Il valore, espresso in secondi, permette di effettuare delle stime sulla velocità del progetto sviluppato, calcolando il tempo necessario per processare una serie di istruzioni, o caricare una vista ricca di dati e immagini. Non meno importante è la funzione che misura la quantità di memoria impegnata dal progetto, che dovrà essere sempre opportunamente dimensionato all'hardware del server su cui viene eseguito.
-
-Questa classe del framework non ha quindi bisogno, a differenza di tante altre, di essere abilitata manualmente, ma al contrario risulta sempre attiva. Infatti questa classe viene avviata non appena si utilizza il framework e termina poco prima che la classe output invii i dati alla Vista che li mostra sul browser.
+La classe Benchmarking svolge un semplice quanto prezioso compito: calcola la differenza di tempo tra due marcatori fissati. Il valore, espresso in secondi, permette di effettuare delle stime sulla velocità del progetto sviluppato, calcolando il tempo necessario per processare una serie di istruzioni, o caricare una vista ricca di dati e immagini. Non meno importante è la funzione che misura la quantità di memoria impegnata dal progetto, che dovrà essere sempre opportunamente dimensionato all'hardware del server su cui viene eseguito. Questa classe non ha bisogno, a differenza di altre, di essere abilitata manualmente, ma al contrario risulta sempre attiva: essa viene avviata non appena si utilizza il framework e termina poco prima che la classe output invii i dati alla Vista che li mostra sul browser.
 
 \subsection*{Utilizzare la classe}
 La classe Benchmarking può essere utilizzata con i Controller, Viste e Modelli seguendo i seguenti passi:
@@ -28,7 +26,7 @@ $this->benchmark->mark('code_end');
 echo $this->benchmark->elapsed_time('code_start', 'code_end');
 \end{code}
 
-Nota: le parole \verb|code_start| e \verb|code_end| sono arbitrarie: è possibile utilizzare qualsiasi parola, che indichi preferibilmente in maniera chiara l'inizio e la fine di un blocco di codice da analizzare. Nell'esempio di qui sotto sono state utilizzate tre parole chiave che non risultano intuitive nel definire i marcatori di inizio e fine codice. Comunque qualsiasi scelta si faccia, CodeIgniter calcolerà il tempo correttamente come nell'esempio seguente che prevede tre misurazioni (cane-gatto, gatto-uccello, cane-uccello):
+Nota: le parole \verb|code_start| e \verb|code_end| sono arbitrarie: è possibile utilizzare qualsiasi parola, che indichi preferibilmente in maniera chiara l'inizio e la fine di un blocco di codice da analizzare. Nell'esempio di qui sotto sono state utilizzate tre parole chiave che non risultano intuitive nel definire i marcatori di inizio e fine codice. Comunque qualsiasi scelta si faccia, CodeIgniter calcolerà il tempo correttamente:
 
 \begin{code}
 $this->benchmark->mark('cane');
@@ -63,7 +61,7 @@ $this->benchmark->mark('altro_marcatore_start');
 $this->benchmark->mark('altro_marcatore_end');
 \end{code}
 
-Maggiori informazioni sono disponibili nel capitolo dedicato Profilazione\vref{cap:profilazione}.
+Maggiori informazioni sono disponibili nel capitolo dedicato alla Profilazione\vpageref{cap:profilazione}.
 
 \subsection*{Il tempo totale di esecuzione}
 Se si desidera visualizzare il tempo trascorso dal momento in cui CodeIgniter viene eseguito per la prima volta sino al momento dell'output finale verso il browser, è sufficiente porre in una delle proprie Viste la seguente istruzione:
@@ -72,9 +70,7 @@ Se si desidera visualizzare il tempo trascorso dal momento in cui CodeIgniter vi
 <?php echo $this->benchmark->elapsed_time();?>
 \end{code}
 
-Si noterà che la funzione è la stessa, utilizzata negli esempi precedenti per calcolare il tempo tra due punti, tranne che, in questo caso, non si specifica alcun argomento. Quando i parametri sono assenti, CodeIgniter non termina il benchmark fino a quando il risultato finale non viene inviato al browser. Non importa dove si utilizzerà la chiamata di funzione, il timer continuerà a funzionare fino alla fine.
-
-Un modo alternativo per mostrare il tempo trascorso nei file di vista è quello di utilizzare questa pseudo-variabile, che evita di ricorrere al \ac{PHP} puro:
+Si noterà che la funzione è la stessa, utilizzata negli esempi precedenti per calcolare il tempo tra due punti, ma in questo caso, non si specifica alcun argomento. Quando i parametri sono assenti, CodeIgniter non termina il benchmark fino a quando il risultato finale non viene inviato al browser. Non importa dove si utilizzerà la chiamata di funzione, il timer continuerà a funzionare fino alla fine. Un modo alternativo per mostrare il tempo trascorso nei file di vista è quello di utilizzare questa pseudo-variabile, che evita di ricorrere al \ac{PHP} puro:
 
 \begin{code}
 {elapsed_time}

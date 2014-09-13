@@ -2,13 +2,13 @@
 \section*{Funzioni Helper Query}
 
 \begin{itemize}
-\item \verb|$this->db->insert_id()| il numero ID di inserimento quando si esegue un record viene aggiunto nel database-
+\item \verb|$this->db->insert_id()| il numero ID di inserimento quando si esegue un record viene aggiunto nel database.
 
-\item \verb|$this->db->affected_rows()| visualizza il numero di righe interessate, quando vengono processate le query di tipo  write (INSERT, UPDATE, ecc.).
+\item \verb|$this->db->affected_rows()| visualizza il numero di righe interessate quando vengono processate le query di tipo  write (INSERT, UPDATE, ecc.).
 
-Nota: in MySQL "DELETE FROM TABLE" restituisce 0 righe. La classe di database ha un piccolo hack che permette di restituire il giusto numero di righe interessate. Per impostazione predefinita, questo hack è abilitato, ma può essere disattivata nel file driver di database.
+Nota: in MySQL "DELETE FROM TABLE" restituisce 0 (zero) righe. La classe di database ha un piccolo hack che permette di restituire il giusto numero di righe interessate. Per impostazione predefinita, questo hack è abilitato, ma può essere disattivato nel file driver di database
 
-\item \verb|$this->db->count_all()| permette di determinare il numero di righe in un specifica tabella. Si deve specificare il nome della tabella come primo parametro:
+\item \verb|$this->db->count_all()| permette di determinare il numero di righe in una specifica tabella. Si deve indicare il nome della tabella come primo parametro:
 
 \begin{code}
 echo $this->db->count_all('my_table');
@@ -36,7 +36,7 @@ $str = $this->db->last_query();
 // Produce: SELECT * FROM qualche tabella...
 \end{code}
 
-\item \verb|$this->db->insert_string()| questa funzione semplifica il processo di scrittura degli inserimenti nel database. Essa restituisce una stringa di inserimento nel formato SQL.
+\item \verb|$this->db->insert_string()| questa funzione semplifica il processo di scrittura degli inserimenti nel database. Viene restituita una stringa di inserimento nel formato SQL.
 
 \begin{code}
 $data = array('name' => $name, 'email' => $email, 'url' => $url);

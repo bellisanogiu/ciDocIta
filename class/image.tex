@@ -13,7 +13,7 @@ Questa classe è di prezioso aiuto nelle operazioni sui formati grafici fornendo
 \item filigrana (watermark)
 \end{itemize}
 
-Sono supportate tutte le tre maggiori librerie, ovvero GD/GD2, NetPBM, e ImageMagick anche se la funzione di filigrana non è disponibile con la GD/GD2. Inoltre, anche se altre librerie sono supportate, GD è sempre necessaria affinché lo script per calcolare le proprietà dell'immagine funzioni correttamente. L'elaborazione delle immagini, comunque, verrà eseguita con la libreria specificata.
+Sono supportate tutte le tre maggiori librerie, ovvero GD/GD2, NetPBM, e ImageMagick anche se la funzione di filigrana non è disponibile con la GD/GD2. Inoltre, anche se altre librerie sono supportate, GD è sempre necessaria affinché lo script per calcolare le proprietà dell'immagine funzioni correttamente. L'elaborazione delle immagini, comunque, verrà eseguita con la libreria specificata. 
 
 La classe viene inizializzata nel proprio controller con il metodo \var{\$this->load->library}
 
@@ -21,7 +21,7 @@ La classe viene inizializzata nel proprio controller con il metodo \var{\$this->
 $this->load->library('image_lib');
 \end{code}
 
-Una volta che la libreria è caricata, sarà pronta per l'uso, semplicemente richiamando la funzione \verb|$this->image_lib|.
+Una volta che la libreria è caricata, sarà pronta per l'uso, semplicemente richiamando la funzione \verb|$this->image_lib|. 
 
 Indipendentemente dal tipo di operazione che si desidera eseguire (ridimensionamento, ritaglio, rotazione, o filigrana), il processo per eseguirle è identico. Si impostano alcune preferenze corrispondenti all'azione che si intende eseguire, quindi si chiama una delle quattro funzioni di elaborazione disponibili. Ad esempio, per creare una miniatura dell'immagine:
 
@@ -38,11 +38,9 @@ $this->load->library('image_lib', $config);
 $this->image_lib->resize();
 \end{code}
 
-Il codice chiama la funzione \verb|image_resize()| per visualizzare un'immagine chiamata ``mypic.jpg'' situata nella cartella \verb|source_image|, quindi crea una miniatura di 75x50 pixel utilizzando la funzione \verb|image_library| di GD2. Sin quando è abilitata l'opzione \verb|maintain_ratio| i parametri width e height dell'immagine saranno inacessibili in modo da garantire le corrette proporzioni. La miniatura dell'immagine si chiamerà \verb|mypic_thumb.jpg|.
+Il codice chiama la funzione \verb|image_resize()| per visualizzare un'immagine chiamata ``mypic.jpg'' situata nella cartella \verb|source_image|, quindi crea una miniatura di 75x50 pixel utilizzando la funzione \verb|image_library| di GD2. Sin quando è abilitata l'opzione \verb|maintain_ratio| i parametri width e height dell'immagine saranno inaccessibili in modo da garantire le corrette proporzioni. La miniatura dell'immagine si chiamerà \verb|mypic_thumb.jpg|.
 
-Nota: per essere autorizzati a compiere qualsiasi elaborazione con la classe Image, la cartella contenente i file grafici deve avere abilitati i permessi di scrittura.
-
-Nota: L'elaborazione delle immagini può richiedere una considerevole quantità di memoria del server per alcune operazioni. Se si verificano errori di memoria durante l'elaborazione di immagini può essere necessaria limitare la loro dimensione massima, e/o regolare adeguatamente i limiti di memoria \ac{PHP}.
+Nota: per essere autorizzati a compiere qualsiasi elaborazione con la classe Image, la cartella contenente i file grafici deve avere abilitati i permessi di scrittura. Inoltre l'elaborazione delle immagini può richiedere una considerevole quantità di memoria del server per alcune operazioni. Se si verificano errori di memoria durante l'elaborazione delle immagini può essere necessaria limitare la loro dimensione massima, e/o regolare adeguatamente i limiti di memoria \ac{PHP}.
 
 \section*{Funzioni di elaborazione immagine}
 CodeIgniter rende disponibile cinque funzioni adibite all'elaborazione delle immagini.
@@ -74,7 +72,7 @@ if ( ! $this->image_lib->resize())
 }
 \end{code}
 
-Nota: \'E possibile specificare la formattazione \ac{HTML} da applicare agli errori, specificando i tag di apertura/chiusura nella funzione, nel seguente modo:
+Nota: Si può specificare la formattazione \ac{HTML} da applicare agli errori, specificando i tag di apertura/chiusura nella funzione, nel seguente modo:
 
 \begin{code}
 $this->image_lib->display_errors('<p>', '</p>');
@@ -103,9 +101,9 @@ Preferenze & Default & Opzioni & Descrizione & Disponibilità \\
 \midrule
 \verb|source_image| & Nessuno & Nessuno & Imposta l'immagine di origine nome/path. Il percorso deve essere un percorso di server relativo o assoluto, non un URL. & R, C, S, W \\
 \midrule
-\verb|dynamic_output| & FALSE & TRUE/FALSE & Determina se il nuovo file immagine deve essere scritto su disco o generato dinamicamente. Nota: Se si sceglie l'impostazione dinamica,  verrà visualizzata solo un'immagine alla volta, e non sarà posizionata sulla pagina. Produce semplicemente l'immagine raw (grezza) inviata dinamicamente al browser, insieme con le intestazioni dell'immagine. & R, C, X, W \\
+\verb|dynamic_output| & FALSE & TRUE/FALSE & Determina se il nuovo file immagine deve essere scritto su disco o generato dinamicamente. Nota: Se si sceglie l'impostazione dinamica, verrà visualizzata solo un'immagine alla volta, e non sarà posizionata sulla pagina. Produce semplicemente l'immagine raw (grezza) inviata dinamicamente al browser, insieme con le intestazioni dell'immagine. & R, C, X, W \\
 \midrule
-\verb|quality| & 90\% & 1 - 100\% & Imposta la qualità dell'immagine. Più alta è la qualità più grande è la dimensione del file. & R, C, X, W \\
+\verb|quality| & 90\% & 1 - 100\% & Imposta la qualità dell'immagine. Più alta è la qualità, più grande è la dimensione del file. & R, C, X, W \\
 \midrule
 \verb|new_image| & Nessuno & Nessuno & Imposta l'immagine di destinazione nome/path. Si potrà utilizzare questa opzione durante la creazione di una copia dell'immagine. Il percorso deve essere un percorso di server relativo o assoluto, non un URL. & R, C, X, W \\
 \midrule
@@ -119,7 +117,7 @@ Preferenze & Default & Opzioni & Descrizione & Disponibilità \\
 \midrule
 \verb|maintain_ratio| & TRUE & TRUE/FALSE & Specifica se mantenere le proporzioni originali durante il ridimensionamento o utilizzare i valori principali. & R, C \\
 \midrule
-\verb|master_dim| & auto & auto, width, height & Specifica cosa utilizzare come asse principale durante il ridimensionamento o la creazione della miniatura. Se la dimensione originale dell'immagine non consente un perfetto ridimensionamento, questa impostazione determina l'asse che dovrebbe essere utilizzata come valore. "Auto" imposta l'asse automaticamente in base al fatto che l'immagine sia più alta che larga, o viceversa. & R \\
+\verb|master_dim| & auto & auto, width, height & Specifica cosa utilizzare come asse principale durante il ridimensionamento o la creazione della miniatura. Se la dimensione originale dell'immagine non consente un perfetto ridimensionamento, questa impostazione determina l'asse che dovrebbe essere utilizzata come valore. ``Auto'' imposta l'asse automaticamente in base al fatto che l'immagine sia più alta che larga, o viceversa. & R \\
 \midrule
 \verb|rotation_angle| & Nessuno & 90, 180, 270, vrt, hor & Specifica l'angolo di rotazione delle immagini. Si noti che PHP le ruota in senso antiorario, quindi una rotazione di 90 gradi verso destra deve essere specificata come 270. & X \\
 \midrule
@@ -131,10 +129,10 @@ Preferenze & Default & Opzioni & Descrizione & Disponibilità \\
 \normalsize
 
 \section*{Impostazione delle preferenze} 
-Se si preferisce definire le impostazioni alternativamente attraverso un file config, è possibile creare un file \verb|image_lib.php| definendo al suo interno un array \var{\$config}. Il file così creato andrà salvato nel percorso \verb|config/image_lib.php| e verrà automaticamente utilizzato. Non è necessario utilizzare la funzione \verb|$this->image_lib->initialize| se si definiscono le preferenze nel file config.
+Se si preferisce definire le impostazioni alternativamente attraverso un file config, si può creare un file \verb|image_lib.php| definendo al suo interno un array \var{\$config}. Il file così creato andrà salvato nel percorso \verb|config/image_lib.php| e verrà automaticamente utilizzato. Non è necessario utilizzare la funzione \verb|$this->image_lib->initialize| se si definiscono le preferenze nel file config.
 
 \begin{itemize}
-\item \verb|$this->image_lib->resize()| questa funzione permette di ridimensionale l'immagine creando una copia (con o senza ridimensionamento), oppure creare una miniatura dell'immagine. In pratica non vi sono differenze tra creare una copia dell'immagine o creare una sua miniatura, ad eccezione del fatto che quest'ultima avrà un simbolo con il nome (per esempio \verb|mypic_thumb.jpg|).
+\item \verb|$this->image_lib->resize()| questa funzione svolge il compito di ridimensionare l'immagine creando una sua copia (con o senza ridimensionamento), oppure definendo una sua miniatura. In pratica non vi sono differenze tra creare una copia dell'immagine o creare una sua miniatura, ad eccezione del fatto che quest'ultima avrà un simbolo con il nome (per esempio \verb|mypic_thumb.jpg|).
 
 Tutte le preferenze elencate nella tabella precedente sono disponibili, ad eccezione di queste tre: \verb|rotation_angle|, \verb|x_axis| e \verb|y_axis|.
 
@@ -213,14 +211,14 @@ Esistono due tipi di filigrana utilizzabili: una che prevede un testo, e l'altra
 
 \begin{itemize}
 \item text: la filigrana è un messaggio testuale per cui si utilizza il font True Type desiderato oppure un qualsiasi formato testo supportato dalla libreria GD. Se si utilizza la versione True Type, la propria installazione GD deve essere compilata con il supporto ai font True Type
-\item overlay: in questo caso la filigrana è composta da una nuova immagine che viene sovrapposta all'immagine originale. Solitamente si utilizza una immagine con formato PNG oppure GIF che gestiscono la trasparenza dello sfondo.
+\item overlay: in questo caso la filigrana è composta da una nuova immagine che viene sovrapposta a quella originale. Solitamente si utilizza una immagine con formato PNG oppure GIF che gestiscono la trasparenza dello sfondo
 \end{itemize}
 
 Proprio come con le altre funzioni (ridimensionamento, ritaglio e rotazione), il processo generale di filigrana consiste nell'impostare le preferenze corrispondenti all'azione che si intende eseguire. Ecco un esempio:
 
 \begin{code}
 $config['source_image']	= '/path/to/image/mypic.jpg';
-$config['wm_text'] = 'Copyright 2006 - John Doe';
+$config['wm_text'] = 'Copyright 2014 - Giuseppe Bellisano';
 $config['wm_type'] = 'text';
 $config['wm_font_path'] = './system/fonts/texb.ttf';
 $config['wm_font_size']	= '16';
@@ -234,7 +232,7 @@ $this->image_lib->initialize($config);
 $this->image_lib->watermark();
 \end{code}
 
-L'esempio precedente utilizza un font True Type di 16 pixel per creare un testo con la dicitura ``Copyright 2006 - John Doe''. La filigrana sarà posizionata in basso, al centro dell'immagine principale con 20 pixel di spazio dal bordo inferiore.
+L'esempio precedente utilizza un font True Type di 16 pixel per creare un testo con la dicitura ``Copyright 2014 - Giuseppe Bellisano''. La filigrana sarà posizionata in basso, al centro dell'immagine principale con 20 pixel di spazio dal bordo inferiore.
 
 Nota: per permettere l'elaborazione dell'immagine è necessario impostare i permessi dell'immagine in modo da consentire la scrittura (per esempio 777).
 
@@ -248,7 +246,7 @@ Preferenze & Default & Opzioni & Descrizione \\
 \midrule
 \verb|source_image| & Nessuno & Nessuno & Imposta l'immagine di origine nome/path che deve essere un percorso relativo o assoluto di server, non un URL. \\
 \midrule
-\verb|dynamic_output| & FALSE & TRUE/FALSE & Determina se il nuovo file immagine deve essere scritto sull'hartd disk o generato dinamicamente. Nota: Se si sceglie l'impostazione dinamica, può essere visualizzata solo un'immagine alla volta, e non può essere posizionata sulla pagina. Invia semplicemente l'immagine raw (grezza) al browser, insieme con le intestazioni di immagine. \\
+\verb|dynamic_output| & FALSE & TRUE/FALSE & Determina se il nuovo file immagine deve essere scritto sull'hard disk o generato dinamicamente. Nota: Se si sceglie l'impostazione dinamica, può essere visualizzata solo un'immagine alla volta, e non può essere posizionata sulla pagina. Invia semplicemente l'immagine raw (grezza) al browser, insieme con le intestazioni di immagine. \\
 \midrule
 \verb|quality| & 90\% & 1 - 100\% & Imposta la qualità dell'immagine: più alta è la qualità, più grande risulterà la dimensione del file. \\
 \midrule
@@ -290,7 +288,7 @@ Preferenze & Default & Opzioni & Descrizione \\
 \toprule
 \verb|wm_overlay_path| & Nessuno & Nessuno & Il percorso del server per l'immagine che si desidera utilizzare come filigrana. Necessaria solo se si utilizza il metodo di sovrapposizione. \\
 \midrule
-\verb|wm_opacity| & 50 & 1 - 100 & Opacità dell'immagine. \'E possibile specificare l'opacità (cioè trasparenza) della'immagine filigrana. Questo permette di non nascondere i dettagli della immagine originale. Solitamente il suo valore è del 50\%. \\
+\verb|wm_opacity| & 50 & 1 - 100 & Opacità dell'immagine. \'E possibile specificare l'opacità (cioè trasparenza) dell'immagine filigrana. Questo permette di non nascondere i dettagli della immagine originale. Solitamente il suo valore è del 50\%. \\
 \midrule
 \verb|wm_x_transp| & 4 & Un numero & Se l'immagine filigrana è una immagine PNG o GIF, è possibile specificare un colore per lo sfondo che la renda "trasparente". Questa impostazione (insieme con la prossima) permette di specificare quel colore, specificando le coordinate in pixel "X" e "Y" (misurate a partire dall'angolo in alto a sinistra) che corrispondono al pixel con il colore da rendere trasparente. \\
 \midrule
@@ -306,7 +304,7 @@ Se si volessero apportare più modifiche in sequenza ad o più immagini, si dovr
 $this->image_lib->clear();
 \end{code}
 
-Questa andrà eseguita prima di inizializzare nuovamente la libreria con la configurazione desiderata. Qui di seguito si mostra un esempio che mostra due operazioni in successione sulla stessa immagine: una rotazione e un successivo ridimensionamento. Si noti che dopo la prima operazione, la libreria viene resettata e una volta definiti i parametri della seconda operazione, nuovamente inizializzata.
+Questa andrà eseguita prima di inizializzare nuovamente la libreria con la configurazione desiderata. Qui di seguito si mostra un esempio con due operazioni in successione sulla stessa immagine: una rotazione seguita da un ridimensionamento. Si noti che dopo la prima operazione, la libreria viene resettata e una volta definiti i parametri della seconda operazione, nuovamente inizializzata.
 
 \begin{code}
 //Impostazioni per rotazione verticale  

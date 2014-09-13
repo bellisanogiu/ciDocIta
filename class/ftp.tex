@@ -99,15 +99,13 @@ Le opzioni disponibili per la connessione sono:
 \item passive. Abilita la modalità passiva che è quella predefinita (valori: TRUE/FALSE)
 \end{itemize}
 
-\item \verb|$this->ftp->upload()| consente di caricare un file sul proprio server. \'E necessario fornire un percorso locale e uno remoto. Opzionalmente si può definire la modalità di upload e i permessi. Per esempio:
+\item \verb|$this->ftp->upload()| consente di caricare un file sul proprio server. \'E necessario fornire un percorso locale ed uno remoto. Opzionalmente si può definire la modalità di upload ed i permessi. Per esempio:
 
 \begin{code}
 $this->ftp->upload('/local/path/to/myfile.html', '/public_html/myfile.html', 'ascii', 0775);
 \end{code}
 
-Le opzioni per la modalità di upload sono: ascii, binary e auto (valore di default). Se viene utilizzato il valore auto, la modalità sarà impostata sulla base dell'estensione del file locale. 
-
-I permessi possono essere passati in base ottale con quattro cifre.
+Le opzioni per la modalità di upload sono: ascii, binary e auto (valore di default). Se viene utilizzato il valore auto, la modalità sarà impostata sulla base dell'estensione del file locale. I permessi possono essere passati in base ottale con quattro cifre.
 
 \item \verb|$this->ftp->download()| è utilizzata per scaricare un file dal server remoto. \'E necessario fornire un percorso locale e uno remoto e, opzionalmente, definire la modalità. Questa funzione restituisce FALSE se il download non viene eseguito correttamente (include anche il caso in cui \ac{PHP} non ha i permessi per scrivere un file localmente). Per esempio: 
 
@@ -124,7 +122,7 @@ Le opzioni per la modalità di upload sono: ascii, binary e auto (valore di defa
 $this->ftp->rename('/public_html/foo/green.html', '/public_html/foo/blue.html');
 \end{code}
 
-\item \verb|$this->ftp->move()| permette di spostare un file definendo il percorso del file attuale e quello di destinazione. Se il nome del file specificato nella ``destinazione'' è differente da quello iniziale, il file viene rinominato.
+\item \verb|$this->ftp->move()| sposta un file definendo il percorso del file attuale e quello di destinazione. Se il nome del file specificato nella ``destinazione'' è differente da quello iniziale, il file viene rinominato.
 
 \begin{code}
 // Sposta blog.html da "joe" in "fred"
@@ -143,7 +141,7 @@ is->ftp->delete_file('/public_html/joe/blog.html');
 $this->ftp->delete_dir('/public_html/path/to/folder/');
 \end{code}
 
-Nota: \'E molto importante prestare la massima attenzione nell'utilizzo di questa funzione. La sua natura ricorsiva consente di cancellare tutto all'interno del percorso specificato, comprese le sottocartelle e tutti i file. Assicurarsi che il percorso sia corretto utilizzando la funzione \verb|list_files()|.
+Nota: \'E molto importante prestare la massima attenzione nell'utilizzare questa funzione. La sua natura ricorsiva consente di cancellare qualsiasi elemento all'interno del percorso specificato, comprese le sottocartelle e tutti i file. Assicurarsi che il percorso sia corretto utilizzando la funzione \verb|list_files()|.
 
 \item \verb|$this->ftp->list_files()| consente di ottenere una lista di file sul server remoto sotto forma di un array. Si deve fornire il percorso della directory in oggetto:
 

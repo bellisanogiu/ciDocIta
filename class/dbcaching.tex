@@ -5,7 +5,7 @@ La classe Database Caching carica in una memoria temporanea (la cache) le propri
 Nota: questa classe è inizializzata automaticamente dai driver del database quando il ``caching'' è abilitato. Non si deve pertanto mai abilitare questa classe manualmente.
 
 \section*{Abilitare il caching}
-Vi sono tre fasi da seguire per abilitare la funzionalità di caching:
+Vi sono tre fasi da seguire per utilizzare la funzionalità di caching:
 
 \begin{itemize}
 \item si crea una directory con i permessi di scrittura nel proprio server dove i file di cache saranno memorizzati
@@ -16,31 +16,23 @@ Vi sono tre fasi da seguire per abilitare la funzionalità di caching:
 Una volta eseguiti questi passi, il caching  delle query avverrà automaticamente ogni volta che viene caricata una pagina contenente appunto le query di database.
 
 \section*{Come funziona il caching}
-il sistema di caching delle query di CodeIgniter avviene dinamicamente quando le pagine vengono visualizzate. Se la memorizzazione nella cache è attivata, la prima volta che viene caricata una pagina web, l'oggetto risultato della query viene serializzato (si veda la definizione \vref{def:Serializzare}) e memorizzato in un file di testo sul server. La prossima volta che la pagina verrà nuovamente caricata, il file di cache verrà utilizzato senza dover accedere nuovamente al database. In questo modo l'utilizzo del database può essere efficacemente ridotto a zero per tutte quelle le pagine memorizzate precedentemente nella cache.
+Il sistema di caching delle query di CodeIgniter avviene dinamicamente quando le pagine vengono visualizzate. Se la memorizzazione nella cache è attivata, la prima volta che viene caricata una pagina web, l'oggetto risultato della query viene serializzato (si veda la definizione \vref{def:Serializzare}) e memorizzato in un file di testo sul server: la prossima volta che la pagina verrà nuovamente caricata, il file di cache verrà utilizzato senza dover accedere nuovamente al database. In questo modo l'utilizzo del database può essere efficacemente ridotto a zero per tutte quelle le pagine memorizzate precedentemente nella cache.
 
 \begin{deftabv}{Serializzare}{Indica quell'operazione che genera una versione archiviabile di un valore. Viene utilizzata soventemente per memorizzare o passare valori a PHP senza perderne la struttura e il tipo.}
 \end{deftabv}
 
-Solo le query tipo lettura (SELECT) possono essere memorizzate nella cache, poiché queste sono le uniche che producono un risultato. Le query di tipo scrittura (INSERT, UPDATE, ecc) poiché non generano un risultato, non verranno memorizzate nella cache.
-
-I file di cache non scadono: tutte le query che sono state memorizzate rimarranno tali fino a quando non le si elimina. Il sistema consente comunque di pulire la cache associata alle singole pagine, oppure di eliminare l'intera collezione di file di cache. Solitamente le funzioni di pulizia descritte di seguito sono utilizzate per eliminare i file della cache solo dopo determinati eventi, come quando si aggiungono nuove informazioni al database.
+Solo le query tipo lettura (SELECT) possono essere memorizzate nella cache, poiché queste sono le uniche che producono un risultato. Le query di tipo scrittura (INSERT, UPDATE, ecc) poiché non generano un risultato, non verranno memorizzate nella cache. I file di cache inoltre non scadono: tutte le query che sono state memorizzate, rimarranno tali fino a quando non le si elimina. Il sistema consente comunque di pulire la cache associata alle singole pagine, oppure di eliminare l'intera collezione di file di cache. Solitamente le funzioni di pulizia descritte di seguito sono utilizzate per eliminare i file della cache solo dopo determinati eventi, come quando si aggiungono nuove informazioni al database.
 
 \section*{Prestazioni}
-L'aumento delle prestazioni utilizzando il caching dipende da molti fattori legati al proprio database. Se il progetto sviluppato si basa su una base di dati altamente ottimizzata in cui le interrogazioni sono ridotte, allora il sistema di caching non porterà rilevanti vantaggi. Al contrario se il database è soggetto a molte richieste, i pregi di questa soluzione saranno tangibili. Si tenga sempre presente che il caching cambia semplicemente il modo in cui le informazioni vengono recuperate, trasformando un'operazione sul database in una sul file-system.
+L'aumento delle prestazioni utilizzando il caching dipende da molti fattori legati al proprio database. Se il progetto sviluppato si basa su una base di dati altamente ottimizzata in cui le interrogazioni sono ridotte, allora il sistema di caching non porterà rilevanti vantaggi. Al contrario se il database è soggetto a molte richieste, i pregi di questa soluzione saranno tangibili. Si tenga sempre presente che il caching cambia semplicemente il modo in cui le informazioni vengono recuperate, trasformando un'operazione sul database in una sul file-system. In alcuni ambienti server-cluster, per esempio, la cache può essere dannosa in quanto le operazioni sul file system possono divenire molto intense. Su singoli server in ambienti condivisi, il caching sarà probabilmente utile. Purtroppo non esiste una risposta semplice alla domanda se è opportuno utilizzare la cache, poiché questa scelta dipende dall'ambiente in cui lavora il server e dalla natura del progetto sviluppato.
 
-In alcuni ambienti server-cluster, per esempio, la cache può essere dannosa in quanto le operazioni sul file system possono divenire molto intense. Su singoli server in ambienti condivisi, il caching sarà probabilmente utile. Purtroppo non esiste una risposta semplice alla domanda se è opportuno utilizzare la cache, poiché questa scelta dipende dall'ambiente in cui lavora il server e dalla natura del progetto sviluppato.
-
-CodeIgniter memorizza il risultato di ogni query nel proprio specifico file di cache. Insiemi di file di cache sono ulteriormente organizzati in sotto-cartelle corrispondenti alle funzioni del controller. Per essere precisi, le sotto-cartelle sono denominate in modo identico ai primi due segmenti dell'\ac{URI} (il nome della classe controller e il nome della funzione). Ad esempio, supponiamo di avere un controller chiamato ``blog'' con una funzione chiamata ``commenti'' che contiene tre query. Il sistema di caching creerà una cartella di cache denominata \var{blog+commenti}, nella quale scriverà tre file di cache.
-
-Se si utilizzano le query dinamiche che cambiano in base alle informazioni dell'\ac{URI} (quando si utilizza l'impaginazione, per esempio), ogni istanza della query produrrà un proprio file di cache. \'E possibile, quindi, ottenere più file di cache delle rispettive query che li hanno prodotti.
+CodeIgniter memorizza il risultato di ogni query nel proprio specifico file di cache. Insiemi di file di cache sono ulteriormente organizzati in sotto-cartelle corrispondenti alle funzioni del controller. Per essere precisi, le sotto-cartelle sono denominate in modo identico ai primi due segmenti dell'\ac{URI} (il nome della classe controller e il nome della funzione). Ad esempio, supponiamo di avere un controller chiamato ``blog'' con una funzione chiamata ``commenti'' che contiene tre query. Il sistema di caching creerà una cartella di cache denominata \var{blog+commenti}, nella quale scriverà tre file di cache. Se si utilizzano le query dinamiche che cambiano in base alle informazioni dell'\ac{URI} (quando si utilizza l'impaginazione, per esempio), ogni istanza della query produrrà un proprio file di cache. \'E possibile, quindi, ottenere più file di cache delle rispettive query che li hanno prodotti.
 
 \section*{Gestire il file di cache}
-Poiché i file di cache non scadono, sarà necessario definire delle routine di eliminazione nella propria applicazione. Ad esempio, ipotizziamo un blog che permetta all'utente di commentare i post: ogni volta che un nuovo commento verrà memorizzato, si dovranno eliminare i file di cache associati al controller che gestisce i commenti. In caso contrario, il server si troverà con innumerevoli file inutili e capaci di limitare le prestazioni generali. Qui di seguito sono descritte due funzioni che consentono di eliminare i file.
+Poiché i file di cache non scadono, sarà necessario definire delle routine di eliminazione nella propria applicazione. Ad esempio, se si considera un blog che permetta all'utente di commentare i post, ogni volta che un nuovo commento verrà memorizzato, si dovranno eliminare i file di cache associati al controller che gestisce i commenti. In caso contrario, il server si troverà con innumerevoli file inutili e capaci di limitare le prestazioni generali. Qui di seguito sono descritte due funzioni che consentono di eliminare i file.
 
 \section*{Quando il Caching \'e inutile}
-Infine, dobbiamo sottolineare che l'oggetto risultato che viene memorizzato nella cache è una versione semplificata del risultato (oggetto) completo. Per questo motivo, alcune delle funzioni di query non sono utilizzabili.
-
-Le seguenti funzioni non sono disponibili quando si utilizza un oggetto memorizzato nella cache:
+Infine, dobbiamo sottolineare che l'oggetto risultato che viene memorizzato nella cache è una versione semplificata del risultato (oggetto) completo. Per questo motivo, alcune delle funzioni di query non sono utilizzabili. Le seguenti funzioni non sono disponibili quando si utilizza un oggetto memorizzato nella cache:
 
 \begin{itemize}
 \item \verb|num_fields()| 
@@ -49,7 +41,7 @@ Le seguenti funzioni non sono disponibili quando si utilizza un oggetto memorizz
 \item \verb|free_result()| 
 \end{itemize}
 
-Inoltre, le due risorse del database (\verb|result_id| e \verb|conn_id|) non sono disponibili quando vi è il caching, poiché le risorse dei risultati si riferiscono solo alle operazioni run-time.
+Inoltre, le due risorse del database (\verb|result_id| e \verb|conn_id|) non sono disponibili quando vi è il caching, poiché le risorse dei risultati si riferiscono solo alle operazioni runtime.
 
 \section*{Reference delle funzioni di caching}
 \begin{itemize}

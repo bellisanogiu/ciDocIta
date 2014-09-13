@@ -1,6 +1,6 @@
 %inizio Database Utility Class
 \section*{Classe Database Utility}
-Questa classe contiene numerose funzioni che aiutano a gestire il proprio database con cui si riesce ad ottimizzare, riparare le tabelle o lo stesso database.
+Questa classe contiene numerose funzioni che aiutano a gestire il proprio database per ottimizzare, riparare le tabelle o lo stesso database.
 
 \section*{Inizializzare la Class Utility}
 Per inizializzare la classe Utility, i driver del proprio database devono essere precedentemente caricati, poiché la classe si basa su di essi. Per caricare la classe si usa la seguente istruzione:
@@ -45,7 +45,7 @@ if ($this->dbutil->optimize_table('table_name'))
 }
 \end{code}
 
-\item \verb|$this->dbutil->repair_table('table_name')| permette di riparare una tabella utilizzando nella funzione, come primo parametro, il nome della tabella: viene restituito TRUE/FALSE a seconda del successo o meno della funzione. \'E bene precisare che non tutte le piattaforme supportano questa ottimizzazione: questa funzione è disponibile infatti solo con i database MySQL/MySQLi.
+\item \verb|$this->dbutil->repair_table('table_name')| permette di riparare una tabella utilizzando nella funzione, come primo parametro, il nome della tabella: viene restituito TRUE/FALSE a seconda del successo o meno dell'operazione. \'E bene precisare che non tutte le piattaforme supportano questa ottimizzazione: questa funzione è disponibile infatti solo con i database MySQL/MySQLi.
 
 \begin{code}
 if ($this->dbutil->repair_table('table_name'))
@@ -75,7 +75,7 @@ $query = $this->db->query("SELECT * FROM mytable");
 echo $this->dbutil->csv_from_result($query);
 \end{code}
 
-Il secondo e il terzo parametro permettono di impostare il delimitatore e il carattere di ritorno a capo (per default il tasto tab è il delimitatore, mentre ``\\n'' è usato come carattere di newline). Per esempio:
+Il secondo e il terzo parametro permettono di impostare il delimitatore e il carattere di ritorno a capo (per default il tasto tab è il delimitatore, mentre ``\verb|\\n|'' è usato come carattere di newline). Per esempio:
 
 \begin{code}
 $delimiter = ",";
@@ -84,7 +84,7 @@ $newline = "\r\n";
 echo $this->dbutil->csv_from_result($query, $delimiter, $newline);
 \end{code}
 
-Si presti attenzione al fatto che questa funzione non scrive il file \ac{CSV} per noi: semplicemente definisce il layout; per scrivere il file è necessario utilizzare l'Helper File (si veda la sezione\vref{helper:file}).
+Nota: si presti attenzione al fatto che questa funzione non scrive il file \ac{CSV} per noi: semplicemente definisce il layout; per scrivere il file è necessario utilizzare l'Helper File (si veda la sezione\vref{helper:file}).
 
 \item \verb|$this->dbutil->xml_from_result($db_result)| viene generato un file \ac{XML} dal risultato di una query. Il primo parametro si aspetta il risultato di una query, mentre il secondo può contenere un array opzionale di parametri di configurazione. Per esempio:
 
@@ -107,7 +107,7 @@ Nota: questa funzione non scrive fisicamente il file \ac{XML}, ma si occupa di d
 
 \item \verb|$this->dbutil->backup()| permette di effettuare un backup dell'intero database o di alcune tabelle. Il backup viene compresso in un formato a scelta tra Zip o Gzip ed è utilizzabile solo nel database MySQL.
 
-Nota: a causa del tempo di esecuzione limitato per le operazioni PHP, il backup di database di grandi dimensioni potrebbe non essere possibile. In questo caso è possibile effettuare una copia di sicurezza dal server SQL tramite riga di comando. Ecco alcuni esempi:
+Nota: a causa del tempo di esecuzione limitato per le operazioni \ac{PHP}, il backup di database di grandi dimensioni potrebbe non essere possibile. In questo caso si può effettuare una copia di sicurezza dal server SQL tramite riga di comando. Ecco alcuni esempi:
 
 \begin{code}
 // Caricamento della classe DB
@@ -127,7 +127,7 @@ force_download('mybackup.gz', $backup);
 \end{itemize}
 
 \section*{Le preferenze del backup}
-\'E possibile definire le preferenze del backup inviando un array di valori come primo parametro alla funzione. Per esempio:
+Si possono definire le preferenze del backup inviando un array di valori come primo parametro alla funzione. Per esempio:
 
 \begin{code}
 $prefs = array(

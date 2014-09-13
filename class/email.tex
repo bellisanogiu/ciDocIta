@@ -18,7 +18,7 @@ La classe di CodeIgniter per le email è caratterizzata da robuste funzionalità
 \end{itemize}
 
 \section*{Invio dell'email}
-L'invio di posta elettronica non solo è semplice, ma anche veloce ed immediato. \'E possibile configurare inline ogni impostazione o definirle in un apposito file di configurazione. L'esempio seguente dimostra la facilità con cui è possibile inviare una e-mail. 
+L'invio di posta elettronica non solo è semplice, ma anche veloce ed immediato. \'E possibile configurare inline ogni impostazione o definirle in un apposito file di configurazione. L'esempio seguente dimostra la facilità con cui si può inviare una e-mail. 
 
 Nota: si presuppone che l'e-mail sia spedita da uno dei propri controller.
 
@@ -39,7 +39,7 @@ echo $this->email->print_debugger();
 \end{code}
 
 \section*{Impostare le preferenze}
-Ci sono diciasette diversi parametri preposti a definire la classe per l'invio dei messaggi di posta elettronica. \'E possibile impostarli manualmente come descritto precedentemente, o automaticamente tramite le preferenze memorizzate nel file di configurazione.Le preferenze sono impostate passando un array di valori alla funzione che inizializza l'email. Ecco un esempio:
+Ci sono diciasette diversi parametri preposti a definire la classe per l'invio dei messaggi di posta elettronica. Questi vengono impostati manualmente come descritto precedentemente, o automaticamente tramite le preferenze memorizzate nel file di configurazione. Le preferenze sono impostate passando un array di valori alla funzione che inizializza l'email. Ecco un esempio:
 
 \begin{code}
 $config['protocol'] = 'sendmail';
@@ -115,9 +115,9 @@ $list = array('uno@example.com', 'due@example.com', 'tre@example.com');
 $this->email->to($list)
 \end{code}
 
-\verb|$this->email->cc()| imposta il campo \ac{CC}; come nel campo ``to'' può essere un indirizzo singolo, o indirizzi multipli separati da una virgola o definiti da un array. 
+\verb|$this->email->cc()| imposta il campo \ac{CC}; come nel campo ``to'' può essere un indirizzo singolo o indirizzi multipli separati da una virgola o definiti da un array. 
 
-\verb|$this->email->bcc()| imposta il campo \ac{BCC}; come nel campo ``to'' può essere un indirizzo singolo, o multipli indirizzi separati da una virgola o definiti da un array. 
+\verb|$this->email->bcc()| imposta il campo \ac{BCC}; come nel campo ``to'' può essere un indirizzo singolo o multipli indirizzi separati da una virgola o definiti da un array. 
 
 \verb|$this->email->subject()| definisce l'oggetto (subject) dell'email.
 
@@ -131,7 +131,7 @@ $this->email->subject('Questo è il soggetto');
 $this->email->message('Questo è il testo');
 \end{code}
 
-\verb|$this->email->set_alt_message()| imposta il corpo di un messaggio alternativo. Si tratta di una stringa testuale (facoltativa) che sarebbe bene utilizzare quando si inviano email in formato \ac{HTML} non sempre visualizzabile correttamente. Permette quindi di specificare un messaggio alternativo senza formattazione \ac{HTML} che viene aggiunto alla stringa di intestazione per le persone che non accettano o non visualizzano le e-mail in tale formato. Se non si imposta il proprio messaggio alternativo, CodeIgniter estrarrà il messaggio dalla e-mail \ac{HTML} privandolo dei suoi tag.
+\verb|$this->email->set_alt_message()| imposta il corpo di un messaggio alternativo. Si tratta di una stringa testuale (facoltativa) che sarebbe bene utilizzare quando si inviano email in formato \ac{HTML} non sempre visualizzabile correttamente. Permette quindi di specificare un messaggio alternativo senza formattazione \ac{HTML} che viene aggiunto alla stringa di intestazione per le persone che non accettano o non visualizzano le e-mail in tale formato. Se non si imposta il proprio messaggio alternativo, CodeIgniter estrarrà il testo dalla e-mail \ac{HTML} privandolo dei suoi tag.
 
 \begin{code}
 $this->email->set_alt_message('Un messaggio alternativo');

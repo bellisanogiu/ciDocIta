@@ -28,7 +28,6 @@ $this->load->library('trackback');
 Una volta caricata, l'oggetto della libreria Trackback sarà disponibile utilizzando \var{\$this->trackback}.
 
 \section*{Inviare Trackback}
-
 Un Trackback può essere inviato da ogni metodo del controller utilizzando un codice simile al seguente esempo:
 
 \begin{code}
@@ -71,18 +70,12 @@ $this->trackback->display_errors();
 \end{code}
 
 \section*{Ricevere Trackback}
-
 Prima che si possa ricevere i Trackback è necessario creare un blog, ovviamente. Se non se ne ha uno, e non si ha intenzione di utilizzare un servizio di blog in futuro, probabilmente non ha senso continuare nella lettura delle prossime funzionalità della classe.
 
-Ricevere i Trackback è un po' più complesso di quanto non sia inviarli, per il solo motivo che sarà necessaria una tabella di database in cui memorizzarli. Inoltre sarà necessario per convalidare i dati trackback in ingresso. \'E importante implementare un processo di validazione approfondito per evitare spam e duplicazione dei dati. Si consiglia inoltre di limitare il numero di Trackback in ingresso da un particolare IP in un intervallo di tempo specifico, sempre con il fine di ridurre ulteriormente lo spam. Il processo di ricezione di un Trackback è abbastanza semplice mentre la loro validazione richiede un maggiore sforzo.
+Ricevere i Trackback è un po' più complesso di quanto non sia inviarli per il solo motivo che sarà necessaria una tabella di database in cui memorizzarli. Inoltre sarà necessario per convalidare i dati trackback in ingresso. \'E importante implementare un processo di validazione approfondito per evitare spam e duplicazione dei dati. Si consiglia inoltre di limitare il numero di Trackback in ingresso da un particolare IP in un intervallo di tempo specifico, sempre con il fine di ridurre ulteriormente lo spam. Il processo di ricezione di un Trackback è abbastanza semplice mentre la loro validazione richiede un maggiore sforzo.
 
 \section*{Ping URL}
-
-Per accettare i Trackback è necessario visualizzare un \ac{URL} di Trackback accanto ad ognuno delle voci del blog. Questo \ac{URL} sarà l'indirizzo che la gente utilizzerà per inviare Trackback (si farà riferimento a questi ultimi come Ping URL). 
-
-Il proprio Ping URL deve puntare al metodo del Controller dove si trova il codice del Trackback di ricezione, e l'URL deve contenere il numero ID per ogni particolare voce, in modo che quando viene ricevuto il Trackback si sarà in grado di associarlo ad una particolare voce. 
-
-Ad esempio, se la classe controller si chiama \var{Trackback}, e il metodo di ricezione viene chiamato \var{receive}, il proprio URL Ping sarà simile a questo:
+Per accettare i Trackback è necessario visualizzare un \ac{URL} di Trackback accanto ad ognuno delle voci del blog. Questo \ac{URL} sarà l'indirizzo che la gente utilizzerà per inviare Trackback (si farà riferimento a questi ultimi come Ping URL). Il proprio Ping URL deve puntare al metodo del Controller dove si trova il codice del Trackback di ricezione, e l'URL deve contenere il numero ID per ogni particolare voce, in modo che quando viene ricevuto il Trackback si sarà in grado di associarlo ad una particolare voce. Ad esempio, se la classe controller si chiama \var{Trackback}, e il metodo di ricezione viene chiamato \var{receive}, il proprio URL Ping sarà simile a questo:
 
 \begin{code}
 http://example.com/index.php/trackback/receive/entry_id
@@ -91,7 +84,6 @@ http://example.com/index.php/trackback/receive/entry_id
 Dove \verb|entry_id| rappresenta il numero ID specifico per ogni voce.
 
 \section*{Tabella Trackback}
-
 Prima che si possano ricevere i Trackback è necessario creare una tabella in cui poterli memorizzare. Qui di seguito si mostra il prototipo di una tabella adatta allo scopo:
 
 \begin{code}
@@ -112,7 +104,6 @@ CREATE TABLE trackbacks (
 Nelle specifiche del prototipo sono richieste solo quattro porzioni di informazioni da inviare al Trackback  (\verb|url|, \verb|title|, \verb|excerpt|, \verb|blog_name|),  ma per rendere i dati più utili sono stati aggiunti un paio di ulteriori campi (\verb|date|, \verb|IP address|, etc.).
 
 \section*{Elaborare un Trackback}
-
 Ora si mosterà un esempio per ricevere e processare i Trackback; il seguente codice si abbina ad un metodo del controller adibito alla ricezione dei dati Trackback.
 
 \begin{code}
@@ -168,7 +159,7 @@ I Trackback in ingresso sono recuperati con la funzione seguente:
 $this->trackback->data('item')
 \end{code}
 
-Dove \var{item} rappresenta uno delle quattro parti delle informazioni: \verb|url|, \verb|title|, \verb|excerpt|, \verb|blog_name|. Se i dati Trackback sono correttamente ricevuti, il messaggio di successo sarà disponibile con la funzione:
+Dove \var{item} rappresenta uno delle quattro parti delle informazioni: \verb|url|, \verb|title|, \verb|excerpt|, \verb|blog_name|. Se i dati Trackback saranno correttamente ricevuti, il messaggio di successo sarà disponibile con la funzione:
 
 \begin{code}
 $this->trackback->send_success();

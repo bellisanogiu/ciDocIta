@@ -1,9 +1,8 @@
 %inizio Database Forge Class
 \section*{Classe Database Forge}
-Si tratta di una classe che fornisce numerose funzionalità per gestire la propria base di dati, permettendo azioni come la creazione, o l'eliminazione di una tabella, aggiungere una chiave o un campo.
+Si tratta di una classe che fornisce numerose funzionalità per gestire la propria base di dati, permettendo azioni come la creazione e l'eliminazione di una tabella, aggiungere una chiave o un campo.
 
 \section*{Inizializzare la classe}
-
 Prima di tutto, per inizializzare la classe Forge, il driver di database deve essere già in esecuzione, poiché tale classe si basa su di esso. La seguente istruzione carica la classe:
 
 \begin{code}
@@ -95,7 +94,7 @@ Una volta definiti i campi, è possibile aggiungerli utilizzando la funzione \ve
 \end{itemize}
 
 \section*{Passaggio di stringhe}
-Se si sa esattamente quale campo si vuole creare è possibile passare una stringa alla funzione \verb|add_field()| con la corretta definizione.
+Se si sa esattamente quale campo si vuole creare, è possibile passare una stringa alla funzione \verb|add_field()| con la corretta definizione.
 
 \begin{code}
 $this->dbforge->add_field("label varchar(100) NOT NULL DEFAULT 'default label'");
@@ -112,7 +111,7 @@ $this->dbforge->add_field('id');
 \end{code}
 
 \section*{Aggiungere una chiave}
-Ogni tabella possiede generalmente una chiave. Questa si assegna con la funzione \verb|$this->dbforge->add_key('field')|. Un secondo parametro opzionale impostato su TRUE definirà l'argomento come una chiave primaria. Si noti che \verb|add_key()| deve essere seguita da una chiamata a \verb|create_table()|.
+Ogni tabella possiede generalmente una chiave. Questa si assegna con la funzione \verb|$this->dbforge->add_key('field')|. Un secondo parametro opzionale impostato su TRUE definirà l'argomento come chiave primaria. Si noti che \verb|add_key()| deve essere seguita da una chiamata a \verb|create_table()|.
 
 Eventuali colonne multiple di chiavi non primarie devono essere specificate come un array. Un esempio di output è il seguente codice MySQL:
 
@@ -132,7 +131,7 @@ $this->dbforge->add_key(array('blog_name', 'blog_label'));
 \end{code}
 
 \section*{Creare una tabella}
-Dopo che i campi e le chiavi sono state dichiarate è possibile creare una nuova tabella con:
+Dopo che i campi e le chiavi sono state dichiarati è possibile creare una nuova tabella con:
 
 \begin{code}
 $this->dbforge->create_table('table_name');

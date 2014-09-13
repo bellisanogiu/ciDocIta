@@ -3,15 +3,12 @@
 \label{class:xml}
 %************************************************
 
-Le classi XML-RPC di CodeIgniter permettono di inviare richieste ad un altro server, o impostare il proprio server XML-RPC per ricevere le richieste.
+Le classi XML-RPC di CodeIgniter vengono utilizzate per inviare richieste ad un altro server, o impostare il proprio server XML-RPC per ricevere le richieste.
 
 \section*{Introduzione a XML-RPC}
-
 Molto semplicemente è un modo per due computer di comunicare su Internet utilizzando \ac{XML}. Un computer, che chiameremo client, invia una richiesta XML-RPC ad un altro computer, che chiameremo server. Una volta che il server riceve ed elabora la richiesta invierà una risposta al client.
 
-Ad esempio, utilizzando l'API MetaWeblog, un client XML-RPC (di solito uno strumento di desktop publishing), invierà una richiesta a un server XML-RPC in esecuzione sul proprio sito. Questa richiesta potrebbe essere una nuova voce blog inviata per relativa pubblicazione, o potrebbe essere la richiesta di una voce esistente per la sua modifica. Quando il server XML-RPC riceve questa richiesta, la esaminerà per determinare quale classe/metodo si deve richiamare per elaborare la richiesta. Una volta elaborata, il server invierà indietro un messaggio di risposta.
-
-Per le specifiche dettagliate, si visiti il sito XML-RPC: \url{http://xmlrpc.scripting.com/}.
+Ad esempio, utilizzando l'API MetaWeblog, un client XML-RPC (di solito uno strumento di desktop publishing), invierà una richiesta a un server XML-RPC in esecuzione sul proprio sito. Questa richiesta potrebbe essere una nuova voce blog inviata per relativa pubblicazione, o potrebbe essere la richiesta di una voce esistente per la sua modifica. Quando il server XML-RPC riceve questa richiesta, la esaminerà per determinare quale classe/metodo si deve richiamare per elaborare la richiesta. Una volta elaborata, il server invierà indietro un messaggio di risposta. Per le specifiche dettagliate, si visiti il sito XML-RPC: \url{http://xmlrpc.scripting.com/}.
 
 Le classi XML-RPC e XML-RPC vengono inizializzate nel proprio controller utilizzando la funzione \var{\$this->load->library}. La classe XML-RPC è caricata con la seguente istruzione:
 
@@ -19,7 +16,7 @@ Le classi XML-RPC e XML-RPC vengono inizializzate nel proprio controller utilizz
 $this->load->library('xmlrpc');
 \end{code}
 
-Una volta caricata, la libreria oggetto sarà disponibile usando: \var{\$this->xmlrpc}.
+Una volta caricata, la libreria oggetto sarà disponibile usando: \var{\$this->xmlrpc}. 
 
 Per caricare la classe XML-RPC Server si utilizzerà:
 
@@ -31,7 +28,6 @@ $this->load->library('xmlrpcs');
 Anche questa classe, una volta caricata, fornirà una libreria oggetto utilizzabile con \var{\$this->xmlrpcs}. Quando si usa la classe XML-RPC Server è necessario caricare ambedue le classi XML-RPC e XML-RPC Server.
 
 \section*{Request XML-RPC}
-
 Per inviare una richiesta ad un server XML-RPC si devono specificare le seguenti informazioni:
 
 \begin{itemize}
@@ -58,14 +54,10 @@ if ( ! $this->xmlrpc->send_request())
 \end{code}
 
 \subsection*{Spiegazione}
-
-Il codice di qui sopra inizializza la classe XML-RPC, imposta l'URL del server e il metodo da chiamare (weblogUpdates.ping). La richiesta (in questo caso, il titolo e l'URL del sito) viene inserita in un array per il trasporto, e compilata utilizzando la funzione \var{request()}. Infine, la richiesta completa viene inviata. Se il metodo \verb|send_request()| restituisce FALSE si potrà visualizzare il messaggio di errore restituito dal server XML-RPC.
+Il codice di qui sopra inizializza la classe XML-RPC, imposta l'\ac{URL} del server e il metodo da chiamare (weblogUpdates.ping). La richiesta (in questo caso il titolo e l'URL del sito) viene inserita in un array per il trasporto, e compilata utilizzando la funzione \var{request()}. Infine, la richiesta completa viene inviata. Se il metodo \verb|send_request()| restituisce FALSE si potrà visualizzare il messaggio di errore restituito dal server XML-RPC.
 
 \section*{Anatomia di un Request}
-
-Una richiesta XML-RPC è semplicemente il dato che si sta inviando al server XML-RPC. Ogni pezzo di informazione in una richiesta è riferito ad un parametro request. L'esempio di qui sopra ha due parametri: l'indirizzo e il titolo del sito. Quando il server XML-RPC riceve la richiesta, cercherà i parametri di cui ha bisogno.
-
-I parametri request devono essere collocati in un array per il trasporto, e ogni parametro può essere uno tra i sette tipi di dati consentiti (stringhe, numeri, date, ecc.). Se i parametri sono qualcosa di diverso dalle stringhe, si dovrà includere il tipo di dati nell'array request.
+Una richiesta XML-RPC è semplicemente il dato che si sta inviando al server XML-RPC. Ogni pezzo di informazione in una richiesta è riferito ad un parametro request. L'esempio di qui sopra ha due parametri: l'indirizzo e il titolo del sito. Quando il server XML-RPC riceve la richiesta, cercherà i parametri di cui ha bisogno. I parametri request devono essere collocati in un array per il trasporto, e ogni parametro può essere uno tra i sette tipi di dati consentiti (stringhe, numeri, date, ecc.). Se i parametri sono qualcosa di diverso dalle stringhe, si dovrà includere il tipo di dati nell'array request.
 
 Questo è un esempio di un semplice array con tre parametri:
 
@@ -89,10 +81,7 @@ $this->xmlrpc->request($request);
 La sezione dei Dati Type seguente presenta una lista di tutti i tipi di dati.
 
 \section*{Creare un server XML-RPC}
-
-Un server XML-RPC agisce come un vigile urbano: attende le richieste in arrivo e le redirige verso le funzioni appropriate per l'elaborazione.
-
-Per creare il proprio server XML-RPC è necessario inizializzare la classe XML-RPC Server nel proprio controller in cui si prevede arriveranno le request. Quindi, si deve creare un array con le istruzioni che permettono alle request in ingresso di essere inviate alla classe e al metodo appropriato per l'elaborazione.
+Un server XML-RPC agisce come un vigile urbano: attende le richieste in arrivo e le redirige verso le funzioni appropriate per l'elaborazione. Per creare il proprio server XML-RPC è necessario inizializzare la classe XML-RPC Server nel proprio controller in cui si prevede arriveranno le request. Quindi, si deve creare un array con le istruzioni che permettono alle request in ingresso di essere inviate alla classe e al metodo appropriato per l'elaborazione.
 
 Ecco un esempio:
 
@@ -119,10 +108,7 @@ I nomi delle funzioni nell'esempio di cui sopra sono arbitrari: si potrà decide
 Ci sono due chiavi di configurazione aggiuntive che si possono utilizzare quando si inizializza la classe di server: \var{debug} può essere impostata su TRUE per attivare il debug, e\verb| xss_clean| può essere impostata su FALSE per evitare l'invio di dati attraverso la funzione \verb|xss_clean| della library Security.
 
 \section*{Elaborare le Request Server}
-
-Quando il server XML-RPC riceve un request e carica la classe/metodo per l'elaborazione, esso passerà un oggetto a tale metodo contenente i dati inviati dal client.
-
-Utilizzando l'esempio precedente, se viene richiesto il metodo \verb|new_post|, il server si aspetterà una classe come in questo prototipo:
+Quando il server XML-RPC riceve un request e carica la classe/metodo per l'elaborazione, esso passerà un oggetto a tale metodo contenente i dati inviati dal client. Utilizzando l'esempio precedente, se viene richiesto il metodo \verb|new_post|, il server si aspetterà una classe come in questo prototipo:
 
 \begin{code}
 class My_blog extends CI_Controller {
@@ -134,9 +120,7 @@ class My_blog extends CI_Controller {
 }
 \end{code}
 
-La variabile \var{\$request} è un oggetto compilato dal Server, che contiene i dati inviati dal Client XML-RPC. Utilizzando questo oggetto si avrà accesso ai parametri request che permettono di elaborare la richiesta. Alla fine verrà inviato una Response al client.
-
-Qui di seguito è presentato un esempio reale, utilizzando l'API di Blogger. Uno dei metodi della API di Blogger è \var{getUserInfo(}: usando questo metodo, un Client XML-RPC può inviare al server un nome utente e una password per poi ricevere in cambio informazioni su quel particolare utente (nick, ID utente, indirizzo email, ecc.).
+La variabile \var{\$request} è un oggetto compilato dal Server, che contiene i dati inviati dal Client XML-RPC. Utilizzando questo oggetto si avrà accesso ai parametri request che permettono di elaborare la richiesta. Alla fine verrà inviato una Response al client. Qui di seguito è presentato un esempio reale, utilizzando l'API di Blogger. Uno dei metodi della API di Blogger è \var{getUserInfo(}: usando questo metodo, un Client XML-RPC può inviare al server un nome utente e una password per poi ricevere in cambio informazioni su quel particolare utente (nick, ID utente, indirizzo email, ecc.).
 
 \begin{code}
 class My_blog extends CI_Controller {
@@ -176,7 +160,6 @@ Se il nome utente e la password inviati dal client non sono validi, un messaggio
 Se l'operazione ha avuto successo, il client farà tornare indietro un array di risposta contenente le informazioni dell'utente.
 
 \section*{Formattare un Response}
-
 Come avviene per le Request, anche le Response devono essere formattate come un array. Tuttavia, a differenza delle request, un response è un array che contiene un singolo elemento che può essere un array con ulteriori array al suo interno, anche se può esserci solo un indice di array primario. In altre parole, il prototipo di base è questo:
 
 \begin{code}
@@ -200,7 +183,6 @@ $response = array (
 Si noti che l'array di cui sopra viene formattato come una struct (struttura). Questo è il tipo più comune di dati per le response. Come con le Request, una response può essere uno dei sette tipi di dati elencati nella sezione Data Type.
 
 \section*{Inviare un Error Response}
-
 Se è necessario inviare al client un error response si userà la seguente istruzione:
 
 \begin{code}
@@ -210,11 +192,9 @@ return $this->xmlrpc->send_error_message('123', 'Requested data not available');
 Il primo parametro è il numero di errore, mentre il secondo è la stringa contenente il messaggio di errore.
 
 \section*{Creare il proprio Client e Server}
-
 Per aiutare a comprendere tutto quello che abbiamo visto finora, si creino un paio di controller che agiscano come client XML-RPC e server. In questo modo si potrà utilizzare il client per inviare una richiesta al server e ricevere una risposta. 
 
 \section*{Il Client}
-
 Utilizzando un editor di testo, si crei un controller chiamato \verb|xmlrpc_client.php|. In esso si inserisca questo codice e lo si salvi nella cartella \sys{/applications/controllers/}:
 
 \begin{code}
@@ -289,7 +269,6 @@ class Xmlrpc_server extends CI_Controller {
 \end{code}
 
 \section*{Siamo pronti!}
-
 Ora, si inserisca l'URL del proprio sito:
 
 \begin{code}
@@ -333,7 +312,6 @@ $size = $parameters['1']['shape'];
 \end{code}
 
 \section*{Reference delle funzioni XML-RPC}
-
 \begin{itemize}
 \item \verb|$this->xmlrpc->server()| imposta l'URL e il numero della posta del server a cui il request deve essere inviato:
 

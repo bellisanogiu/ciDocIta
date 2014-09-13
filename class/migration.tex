@@ -3,9 +3,7 @@
 \label{class:migration}
 %************************************************
 
-Le migrazioni rappresentano un modo conveniente per modificare il database in modo strutturato e organizzato. Si può sempre modificare il codice SQL a mano, ovviamente ma questo comporta vari compiti poco gratificanti, come dover spiegare le modiche introdotte a tutti gli sviluppatori che utilizzeranno il nostro progetto. Si dovrà anche tenere traccia di quali modifiche sono necessarie per far funzionare le macchine di produzione, la prossima volta che si distribuirà il proprio software.
-
-La tabella del database di migrazione tiene traccia di ciò che è stato già eseguito, quindi tutto quello che si dovrà fare è aggiornare i file dell'applicazione e richiamare la funzione \verb|$this->migrate->current()| per capire quale migrazione dovrebbe essere eseguita. La versione attuale si trova nel file \fil{/config/migration.php}.
+Le migrazioni rappresentano un modo conveniente per modificare il database in modo strutturato e organizzato. Si può sempre modificare il codice SQL a mano ovviamente, ma questo comporta vari compiti poco gratificanti, come il dover spiegare le modiche introdotte a tutti gli sviluppatori che utilizzeranno il nostro progetto. Si dovrà inoltre tenere traccia di quali modifiche sono necessarie per far funzionare le macchine di produzione, la prossima volta che si distribuirà il proprio software. La tabella del database di migrazione tiene traccia di ciò che è stato già eseguito, quindi tutto quello che si dovrà fare è aggiornare i file dell'applicazione e richiamare la funzione \verb|$this->migrate->current()| per capire quale migrazione dovrebbe essere eseguita. La versione attuale si trova nel file \fil{/config/migration.php}.
 
 \section*{Creare una Migration}
 Per comprendere meglio il funzionamento della classe, effettueremo una prima migrazione per un nuovo sito costituito da un blog. Tutte le migrazioni si trovano nella cartella \sys{/application/migrations/} e sono caratterizzate da un nome come \verb|001_add_blog.php|.
@@ -65,8 +63,8 @@ if ( ! $this->migration->current())
 
 \begin{itemize}
 \item \verb|$this->migration->current()| la migrazione attuale è quella impostata in \verb|$config['migration_version']| nel file \fil{application/config/migration.php}
-\item \verb|$this->migration->latest()| il funzionamento è più o meno simile a quello della funzione \var{current()}, ma invece di cercare \verb|$config['migration_version']| la classe Migration utilizzerà quella più recente presente nel filesystem.
-\item \verb|$this->migration->version()| la versione utilizzata per il rollback delle modifiche. Funziona proprio come la funzione \var{current()}, ma ignora il parametro \verb|$config['migration_version']|.
+\item \verb|$this->migration->latest()| il funzionamento è più o meno simile a quello della funzione \var{current()}, ma invece di cercare \verb|$config['migration_version']| la classe Migration utilizzerà quella più recente presente nel filesystem
+\item \verb|$this->migration->version()| la versione utilizzata per il rollback delle modifiche. Funziona proprio come la funzione \var{current()}, ma ignora il parametro \verb|$config['migration_version']|
 \end{itemize}
 
 \section*{Preferenze}

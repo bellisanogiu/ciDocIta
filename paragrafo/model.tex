@@ -244,7 +244,7 @@ $route['(:any)'] = 'pages/view/$1';
 $route['default_controller'] = 'pages/view';
 \end{code}
 
-\begin{deftab}{Commentare il codice}{Quando si deve modificare del codice di cui non si è sicuri se potrà essere utile o meno in futuro, è consigliabile commentare le righe che lo contengono, piuttosto che cancellarle. In questo modo, sarà sempre possibile rispristinare la precedente situazione semplicemente eliminando i simboli di commento che in \ac{PHP} sono rappresentati da ``//''}
+\begin{deftab}{Commentare il codice}{Quando si deve modificare del codice di cui non si è sicuri se potrà essere utile o meno in futuro, è consigliabile commentare le righe che lo contengono, piuttosto che cancellarle. In questo modo sarà sempre possibile rispristinare la precedente situazione semplicemente eliminando i simboli di commento che in \ac{PHP} sono rappresentati da ``//''}
 \end{deftab}
 
 Si scriva nel browser l'indirizzo del controller e si ammiri il risultato ottenuto:
@@ -280,7 +280,7 @@ Ecco il codice \ac{PHP} e \ac{HTML}:
 </form>
 \end{code}
 
-Probabilmente sono due gli elementi che appaiono poco familiari. Il metodo \verb|form_open()| e \verb|validation_errors()|. Per il momento sappiate che il primo è un Helper che visualizza i campi del form e aggiunge funzionalità come un ``CSRF prevention field nascosto'' (si veda il capitolo\vref{sec:helperplugin}). Il secondo è utilizzato per visualizzare eventuali errori nell'inserimento di input anomali.
+Probabilmente sono due gli elementi che appaiono poco familiari. Il metodo \verb|form_open()| e \verb|validation_errors()|. Per il momento sappiate che il primo è un Helper che visualizza i campi del form e aggiunge funzionalità come un ``CSRF prevention field nascosto''. Il secondo è utilizzato per visualizzare eventuali errori nell'inserimento di input anomali.
 
 \begin{deftab}{Validazione}{La validazione dei form è generalmente basato sulle Regex. Il loro scopo è comprendere e se i dati inseriti sono formalmente corretti. Per esempio un form genererà un errore se l'utente inserisce una email priva del caratteristico e assolutamente immancabile simbolo @}
 \end{deftab}
@@ -321,7 +321,7 @@ Le regole per la validazione del form vengono esplicitate tramite \verb|set_rule
 
 Che si può interpretare come: ``se la condizione per la validazione dell'input non verrà superata, il programma caricherà nuovamente la pagina'' (mediante le Viste che seguono). In caso contrario (istruzione condizionale \var{else}) verrà caricato il Modello e sarà memorizzata la notizia (\verb|set_news()|) nel database. Infine una nuova pagina confermerà il buon esito dell'operazione \var{view('success')}.
 
-Questo è solo un esempio della potenza messa a disposizione da CodeIgniter tramite la libreria di validazione. Maggiori informazioni sono disponibili al capitolo che tratta in dettaglio l'argomento \vpageref{class:formvalidation}).
+Questo è solo un esempio della potenza messa a disposizione da CodeIgniter tramite la libreria di validazione. Maggiori informazioni sono disponibili al capitolo che tratta in dettaglio l'argomento \vpageref{class:formvalidation}.
 
 Definiamo ora una nuova Vista \fil{successo.php} nel percorso \sys{/application/view/news/} e scriviamo un confortante messaggio con il seguente codice:
 
@@ -349,7 +349,7 @@ public function set_news()
 }
 \end{code}
 
-Questo nuovo metodo provvede a memorizzare correttamente i dati nel database: analizziamolo nel dettaglio. La terza linea contiene un nuova funzione \verb|url_title()| (fornita dall'Helper URL \pageref{helper:url)} che sostituisce tutti gli spazi della stringa inserita come argomento con dei simboli ``dash'' (-) e nel contempo, rende minuscolo ogni carattere della stringa. Questa è una funzione utilissima per creare degli \ac{URI} corretti partendo da una stringa. Il risultato di questa funzione sarà assegnato alla variabile \verb|$slug|: ecco così creato un indice automatizzato. Per evitare ambiguità ci si aspetta però che i titoli delle notizie siano tutti differenti.
+Questo nuovo metodo provvede a memorizzare correttamente i dati nel database: analizziamolo nel dettaglio. La terza linea contiene un nuova funzione \verb|url_title()| fornita dall'Helper URL (si veda \vpageref{helper:url}) che sostituisce tutti gli spazi della stringa inserita come argomento con dei simboli ``dash'' (-) e nel contempo, rende minuscolo ogni carattere della stringa. Questa è una funzione utilissima per creare degli \ac{URI} corretti partendo da una stringa. Il risultato di questa funzione sarà assegnato alla variabile \verb|$slug|: ecco così creato un indice automatizzato. Per evitare ambiguità ci si aspetta però che i titoli delle notizie siano tutti differenti.
 
 Attraverso l'istruzione \verb|$this->input->post| il titolo e il testo della notizia vengono memorizzati preventivamente nell'array \verb|$data|. Il metodo \var{post()} è fornito dalla Libreria input che svolge anche una funzione importante: rende sicuri i dati evitando che codice malevole possa essere memorizzato e richiamato come input di dati. La libreria input è, proprio per il suo importante compito, caricata automaticamente dal framework. Alla fine tutti i campi dell'array \verb|$data| saranno inseriti correttamente nel database con l'istruzione \verb|db->insert();|
 
@@ -375,7 +375,7 @@ http://127.0.0.1/codeigniter/index.php/news/creanews
 Quando un Modello viene caricato, questo non permette una connessione automatica al proprio database, come già rimarcato in precedenza. Esistono tre possibili opzioni, che per completezza elenchiamo:
 
 \begin{enumerate}
-\item \'E possibile collegarsi usando i metodi standard forniti dalla classe del Controller o da quella del Modello (si veda i metodi standard\vref{sec:metodidb})
+\item \'E possibile collegarsi usando i metodi standard forniti dalla classe del Controller o da quella del Modello (si veda la sezione \vpageref{class:dbconnection})
 \item Si può richiamare il metodo che carica automaticamente il modello con un argomento booleano TRUE. In questo modo, si recuperanno i dati di accesso al database da \sys{/application/config/config.php}
 
 \verb|$this->load->model('Nome_modello', '', TRUE);|
@@ -397,6 +397,6 @@ $this->load->model('Nome_modello', '', $config);
 \end{enumerate}
 
 \section{Riepilogo}
-Congratulazioni, si è realizzata la prima applicazione con CodeIgniter sfruttando il patter \ac{MVC}, utilizzando il Controller, la View e interfacciandosi con un database grazie al Model. Nonostante l'utilizzo di un database sia opzionale, la semplicità con cui può essere implementato e gli innumerevoli vantaggi che ne derivano dall'adozione lo rendono una scelta presente nella maggior parte dei progetti. Facilità di accesso ai dati, gestione semplificata e soprattutto la loro riusabilità in diversi contesti, fanno sì che l'accoppiata Model/database vengano utilizzati anche in semplici progetti. Si è potuto dare un primo sguardo agli Helper e alle Librerie apprezzando la loro utilità e soprattutto la loro potenza in fatto di sicurezza e validazione dei dati. Anche la sintassi degli \ac{URI} utilizzata nel framework dovrebbe essere ormai più familiare.
+Congratulazioni, è stata realizzata la prima applicazione con CodeIgniter sfruttando il patter \ac{MVC}, utilizzando il Controller, la View e interfacciandosi con un database grazie al Model. Nonostante l'utilizzo di un database sia opzionale, la semplicità con cui può essere implementato e gli innumerevoli vantaggi che ne derivano dall'adozione lo rendono una scelta presente nella maggior parte dei progetti. Facilità di accesso ai dati, gestione semplificata e soprattutto la loro riusabilità in diversi contesti, fanno sì che l'accoppiata Model/database vengano utilizzati anche in semplici progetti. Si è potuto dare un primo sguardo agli Helper e alle Librerie apprezzando la loro utilità e soprattutto la loro potenza in fatto di sicurezza e validazione dei dati. Anche la sintassi degli \ac{URI} utilizzata nel framework dovrebbe essere ormai più familiare.
 
 Sono state scalfite solo alcune potenzialità di CodeIgniter e non ci si disperi se alcuni aspetti sono ancora poco chiari. Nei prossimi capitoli ritorneremo con maggiori dettagli su molte nozioni sin qui introdotte.

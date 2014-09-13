@@ -6,7 +6,7 @@
 La sicurezza è uno degli argomenti più importanti e spesso sottovalutati nello sviluppo di un progetto. Per fortuna CodeIgniter mette a disposizione una ricca serie di funzioni che aiutano a curare questo aspetto.
 
 \begin{itemize}
-\item Sicurezza negli URI: per minimizzare gli attacchi dovuti a codice malevole inviato al sito web, CodeIgniter è molto restrittivo sul tipo di caratteri che possono essere inclusi nelle stringhe.
+\item Sicurezza negli URI: per minimizzare gli attacchi dovuti a codice malevole inviato al sito web, CodeIgniter è molto restrittivo sul tipo di caratteri che possono essere inclusi negli URI: questi di seguito sono gli unici caratteri permessi:
 
 \begin{itemize}
 \item testo alfanumerico
@@ -19,7 +19,7 @@ La sicurezza è uno degli argomenti più importanti e spesso sottovalutati nello
 
 \item \verb|Register_globals| durante l'inizializzazione del sistema tutte le variabili globali non sono impostate, eccetto quelle contenute negli array \verb|$_GET|, \verb|$_POST| e \verb|$_COOKIE|. Le routine non impostate sono le stesse di \verb|register_globals = off|
 
-\item \verb|error_reporting| nell'ambiente di produzione, è consigliato disabilitare la visualizzazione di qualsiasi tipo di errore o avviso \ac{PHP}, impostando su 0 il flag interno  \verb|error_reporting|. \'E importante limitare la visualizzazione di informazioni sensibili, in quanto queste potrebbero essere sfruttate per minare la sicurezza del progetto. Questo aspetto può essere gestito tramite CodeIgniter modificando il file fil{index.php} nella sezione ``application enviroment'' e inserendo uno dei tre valori:
+\item \verb|error_reporting| nell'ambiente di produzione è consigliato disabilitare la visualizzazione di qualsiasi tipo di errore o avviso del \ac{PHP}, impostando su 0 il flag interno  \verb|error_reporting|. \'E importante limitare la visualizzazione di informazioni sensibili, poiché queste potrebbero essere sfruttate per minare la sicurezza del progetto. Questo aspetto può essere gestito tramite CodeIgniter modificando il file fil{index.php} nella sezione ``application enviroment'' e inserendo uno dei tre valori:
 
 \begin{description}
 \item [development] Ambiente di sviluppo. Tutti gli errori e avvisi sono abilitati
@@ -27,16 +27,16 @@ La sicurezza è uno degli argomenti più importanti e spesso sottovalutati nello
 \item [production] Ambiente di produzione. Tutti gli errori e avvisi sono disabilitati
 \end{description}
 
-\item \verb|magic_quotes_runtime| la direttiva \verb|magic_quotes_runtime| durante l'inizializzazione del sistema è impostata su ``off'' in modo da non dover rimuovere il carattere ``slash'' quando si recuperano i valori dal database.
+\item \verb|magic_quotes_runtime| la direttiva \verb|magic_quotes_runtime| durante l'inizializzazione del sistema è impostata su ``off'' in modo da non dover rimuovere il carattere ``slash'' quando si recuperano i dati dalla base di dati.
 \end{itemize}
 
 \section*{Best practice}
 Una raccolta di buone abitudine condivise dagli sviluppatori prende il nome di ``best practice''. Prima di accettare qualsiasi tipo di dati nella propria applicazione, sia che si tratti di dati di tipo POST presi da un form, cookie, URI, XML-RPC, o anche array SERVER, è sempre una buona prassi rispettare nell'ordine queste tre regole:
 
 \begin{enumerate}
-\item Non fidarsi. Filtrare i dati come se fossero sempre pericolosi
+\item Non fidarsi. \'E buon norma filtrare i dati come se fossero sempre pericolosi
 \item Convalidare i dati per assicurarsi che essi rispettino i parametri originariamente impostati come il tipo corretto, la lunghezza, le dimensioni, ecc (a volte questo punto può sostituire quello precedente)
-\item Effettuare sempre l'escape dei dati prima di inviarli al database. Con l'escape dei dati si intende la sostituzione dei caratteri speciali per evitare che il nostro database possa eseguire codice malevolo, invece di semplici dati.
+\item Effettuare sempre l'escape dei dati prima di inviarli al database. Con l'escape dei dati si intende la sostituzione dei caratteri speciali per evitare che il nostro database possa eseguire codice malevolo, invece di semplici dati
 \end{enumerate}
 
 CodeIgniter fornisce le seguenti funzioni per assistere lo sviluppatore nella sicurezza del proprio software:
@@ -44,7 +44,7 @@ CodeIgniter fornisce le seguenti funzioni per assistere lo sviluppatore nella si
 \begin{description}
 \item[Filtro XSS] CodeIgniter è dotato di un filtro Cross Site Scripting che esamina le tecniche comunemente utilizzate per inserire codice Javascript dannoso o simili che tentano di dirottare i cookie 
 \item[Validazione dei dati] Il framework fornisce diversi strumenti che analizzano la conformità dei dati inseriti agli standard attesi
-\item[Escape dei dati] Prima di inviare i dati ottenuti dall'esterno, per esempio tramite un form, è sempre una buona prassi effettuare l'escape dei caratteri nelle query
+\item[Escape dei dati] Prima di inviare alla base di dati i valori ottenuti dall'esterno, per esempio tramite un form, è sempre una buona prassi effettuare l'escape dei caratteri
 \end{description}
 
 \section*{Gestione degli errori}
@@ -53,15 +53,13 @@ Il framework CodeIgniter è ricco di funzioni native per la gestione gli errori 
 CodeIgniter mette a disposizione una classe per il logging degli errori che consente il salvataggio delle notifiche di errore e i messaggi prodotti dal debugging all'interno di un comodo file di testo. Per impostazione predefinita, gli errori prodotti dalle applicazioni vengono sempre mostrati: questa scelta può essere modificata passando il valore ``0'' (zero) alla funzione \verb|error_reporting()| posizionata all'inizio del file \fil{index.php}. In tutti i casi, disabilitare la visualizzazione degli errori non impedirà la scrittura degli stessi all'interno dei file di log. Le funzioni disponibili per la gestione degli errori sono le seguenti:
 
 \begin{itemize}
-\item \verb|show_error('messaggio' [, int $status_code= 500 ])| si tratta di una funzione che ha il compito di permettere la visualizzazione degli errori attraverso un template che si trova al percorso:
-
-\item \verb|application/errors/error_general.php|
+\item \verb|show_error('messaggio' [, int $status_code= 500 ])| si tratta di una funzione che visualizza gli errori attraverso un template che si trova al percorso: \verb|application/errors/error_general.php|
 
 Il parametro \verb|$status_code| non è obbligatorio, ma può essere utilizzato per determinare lo status \ac{HTTP} che verrà associato all'errore inviato al browser.
 
 \verb|show_404('pagina')| è una funzione che presiede alla visualizzazione del messaggio di errore corrispondente allo status 404 (``Not Found''); la tipologia di notifica è stabilita attraverso un template che si trova nel percorso: \verb|application/errors/error_404.php|. La funzione produce la notifica di un errore nel caso in cui non sia visualizzabile la pagina che le viene passata come argomento; il framework è comunque impostato per restituire un messaggio di errore 404 nel caso in cui il tentativo di caricamento di un Controller non abbia successo.
 
-\item \verb|log_message('livello', 'messaggio')| si tratta di una funzione che permette di scrivere dei messaggi all'interno dei log degli errori; la voce livello prevista come parametro, serve per indicare il tipo di notifica che si desidera scrivere e, a questo scopo, sono previsti tre livelli: debug, error e info. Il seguente esempio chiarirà le differenze tra i tre livelli previsti anche attraverso i commenti:
+\item \verb|log_message('livello', 'messaggio')| è una funzione che permette di scrivere dei messaggi all'interno dei log degli errori; la voce livello prevista come parametro, serve per indicare il tipo di notifica che si desidera scrivere e, a questo scopo, sono previsti tre livelli: debug, error e info. Il seguente esempio chiarirà le differenze tra i tre livelli previsti anche attraverso i commenti:
 
 \begin{code}
 // Livelli per la notifica degli errori
@@ -83,11 +81,11 @@ log_message('info', 'Errore relativo ad una variabile.');
 
 \end{itemize}
 
-CodeIgniter è stato sviluppato anche con un occhio attento alla sicurezza. Per esempio si dimostra altamente restrittivo nei confronti dei caratteri utilizzabili per la generazione degli \ac{URI}, in questo caso infatti è permesso utilizzare nelle stringhe soltanto i caratteri: tilde, punto fermo, due punti, underscore, dash o trattino nonché, naturalmente, i comuni caratteri alfanumerici.
+CodeIgniter è stato sviluppato con un occhio attento alla sicurezza. Per esempio si dimostra altamente restrittivo nei confronti dei caratteri utilizzabili per la generazione degli \ac{URI}; in questo caso infatti è permesso utilizzare nelle stringhe soltanto i caratteri: tilde, punto, due punti, underscore, dash (trattino) nonché, naturalmente, i comuni caratteri alfanumerici.
 
-Per quanto riguarda i dati inviati per metodo, è importante sottolineare che \var{GET} viene automaticamente disabilitato quando si utilizzano le \ac{URL} segmentate al posto di quelle basate sulle query string; ciò avviene perché CodeIgniter impedisce, già in fase di inizializzazione, la generazione dell'array globale \verb|_GET|; ciò non avviene per quanto riguarda le globali \verb|$_POST| e \verb|$_COOKIE| e in pratica si può dire che il trattamento dei parametri di input da parte del framework simuli del tutto una configurazione di \ac{PHP} con direttiva \verb|register_globals| impostata su OFF.
+Per quanto riguarda i dati inviati per metodo, è importante sottolineare che \var{GET} viene automaticamente disabilitato quando si utilizzano le \ac{URL} segmentate al posto di quelle basate sulle query string; ciò avviene perché CodeIgniter impedisce, già in fase di inizializzazione, la generazione dell'array globale \verb|_GET|; ciò non avviene per \verb|$_POST| e \verb|$_COOKIE|. In pratica si può dire che il trattamento dei parametri di input da parte del framework, simuli del tutto una configurazione di \ac{PHP} con direttiva \verb|register_globals| impostata su OFF.
 
-CodeIgniter è fornito di un filtro nativo contro gli attacchi di tipo \ac{XSS}: esso impedisce in numerosi casi che nelle pagine di un sito venga eseguito del codice Javascript malevolo, ed inoltre blocca i tentativi di hijacking dei cookie. Per utilizzare questo filtro è sufficiente una semplice chiamata:
+CodeIgniter è fornito di un filtro nativo contro gli attacchi di tipo \ac{XSS} che impedisce in numerosi casi che nelle pagine di un sito venga eseguito del codice Javascript malevolo, ed inoltre blocca i tentativi di hijacking dei cookie. Per utilizzare questo filtro è sufficiente una semplice chiamata:
 
 \begin{code}
 // Utilizzo del filtro contro gli XSS
@@ -99,9 +97,9 @@ application/config/config.php
 \end{code}
 
 \section*{Introduzione ad .htaccess}
-Chi ha avuto modo di amministrare un sito web, prima o poi ha avuto prima a che fare con il file \fil{.htaccess}. Si tratta di un comune file dalla grande importanza perché permette di personalizzare le impostazioni globali di accesso del server. Il percorso a cui è disponibile è la directory root del progetto web, ma esso può trovarsi anche in sottodirectory di cui si vuole personalizzare l'accesso.
+Chi ha avuto modo di amministrare un sito web, prima o poi ha avuto prima a che fare con il file \fil{.htaccess}. Si tratta di un comune file dalla grande importanza perché permette di personalizzare le impostazioni globali di accesso del server. Esso è accessibile nella directory root del progetto web, ma può trovarsi anche in sottodirectory di cui si vuole personalizzare l'accesso.
 
-Le sue funzioni sono innumerevoli e di cruciale importanza nell'ambito della sicurezza. \'E infatti possibile bloccare l'accesso al sito da parte di intere nazioni, numeri ip, definire le pagine di errore o semplicemente gestire l'accesso alle cartelle o ai file secondo determinati criteri. La configurazione del file .htaccess permette in pratica di gestire le richieste in entrata con precisione e con precedenza su qualsiasi altra impostazione definita da altri software, tra cui il framework CodeIgniter.
+Le sue funzioni sono innumerevoli e di cruciale importanza nell'ambito della sicurezza. \'E infatti possibile bloccare l'accesso al sito da parte di intere nazioni, numeri IP, definire le pagine di errore o semplicemente gestire l'accesso alle cartelle o ai file secondo determinati criteri. La configurazione del file .htaccess permette in pratica di gestire le richieste in entrata con precisione e con precedenza su qualsiasi altra impostazione definita da altri software, tra cui il framework CodeIgniter.
 
 \section*{Configurare i permessi in entrata}
 In CodeIgniter, il file \fil{.htaccess} si trova nella directory \sys{application/} e \sys{system/} e non può essere individuato tramite il comando da terminale \textit{ls} (il punto che precede il nome file ha proprio la funzione di nascondere un file/cartella). Si scriva pertanto in una delle due cartelle sopra menzionate il comando bash seguente:
@@ -117,7 +115,7 @@ Il quale possiede due argomenti dopo il simbolo del - (trattino):
 \item ``l'' semplicemente visualizza la lista in maniera più ordinata
 \end{itemize}
 
-Ora che si è soddisfatta questa curiosità, si possono anche modificare i parametri interni (in realtà non è necessario vedere il file per aprirlo e quindi modificarlo). Si apra il file con uno dei comandi seguenti a seconda dell'editor di testo  preferito prestando attenzione ad avere i permessi da superuser:
+Ora che si è soddisfatta questa curiosità, si possono anche modificare i parametri interni (in realtà non è necessario vedere il file per aprirlo e quindi modificarlo). Si apra il file con uno dei comandi seguenti a seconda dell'editor di testo preferito, prestando attenzione ad avere i permessi di superuser:
 
 \begin{itemize}
 \item vi .htaccess
@@ -127,17 +125,17 @@ Ora che si è soddisfatta questa curiosità, si possono anche modificare i param
 CodeIgniter mostrerà la stringa ``Deny from all'' che significa accesso negato per chiunque in entrata.
 
 \section*{Bloccare gli indirizzi}
-\'E possibile bloccare un solo indirizzo ip o anche un intervallo definito. Il seguente codice commentato è autoesplicativo:
+\'E possibile bloccare un solo indirizzo IP o anche un intervallo definito. Il seguente codice commentato è autoesplicativo:
 
 \begin{code}
 order allow,deny
-deny from 1.2.3.4           # Bloccare un singolo IP
-deny from 1.2.3.            # Bloccare tutti IP da 1.2.3.0 a 1.2.3.255
+deny from 1.2.3.4           # Blocca un singolo IP
+deny from 1.2.3.            # Blocca tutti gli IP da 1.2.3.0 a 1.2.3.255
 allow from all
 \end{code}
 
 \section*{Pagina principale}
-Solitamente la prima pagina caricata è quella con nome ``index'' ed estensione ``.html''. \'E possibile modificare questa priorità, indicando al sistema quale pagina andrà inizialmente caricata:
+Solitamente la prima pagina che viene caricata è quella con nome ``index'' ed estensione ``.html''. \'E possibile modificare questa priorità, indicando al sistema quale pagina debba avere la priorità:
 
 \begin{code}
 DirectoryIndex NuovoFileIndex.html # Nuova pagina index
@@ -153,7 +151,7 @@ DirectoryIndex index1.html index2.html index3.html
 \'E possibile caricare il proprio sito rendendo obbligatorio o meno il prefisso \sys{www} utilizzando delle espressioni regolari.
 
 \begin{code}
-# Da non www a www
+# Da sito privo di www a sito con www
 Options +FollowSymlinks
 RewriteEngine on
 RewriteCond %{HTTP_HOST} ^miosito.it$ 
@@ -161,7 +159,7 @@ RewriteRule ^(.*)$ http://www.miosito.it/$1 [R=301,L]
 \end{code}
 
 \begin{code}
-# Da www a non www
+# Da sito con www a sito privo di www
 Options +FollowSymlinks
 RewriteEngine on
 RewriteCond %{HTTP_HOST} ^www.miosito.it$ 
@@ -169,13 +167,13 @@ RewriteRule ^(.*)$ http://miosito.it/$1 [R=301,L]
 \end{code}
 
 \section*{Reindirizzare un URL}
-Se il proprio sito è stato aggiornato per un restyling o è stato effettuata una migrazione di dominio, ci si può ritrovare nella spiacevole situazione in cui numerose richieste \ac{HTTP} generano un errore 404. Questo inconveniente può essere gestito attraverso il codice di stato ``Redirect 301 Moved Permanently''. Se gli errori di tipo 404 sono pochi, allora è consigliabile adottare una soluzione come quella mostrata nell'esempio:
+Se il proprio sito è stato aggiornato per un restyling oppure è stato effettuata una migrazione di dominio, ci si può ritrovare nella spiacevole situazione in cui numerose richieste \ac{HTTP} generano un errore 404. Questo inconveniente può essere gestito attraverso il codice di stato ``Redirect 301 Moved Permanently''. Se gli errori di tipo 404 sono pochi, allora è consigliabile adottare una soluzione come quella mostrata nell'esempio:
 
 \begin{code}
 Redirect 301 /vecchia-pagina.htm http://www.miosito.it/nuova-pagina.htm
 \end{code}
 
-Una soluzione migliore, anche se leggermente più complicata, prevede l'utilizzo del \verb|mod_rewrite| di Apache: attraverso le espressioni regolari è possibile creare o modificare gli indirizzi di un progetto per adattarli dinamicamente alle proprie esigenze. Il seguente esempio definisce una serie di regole che intercettano tutte le pagine con estensione ``.html'' ridefinendole con estensione ``.php''. Si tratta di una esigenza comune tra chi trasforma un sito statico in uno dinamico.
+Una soluzione migliore, anche se leggermente più complicata, prevede l'utilizzo del \verb|mod_rewrite| di Apache: attraverso le espressioni regolari è possibile creare o modificare gli indirizzi di un progetto per adattarli dinamicamente alle proprie esigenze. Il seguente esempio definisce una serie di regole che intercettano tutte le pagine con estensione ``.html'' ridefinendole con estensione ``.php''. Si tratta di una esigenza comune per chi trasforma un sito statico in uno dinamico.
 
 \begin{code}
 <ifModule mod_rewrite.c>
@@ -183,7 +181,7 @@ RewriteRule ^(.*).Html$ http://www.miosito.com/$1.php[R=301,NC]
 </ifModule>
 \end{code}
 
-Esempio di reindirizzamento di tutte quelle pagine che hanno all'interno dell'\ac{URL} una variabile uguale del tipo \verb|http://www.miosito.it?pagina=4|
+Esempio di reindirizzamento di tutte quelle pagine che hanno all'interno dell'\ac{URL} una variabile uguale del tipo: \verb|http://www.miosito.it?pagina=4|
 
 \begin{code}
 <ifModule mod_rewrite.c>
@@ -192,7 +190,7 @@ RewriteRule . http://www.miosito.it/nuova-pagina? [R=301,L]
 </ifModule>
 \end{code}
 
-Un altro esempio di utilizzo è dato dal sito che presenta un indirizzo del tipo:  
+Un altro esempio è fornito dal sito che presenta un indirizzo del tipo:  
 
 \begin{code}
 http://www.miosito.it/eventi.php?categoria=musica&id=4
@@ -213,4 +211,4 @@ RewriteRule ^categoria/([^/]*)/([^/]*)$ /eventi.php?categoria=$1&id=$2 [L]
 \end{code}
 
 \section*{Riepilogo}
-Mai commettere l'inprudenza di sottovalutare la sicurezza in un progetto web. Esistono molte best practice, funzioni per prevenire gli attacchi esterni, ma nonostante questo, solo lo stolto si sente al sicuro da qualsiasi malintenzionato. Come le cronache ci hanno ormai abituato, basta un piccolo bug in un modulo software, o in poche righe di codice per rendere accessibili i propri dati sensibili. Questo non significa che la sicurezza non sia un argomento fondamentale: tutt'altro! Adottando tutte le possibili precauzaioni e gli strumenti che CodeIgniter mette a disposizione si possono contrastare la maggior parte dei subdoli attacchi esterni: l'importante è mantenere un livello di guardia sempre alto e costante!
+Mai commettere l'imprudenza di sottovalutare la sicurezza in un progetto. Esistono molte best practice per prevenire gli attacchi esterni, ma nonostante questo solo lo stolto si sente al sicuro da qualsiasi malintenzionato. Come le cronache ci hanno ormai abituato, basta un piccolo bug in un modulo software o poche righe di codice mal scritte per rendere accessibili a chiunque i propri dati sensibili. Adottando tutte le possibili precauzioni e gli strumenti che CodeIgniter mette a disposizione si possono contrastare la maggior parte dei subdoli attacchi esterni: l'importante è mantenere un livello di guardia sempre alto e costante!

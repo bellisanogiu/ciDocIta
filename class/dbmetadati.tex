@@ -46,7 +46,7 @@ foreach ($fields as $field)
 }
 \end{code}
 
-\item \'E possibile raccogliere i nomi dei campi associati con qualsiasi query si stia eseguendo chiamando la funzione dall'oggetto risultato della query:
+\item I nomi dei campi associati ad una qualsiasi query che si sta eseguendo, possono essere raccolti chiamando la funzione dall'oggetto risultato della query:
 
 \begin{code}
 $query = $this->db->query('SELECT * FROM some_table'); 
@@ -67,7 +67,7 @@ if ($this->db->field_exists('field_name', 'table_name'))
 }
 \end{code}
 
-\item \verb|$this->db->field_data()| restituisce un array di oggetti che contiene informazioni sul campo selezionato come per esempio, il tipo di attributo, la lunghezza massima del campo, ecc. Questa funzione può non è disponibile in tutti i database:
+\item \verb|$this->db->field_data()| restituisce un array di oggetti che contiene informazioni sul campo selezionato come per esempio, il tipo di attributo, la lunghezza massima del campo, ecc. Questa funzione può non essere disponibile in tutti i database:
 
 \begin{code}
 $fields = $this->db->field_data('table_name');

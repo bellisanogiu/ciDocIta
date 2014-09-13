@@ -3,25 +3,25 @@
 \label{cap:cache}
 %************************************************
 
-Uno degli obiettivi primari che CodeIgniter si prefissa è quello di massimizzare le prestazioni attraverso una serie di operazioni. Una di queste, consente di memorizzare nella cache le pagine prodotte dal proprio progetto. Anche se CodeIgniter è abbastanza veloce, la quantità di informazioni dinamiche visualizzate nelle proprie pagine, unita al numero degli utenti che le producono, possono saturare le risorse del server come la memoria e la potenza di calcolo e quindi influenzare la velocità di caricamento delle pagine. Con il caching\footnote{è una memoria temporanea che memorizza un insieme di dati che possano successivamente essere velocemente recuperati su richiesta.} delle pagine è possibile ottenere delle prestazioni migliori che si avvicinano a quella delle pagine web statiche.
+Uno degli obiettivi primari che CodeIgniter si prefissa è quello di massimizzare le prestazioni attraverso una serie di operazioni. Una di queste consente di memorizzare nella cache le pagine prodotte dal proprio progetto. Anche se CodeIgniter è abbastanza veloce, la quantità di informazioni dinamiche visualizzate nelle proprie pagine, unita al numero degli utenti che le producono, possono saturare le risorse del server come la memoria e la potenza di calcolo e quindi influenzare la velocità di caricamento delle pagine. Con il caching\footnote{è una memoria temporanea che memorizza un insieme di dati che possano successivamente essere velocemente recuperati su richiesta.} delle pagine è possibile ottenere delle prestazioni migliori che si avvicinano a quella delle pagine web statiche.
 
 \section*{Il funzionamento}
-La cache è una memoria temporanea: quando memorizza una pagina dinamica, memorizza tutti i dati in essa contenuti. Il server tira un sospiro di sollievo: non deve interrogare il database, richiedere i valori dinamici, impegnare preziose risorse: gli basta caricare la cache dove è contenuta una ``copia temporanea'' della pagina. Un aspetto importante, è che la modalità caching può essere abilitata e configurata pagina per pagina, decidendo per esempio per quanto tempo una informazione debba essere conservata. Quando una pagina è caricata per la prima volta il file di cache sarà scritto nella cartella \sys{/application/cache/} e le successive richieste non graveranno sul server, ma caricheranno semplicemente il file di cache che verrà inviato al browser del navigatore. Se il file di cache è scaduto (si può impostare un limite temporale per conservarlo) il file di cache verrà cancellato e successivamente aggiornato prima di essere inviato al browser.
+La cache è una zona di archiviazione temporanea: quando questa memorizza una pagina dinamica, conserva anche tutti i dati in essa contenuti. Il server tira un sospiro di sollievo: non deve interrogare il database, richiedere i valori dinamici e impegnare preziose risorse: gli basta caricare la cache dove è contenuta una ``copia temporanea'' della pagina. Un aspetto importante, è che la modalità caching può essere abilitata e configurata pagina per pagina, decidendo per esempio per quanto tempo una informazione debba essere conservata. Quando una pagina è caricata per la prima volta il file di cache sarà scritto nella cartella \sys{/application/cache/} e le successive richieste non graveranno sul server, ma caricheranno semplicemente il file di cache che verrà inviato al browser del navigatore. Se il file di cache scade (si può impostare un limite temporale per conservarlo) il file di cache verrà cancellato e successivamente aggiornato prima di essere inviato al browser.
 
-Nota: Nota: Il tag ``Benchmark'' non è memorizzato nella cache in modo da poter visualizzare la velocità di caricamento della pagina quando la cache è abilitata.
+Nota: Il tag ``Benchmark'' non viene memorizzato nella cache.
 
 \section*{Abilitare la cache}
-Per abilitare il caching è necessario abilitarlo in ogni metodo del proprio controller:
+Per abilitare il caching è necessario impostarlo in ogni metodo del proprio controller:
 
 \begin{code}
-this->output->cache(n);
+$this->output->cache(n);
 \end{code}
 
-Dove il simbolo \var{n} indica i minuti per cui la pagina sarà mantenuta in cache prima che questa venga cancellata e quindi ricaricata. Il codice sopra riportato può andare ovunque all'interno di una funzione. Non è influenzato dall'ordine con cui appare, così che lo si possa inserire dove gli è più congeniale. Una volta che il codice è inserito, le pagine verranno memorizzate nella cache.
+Dove il simbolo \var{n} indica i minuti per cui la pagina sarà mantenuta in cache prima che questa venga cancellata e quindi ricaricata. Il codice sopra riportato può inserito ovunque all'interno di una funzione. Non è influenzato dall'ordine in cui appare, così che lo si possa inserire dove è più congeniale. Una volta che il codice è  correttamente inserito, le pagine verranno memorizzate nella cache.
 
-Attenzione: A causa del modo con cui CodeIgniter memorizza i contenuti per l'output, il caching funziona solo se si sta generando la visualizzazione per il proprio controller con una Vista. 
+Attenzione: A causa del modo con cui CodeIgniter memorizza i contenuti per l'output, il caching funziona solo se si stanno generando contenuti per la visualizzazione per il controller con una Vista. 
+
 Nota: Prima che i file di cache possono essere scritti è necessario impostare i permessi della cartella \sys{/application/cache} in modo ci si possa scrivere.
 
 \section*{Cancellare la cache}
-Se non si desidera più memorizzare nella cache un file è possibile rimuovere il codice caching e la pagina non sarà più aggiornata quando scade. 
-Nota: La rimozione del codice non elimina immediatamente la cache: si dovrà attendere che essa scada normalmente. Se è importante rimuovere la cache immediatamente si dovrà eliminare manualmente il file dalla cartella della cache.
+Se non si desidera più memorizzare nella cache un file è possibile rimuovere il codice caching e la pagina non sarà più aggiornata quando scade. La rimozione del codice non elimina immediatamente la cache: si dovrà attendere che essa scada normalmente. Se invece è importante rimuovere la cache immediatamente si dovrà eliminare manualmente il file dalla cartella della cache.

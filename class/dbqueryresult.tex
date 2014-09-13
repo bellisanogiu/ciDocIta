@@ -16,7 +16,7 @@ foreach ($query->result() as $row)
 }
 \end{code}
 
-La funzione è un alias di \verb|result_object()|. In tutti i casi se si esegue una query che potrebbe non produrre il risultato, è consigliabile verificare prima il risultato:
+La funzione è un alias di \verb|result_object()|. Se si esegue una query che potrebbe non produrre il risultato, è consigliabile verificare prima il risultato:
 
 \begin{code}
 $query = $this->db->query("LA TUA QUERY");
@@ -32,7 +32,7 @@ if ($query->num_rows() > 0)
 }
 \end{code}
 
-\'E anche possibile passare una stringa alla funzione \verb|result()| che rappresenta una classe per istanziare ogni risultato oggetto (nota: questa classe deve essere caricata):
+Si può passare una stringa alla funzione \verb|result()| che rappresenta una classe per istanziare ogni risultato oggetto (nota: questa classe deve essere caricata):
 
 \begin{code}
 $query = $this->db->query("SELECT * FROM users;");
@@ -103,7 +103,7 @@ if ($query->num_rows() > 0)
 }
 \end{code}
 
-Se si desidera che venga restituita una specifica riga, è possibile specificare il numero della riga nel primo parametro:
+Se si desidera che venga restituita una specifica riga, è possibile specificarne il numero nel primo parametro:
 
 \begin{code}
 $row = $query->row_array(5);
@@ -129,9 +129,9 @@ $row = $query->previous_row('array')
 \end{itemize}
 
 \section*{Funzioni Helper: i risultati}
-\begin{itemize}
-\item \verb|$query->num_rows()| fornisce il numero di righe restituite dalla query. In questo esempio \verb|$query| è la variabile a cui viene assegnato il risultato dell'interrogazione:
 
+\begin{itemize}
+\item \verb|$query->num_rows()| fornisce il numero di righe restituite dalla query. In questo esempio, \verb|$query| è la variabile a cui viene assegnato il risultato dell'interrogazione:
 
 \begin{code}
 $query = $this->db->query('SELECT * FROM my_table');
@@ -148,7 +148,7 @@ $query = $this->db->query('SELECT * FROM my_table');
 echo $query->num_fields();
 \end{code}
 
-\item \verb|$query->free_result()| questa funzione libera la memoria associata al risultato e cancella il risultato della risorsa individuata dall'ID. Normalmente \ac{PHP} libera automaticamente la memoria al termine dell'esecuzione dello script, tuttavia, se si eseguono numerose interrogazioni in un particolare script è consigliabile eliminare subito questi risultati. Per esempio:
+\item \verb|$query->free_result()| questa funzione libera la memoria associata al risultato e cancella il risultato della risorsa individuata dall'ID. Normalmente \ac{PHP} libera automaticamente la memoria al termine dell'esecuzione dello script, tuttavia, se si eseguono numerose interrogazioni in un particolare script, è consigliabile eliminare subito questi risultati. Per esempio:
 
 \begin{code}
 $query = $this->db->query('SELECT title FROM my_table');
