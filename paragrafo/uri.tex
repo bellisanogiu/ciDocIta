@@ -44,7 +44,7 @@ In questo caso la regola di routing impone che il termine ``pagina'' sia rimappa
 $route['pagina/viaggi'] = "sito/news/10";
 \end{code}
 
-In questo secondo caso un'\ac{URI} che contiene i segmenti ``pagina/viaggi'' sarà rimappata dalla classe ``sito'' e dal metodo ``news'', mentre l'identificatore sarà impostato su ``10''.
+In questo secondo caso un'\ac{URI} che contiene i segmenti ``pagina/viaggi'' sarà rimappata  vewrso la classe ``sito'' e il metodo ``news'', mentre l'identificatore sarà impostato su ``10''.
 
 \section*{Rimappare la chiamata dei metodi}
 Un'altra possibilità offerta è il rimappamento dei metodi tramite la funzione \verb|_remap()| che si presenta con la sintassi:
@@ -149,20 +149,20 @@ I Costruttori sono utili se si ha la necessità di configurare alcuni valori di 
 Solitamente vi è una corrispondenza uno-a-uno tra la stringa \ac{URL} e la classe/metodo che fa capo ad un Controller. \'E possibile in tutti i casi modificare la struttura con cui CodeIgniter mappa ogni \ac{URI}, magari perché si proviene da un altro framework, o solo per il gusto di sperimentare. Per apportare le modifiche alle regole di routing si deve agire sul file \fil{config} in \sys{/application/config/} e utilizzare le Regex o le wildcard\footnote{Definito anche metacarattere o carattere jolly o wild character o wildcard character, è un carattere che, all'interno di una stringa, non rappresenta sé stesso bensì un insieme di altri caratteri o sequenze di caratteri.}
 
 \section{Wildcard}
-Solitamente un rotta in cui è presente una wildcard ha una forma del tipo:
+Una rotta in cui è presente una wildcard ha generalmente una forma del tipo:
 
 \begin{code}
 $route['prodotto/:num'] = "catalogo/cercaprodotti";
 \end{code}
 
-La chiave della variabile \verb|$route| definisce l'\ac{URI} con cui verificare una corrispondenza. Nell'esempio, la chiave è costituita da due segmenti distinti. Il primo è identificato con la stringa prodotto, mentre il secondo rappresenta un wildcard. Si può interpretare come: \emph{se l'URI contiene la parola stringa prodotto (primo segmento) seguito da uno o più numeri (secondo segmento) allora eseguire il metodo cercaprodotti del Controller catalogo}.
+La chiave della variabile \verb|$route| definisce l'\ac{URI} con cui verificare una corrispondenza. Nell'esempio, la chiave è costituita da due segmenti distinti. Il primo identifica la stringa prodotto, mentre il secondo rappresenta un wildcard. Si può interpretare come: \emph{se l'URI contiene la parola stringa ``prodotto'' (primo segmento) seguito da ``uno o più numeri'' (secondo segmento) allora eseguire il metodo ``cercaprodotti'' del Controller ``catalogo''}.
 
 Per verificare valori alfanumerici si utilizzano i seguenti wildcard:
 
 \begin{itemize}
-\item (:num) cercherà una corrispondenza nella parte della stringa che contiene solo numeri
+\item (:num) cercherà una corrispondenza numerica nella stringa
 
-\item (:any) cercherà una corrispondenza nella parte della stringa che contiene ogni carattere
+\item (:any) cercherà una qualsiasi corrispondenza alfanumerica nella stringa
 \end{itemize}
 
 Un aspetto da tenere sempre a mente è che le regole di routing vengono eseguite secondo l'ordine in cui sono definite. \'E un aspetto questo da non sottovalutare perché porta soventemente ad errori banali, ma fastidiosi da individuare e correggere. 
@@ -223,4 +223,4 @@ $route['404_override'] = '';
 
 La rotta di qui sopra indica quale Controller deve essere caricato, se l'\ac{URI} fornito dall'utente non corrisponde a nessun Controller tra quelli disponibili. Se si configura questa rotta, verrà sovrascritta la pagina di default che gestisce l'errore 404. Se invece, non si fornisce alcun valore, verrà eseguita la funzione \verb|show_404()| che si trova nel file \verb|error_404.php| nel percorso \sys{/application/errors/}.
 
-Queste, appena indicate, sono le uniche due rotte riservate. Ed esse devono avere la precedenza su qualsiasi rotta che preveda wildcard o espressioni regolari.
+Queste appena indicate, sono le uniche due rotte riservate ed hanno la precedenza su qualsiasi rotta che preveda wildcard o espressioni regolari.

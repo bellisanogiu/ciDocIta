@@ -39,7 +39,7 @@ $this->email->to('info@tuosito.com');
 \begin{itemize}
 \item email. \'E il nome della Libreria precedentemente caricata
 \item to. \'E il nome della classe demandata ad individuare il destinatario dell'email
-\item info@tuosito.com. Ovviamente è l'argomento della nostra classe, ovvero colui che riceverà la missiva
+\item info@tuosito.com. Ovviamente è l'argomento della nostra classe, in pratica l'indirizzo di colui che riceverà la missiva
 \end{itemize}
 
 Qui di seguito alcune delle classi più comuni della Libreria \var{email}, precedute dall'istruzione che, si tenga sempre a mente, deve precaricare tale Libreria.
@@ -155,9 +155,7 @@ function funzione($parametri) {
 Nota: è prevista anche un'ulteriore possibilità: passare i parametri attraverso un file di configurazione. Basta creare un file con lo stesso identico nome della classe contenuta all'interno e memorizzarlo nel percorso \sys{/application/config/}. Questo metodo non è però utilizzabile per il passaggio dinamico di parametri.
 
 \section*{Estensione e sovrascrittura}
-\'E possibile aggiungere delle nuove funzionalità alle Librerie di sistema, oppure sovrascriverle completamente, inserendo nel percorso \sys{/application/libraries/} la nostra implementazione con lo stesso ``identico'' nome.
-
-Se quindi creiamo una nostra personale Libreria per la gestione delle tabelle, basterà inserire il file \var{Table.php} con la definizione delle classi nel percorso \sys{/application/libraries}. In questo modo, sovrascriveremo la Libreria predefinita di CodeIgniter situata invece in \sys{/system/libraries/}.
+\'E possibile aggiungere delle nuove funzionalità alle Librerie di sistema, oppure sovrascriverle completamente, inserendo nel percorso \sys{/application/libraries/} la nostra implementazione con lo stesso ``identico'' nome. Se quindi si crea una personale Libreria per la gestione delle tabelle, basterà inserire il file \var{Table.php} con la definizione delle classi nel percorso \sys{/application/libraries}. In questo modo, sovrascriveremo la Libreria predefinita di CodeIgniter situata invece in \sys{/system/libraries/}.
 
 Riepilogando:
 
@@ -178,7 +176,7 @@ $this->load->library('session');
 $this->config->item('base_url');
 \end{code}
 
-Il costrutto \verb|$this|però, funziona solo all'interno dei propri Controller, Modelli, o Viste. Se invece si desiderano utilizzare le classi native dentro le proprie classi è necessario prima di tutto assegnare l'oggetto di CodeIgniter alla variabile:
+Il costrutto \verb|$this| funziona però solo all'interno dei propri Controller, Modelli, o Viste. Se invece si desiderano utilizzare le classi native dentro le proprie classi è necessario prima di tutto assegnare l'oggetto di CodeIgniter alla variabile:
 
 \begin{code}
 $CI =& get_instance();
@@ -194,7 +192,7 @@ $CI->load->library('session');
 $CI->config->item('base_url');
 \end{code}
 
-Nota: si noterà che la funzione di cui sopra \verb|get_instance()| viene passata per riferimento. Questo è molto importante perché utilizzando un'assegnazione per riferimento si può utilizzare l'originale oggetto di CodeIgniter piuttosto che una sua copia.
+Nota: si sarà notato che la funzione di cui sopra \verb|get_instance()| viene passata per riferimento. Questo è molto importante perché in questo modo si può utilizzare l'originale oggetto di CodeIgniter piuttosto che una sua copia.
 
 \begin{code}
 $CI =& get_instance();

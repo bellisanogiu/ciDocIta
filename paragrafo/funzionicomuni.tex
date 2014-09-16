@@ -40,7 +40,7 @@ else {
 \begin{itemize}
 \item \verb|show_error('message')|
 \item \verb|show_404('page')|
-\item \verb|log_message('level', 'message')|.
+\item \verb|log_message('level', 'messaggio')|.
 \end{itemize}
 
 \item \verb|set_status_header(code, 'text');| permette di settare manualmente l'header dello stato del server. Per esempio:
@@ -70,7 +70,7 @@ Il framework mette a disposizione le seguenti funzioni per la gestione degli err
 
 \item \verb|show_404('page' [, 'log_error'])|: questa funzione visualizza i messaggi di errore al seguente percorso: \verb|application/errors/error_404.php|. Essa si aspetta che la stringa passata corrisponda ad una pagina inesistente (di cui non si trova il percorso). CodeIgniter visualizza sempre, automaticamente l'errore tramite questa funzione predefinita; è comunque possibile impostare il secondo parametro su FALSE in modo da ignorare questo tipo di errori (skip log).
 
-\item \verb|log_message('livello', 'messaggio')|: questa funzione consente di scrivere messaggi personalizzati suoi propri file di log. È necessario fornire uno dei tre "livelli" nel primo parametro, che indica il tipo di messaggio o etichetta se si preferisce: debug, error, info. Il secondo parametro ``messaggio'' specifica un testo personalizzato che si desidera visualizzare. Per esempio:
+\item \verb|log_message('level', 'messaggio')|: questa funzione consente di scrivere messaggi personalizzati suoi propri file di log. È necessario fornire uno dei tre "livelli" nel primo parametro, che indica il tipo di messaggio o etichetta se si preferisce: debug, error, info. Il secondo parametro ``messaggio'' specifica un testo personalizzato che si desidera visualizzare. Per esempio:
 
 \begin{code}
 if ($alcune_variabili == "")
@@ -95,7 +95,7 @@ Ci sono tre tipi di messaggio:
 \item messaggi informativi: questi sono i messaggi con priorità più bassa. Semplicemente forniscono informazioni riguardanti qualche processo. CodeIgniter non genera come impostazione predefinita alcun messaggio di questo tipo, ma l'utente può utilizzarli per raccogliere utili informazioni
 \end{enumerate}
 
-Nota: affinché il file di log possa essere generato, la cartella \sys{logs} deve avere i permessi di scrittura. Inoltre, è necessario impostare la "soglia" per l'accesso di \verb|$config['log_threshold']| in \sys{application/config/config.php}. Si potrebbe, per esempio, voler produrre solo i messaggi di errore che devono essere registrati e non gli altri due tipi. Se si imposta la registrazione (logging) a zero, questo verrà disabilitato. Per completezza elenchiamo tutti i parametri:
+Nota: affinché il file di log possa essere generato, la cartella \sys{logs} deve avere i permessi di scrittura. Inoltre, è necessario impostare la "soglia" per l'accesso di \verb|$config['log_threshold']| in \sys{application/config/config.php}. Si potrebbe, per esempio, voler produrre solo alcuni messaggi e trascurare i restanti. Il valore predefinito di \verb|$config['log_threshold']| è 0 (zero) per cui CodeIgniter non produce alcun file log. Per visualizzare tutti i messaggi si inserisca il valore 4. Per completezza elenchiamo tutti i parametri:
 
 \begin{itemize}
 \item 0 = Disabilita la registrazione dei messaggi di errore
