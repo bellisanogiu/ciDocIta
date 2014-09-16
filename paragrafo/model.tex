@@ -278,7 +278,7 @@ Ecco il codice \ac{PHP} e \ac{HTML}:
 
 Probabilmente sono due gli elementi che appaiono poco familiari. Il metodo \verb|form_open()| e \verb|validation_errors()|. Per il momento sappiate che il primo è un Helper che visualizza i campi del form e aggiunge funzionalità come un ``CSRF prevention field nascosto''. Il secondo è utilizzato per visualizzare eventuali errori nell'inserimento di input anomali.
 
-\begin{deftab}{Validazione}{La validazione dei form è generalmente basato sulle Regex. Il loro scopo è comprendere e se i dati inseriti sono formalmente corretti. Per esempio un form genererà un errore se l'utente inserisce una email priva del caratteristico e assolutamente immancabile simbolo \verb|@|}
+\begin{deftab}{Validazione}{La validazione dei form è generalmente basato sulle Regex. Il loro scopo è comprendere e se i dati inseriti sono formalmente corretti. Per esempio un form genererà un errore se l'utente inserisce una email priva del caratteristico e assolutamente immancabile simbolo @}
 \end{deftab}
 
 Torniamo indietro al Controller \fil{news.php} e aggiungiamo il codice necessario a caricare gli Helper relativi al form (\verb|$this->load->helper('form');|) e la Libreria per la validazione dei form (\verb|$this->load->library('form_validation')|).
