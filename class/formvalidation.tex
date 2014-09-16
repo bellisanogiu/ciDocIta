@@ -11,7 +11,7 @@ Prima di spiegare l'approccio utilizzato dal framework per la convalida dei dati
 \begin{enumerate}
 \item viene visualizzato un modulo
 \item questo viene compilato e inviato al server
-\item se il contenuto non è valido o si è dimenticato di inserire un elemento obbligatorio, il form viene visualizzato nuovamente con i dati e con un messaggio di errore che descrive il problema
+\item se il contenuto non è valido o si è dimenticato di inserire un elemento obbligatorio, il form viene visualizzato nuovamente con i dati inseriti e con un messaggio di errore che descrive il problema
 \item questo processo continua fino a quando non si compila un form interamente valido
 \end{enumerate}
 
@@ -19,7 +19,7 @@ Sul lato ricevente, lo script deve:
 
 \begin{enumerate}
 \item verificare la presenza dei dati richiesti
-\item verificare che i dati siano del tipo corretto, e che soddisfino i criteri impostati. Ad esempio se viene inviato un ``nome utente'' che deve essere convalidato, questo deve contenere solo caratteri consentiti, deve avere una lunghezza minima e non superare la lunghezza massima. Il nome utente non può essere un ``nome utente'' già esistente o una parola riservata
+\item verificare che i dati siano del tipo corretto, e che soddisfino i criteri impostati. Ad esempio se viene inviato un ``nome utente'' che deve essere convalidato, questo deve contenere solo caratteri consentiti, avere una lunghezza minima e non superare la lunghezza massima. Il nome utente non può essere un ``nome utente'' già esistente o una parola riservata
 \item effettuare l'escape dei dati per la sicurezza
 \item pre-formattare i dati in caso di necessità
 \item preparare i dati per l'inserimento nel database
@@ -123,7 +123,7 @@ Molto semplicemente è possibile testare quando appena descritto provando il seg
 example.com/index.php/form/
 \end{code}
 
-Se al momento si invia il modulo, il form verrà caricato nuovamente: questo avviene perché non si è ancora stabilita alcuna regola di convalida. Infatti, poiché la classe Form Validation non sa come comportarsi, questa restituisce FALSE per impostazione predefinita. La funzione \var{run()} restituisce TRUE solo se le regole sono state rispettate senza alcuna eccezione.
+Se al momento si invia il modulo, il form verrà caricato nuovamente: questo avviene perché non si è ancora stabilita alcuna regola di convalida. Infatti, poiché la classe Form Validation non sa come comportarsi, restituisce FALSE per impostazione predefinita. La funzione \var{run()} restituisce TRUE solo se le regole sono state rispettate senza alcuna eccezione.
 
 \section*{Spiegazione}
 Qualcuno avrà notato diverse cose sulle pagine di qui sopra:
@@ -132,10 +132,10 @@ Il file \fil{myform.php} è un form standard con un paio di eccezioni:
 
 \begin{enumerate}
 \item esso usa un Helper Form per definire un form per l'inserimento dei dati. Anche se non è strettamente necessario, poiché è possibile utilizzare lo standard \ac{HTML}, l'utilizzo dell'helper genera l'azione dell'\ac{URL} automaticamente, in base all'\ac{URL} impostato nel file di configurazione. Questo rende l'applicazione maggiormente portabile nel caso in cui gli indirizzi dovessero cambiare
-\item all'inizio del form appare la seguente chiamata di funzione \verb|?php echo validation_errors(); ?>| Questa funzione restituisce ogni messaggio di errore prodotto dal validatore. Se non vi è alcun errore, verrà restituita una stringa vuota.
+\item all'inizio del form appare la seguente chiamata di funzione \verb|<?php echo validation_errors(); ?>| Questa funzione restituisce ogni messaggio di errore prodotto dal validatore. Se non vi è alcun errore, verrà restituita una stringa vuota.
 \end{enumerate}
 
-Il controller \fil{form.php} ha la sola funzione predefinita \var{index()} che inizializza la classe di validazione e carica l'Helper Form e l'Helper URL utilizzati per visualizzare i file. Viene inoltre eseguita la routine di validazione e, in base al successo o meno dell'operazione, la pagina di ``successo'' viene caricata. in caso contrario viene visualizzato nuovamente il form.
+Il controller \fil{form.php} ha la sola funzione predefinita \var{index()} che inizializza la classe di validazione e carica l'Helper Form (vedi\vpageref{helper:form}) e l'Helper URL (vedi\vpageref{helper:url}) utilizzati per visualizzare i file. Viene inoltre eseguita la routine di validazione e, in base al successo o meno dell'operazione, la pagina di ``successo'' viene caricata. in caso contrario viene visualizzato nuovamente il form.
 
 \section*{Impostazione delle regole di validazione}
 CodeIgniter permette di impostare molte regole per la validazione dei campi di un form. Per impostare le regole si utilizzerà la funzione \verb|set_rules()|:

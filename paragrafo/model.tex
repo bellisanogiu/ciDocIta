@@ -35,7 +35,6 @@ CREATE TABLE news (
 \begin{img}{Creazione di un nuovo database}{3}{020}
 \end{img}
 
-
 L'attributo \var{slug} è un indice con cui ``marcheremo'' ogni notizia pubblicata per poi richiamarla facilmente in seguito: una sorta di segnalibro, più o meno. Ora si inseriscano due notizie per popolare la tabella. Qui viene riportato il codice che può essere processato velocemente selezionando la voce SQL dal menu principale (vedi immagine \vpageref{fig:018}).
 
 \begin{img}{Inserimento della query}{3}{018}
@@ -70,7 +69,6 @@ class News_model extends CI_Model {
 			$query = $this->db->get('news');
 			return $query->result_array();
 		}
-	
 		$query = $this->db->get_where('news', array('slug' => $slug));
 		return $query->row_array();
 	}
@@ -91,9 +89,7 @@ $this->load->model('percorso/nome_model');
 
 La struttura di un Model è sintatticamente molto semplice e rispecchia le convenzioni già viste nel Controller e nella View. Viene creato un nuovo Modello di nome \verb|News_model| che è una estensione del \verb|CI_Model|, il modello di base di Codeigniter. 
 
-La nuova istruzione introdotta è \verb|$this->load->database()| che si occupa di caricare il database i cui parametri sono memorizzati nel file \fil{database.php} nel percorso \sys{/application/config/} (si veda la sezione\vref{sec:accessodb}).
-
-La seconda parte del codice si occupa di recuperare le notizie dal database ``test'': d'altra parte è questo il compito del Model. All'interno del metodo \verb|get_news()| sono presenti due differenti query: una per ottenere tutte le notizie e la seconda per recuperarne una ben precisa, marcata dall'identificatore \var{slug}.
+La nuova istruzione introdotta è \verb|$this->load->database()| che si occupa di caricare il database i cui parametri sono memorizzati nel file \fil{database.php} nel percorso \sys{/application/config/} (si veda la sezione\vref{sec:accessodb}). La seconda parte del codice si occupa di recuperare le notizie dal database ``test'': d'altra parte è questo il compito del Model. All'interno del metodo \verb|get_news()| sono presenti due differenti query: una per ottenere tutte le notizie e la seconda per recuperarne una ben precisa, marcata dall'identificatore \var{slug}.
 
 Apriamo una piccola parentesi sulla sicurezza. Nella tradizionale programmazione ogni variabile usata come argomento per interfacciarsi con un database deve essere prima esaminata e ``messa in sicurezza'', come nel caso di \var{slug}. Utilizzando CodeIgniter non ci si dovrà preoccupare di questi dettagli perché sarà lui stesso a curare questo aspetto per noi.
 
@@ -258,7 +254,7 @@ Il codice si avvale delle espressioni regolari che costituisce un argomento dell
 \section*{Inserire una notizia}
 Precedentemente le notizie sono state inserite tramite una istruzione SQL e anche se l'interfaccia di phpMyAdmin è amichevole, esistono altri sistemi più intuitivi e sicuri per memorizzare informazioni nel database. Uno di questi prevede l'uso di form, ovvero pagine con semplici interfacce per l'inserimento di input. Quindi se nella sezione precedente il nostro obiettivo è stato quello di ``leggere'' i record dalla base di dati, ora ci occuperemo di ``memorizzare'' le notizie.
 
-Innanzitutto si definisca una nuova Vista con il codice per visualizzare il form, al percorso \sys{/application/views/} e caratterizzata dal nome \fil{creanews.php}. Il form sarà composto da due campi: uno per l'inserimento del titolo ed uno per quello del testo. Rispetto a quanto visto prima, non si dovrà inserire il marcatore slug, in quanto si svilupperà un sistema per la creazione automatica di un marcatore univoco.
+Innanzitutto si definisca una nuova Vista con il codice per visualizzare il form, al percorso \sys{/application/views/} e caratterizzata dal nome \fil{creanews.php}. Il form sarà composto da due campi: uno per l'inserimento del titolo ed uno per il testo. Rispetto a quanto visto prima, non si dovrà inserire il marcatore slug, in quanto si svilupperà un sistema per la creazione automatica di un marcatore univoco.
 
 Ecco il codice \ac{PHP} e \ac{HTML}:
 
@@ -282,7 +278,7 @@ Ecco il codice \ac{PHP} e \ac{HTML}:
 
 Probabilmente sono due gli elementi che appaiono poco familiari. Il metodo \verb|form_open()| e \verb|validation_errors()|. Per il momento sappiate che il primo è un Helper che visualizza i campi del form e aggiunge funzionalità come un ``CSRF prevention field nascosto''. Il secondo è utilizzato per visualizzare eventuali errori nell'inserimento di input anomali.
 
-\begin{deftab}{Validazione}{La validazione dei form è generalmente basato sulle Regex. Il loro scopo è comprendere e se i dati inseriti sono formalmente corretti. Per esempio un form genererà un errore se l'utente inserisce una email priva del caratteristico e assolutamente immancabile simbolo @}
+\begin{deftab}{Validazione}{La validazione dei form è generalmente basato sulle Regex. Il loro scopo è comprendere e se i dati inseriti sono formalmente corretti. Per esempio un form genererà un errore se l'utente inserisce una email priva del caratteristico e assolutamente immancabile simbolo \verb|@|}
 \end{deftab}
 
 Torniamo indietro al Controller \fil{news.php} e aggiungiamo il codice necessario a caricare gli Helper relativi al form (\verb|$this->load->helper('form');|) e la Libreria per la validazione dei form (\verb|$this->load->library('form_validation')|).
@@ -319,9 +315,7 @@ Le regole per la validazione del form vengono esplicitate tramite \verb|set_rule
 
 \verb|if ($this->form_validation->run() === FALSE)|. 
 
-Che si può interpretare come: ``se la condizione per la validazione dell'input non verrà superata, il programma caricherà nuovamente la pagina'' (mediante le Viste che seguono). In caso contrario (istruzione condizionale \var{else}) verrà caricato il Modello e sarà memorizzata la notizia (\verb|set_news()|) nel database. Infine una nuova pagina confermerà il buon esito dell'operazione \var{view('success')}.
-
-Questo è solo un esempio della potenza messa a disposizione da CodeIgniter tramite la libreria di validazione. Maggiori informazioni sono disponibili al capitolo che tratta in dettaglio l'argomento \vpageref{class:formvalidation}.
+Che si può interpretare come: ``se la condizione per la validazione dell'input non viene superata, il programma caricherà nuovamente la pagina'' (mediante le Viste che seguono). In caso contrario (istruzione condizionale \var{else}) caricherà il Modello e la notizia (\verb|set_news()|) verrà memorizzata nel database. Infine una nuova pagina confermerà il buon esito dell'operazione \var{view('success')}. Questo è solo un esempio della potenza messa a disposizione da CodeIgniter tramite la libreria di validazione. Maggiori informazioni sono disponibili al capitolo che tratta in dettaglio l'argomento \vpageref{class:formvalidation}.
 
 Definiamo ora una nuova Vista \fil{successo.php} nel percorso \sys{/application/view/news/} e scriviamo un confortante messaggio con il seguente codice:
 
