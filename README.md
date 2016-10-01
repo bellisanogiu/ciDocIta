@@ -1,6 +1,7 @@
 ====
 
-documentazione CodeIgniter<br>
-versione 3.0<br>
-lingua: italiano<br>
-codice sorgente: Tex<br>
+title: documentazione CodeIgniter<br>
+version: 3.0<br>
+language:: italian<br>
+source code: Tex<br>
+maintaner: Giuseppe Bellisano
